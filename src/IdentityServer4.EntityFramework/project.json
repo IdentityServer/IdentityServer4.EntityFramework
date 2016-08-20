@@ -1,0 +1,14 @@
+﻿{
+  "version": "1.0.0-beta1",
+  "authors": [ "Brock Allen", "Dominick Baier", "Scott Brady" ],
+  "description": "EntityFramework persistence layer for IdentityServer4",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netstandard1.4": {},
+    "net452": {}
+  }
+}
