@@ -1,9 +1,10 @@
-﻿{
+{
   "version": "1.0.0-beta1",
   "authors": [ "Brock Allen", "Dominick Baier", "Scott Brady" ],
   "description": "EntityFramework persistence layer for IdentityServer4",
 
   "dependencies": {
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.0",
     "NETStandard.Library": "1.6.0"
   },
 
