@@ -9,6 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8BFDA83B-FD7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9FB2E7A3-FFC7-4687-850B-66763A889A78}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.EntityFramework.UnitTests", "test\IdentityServer4.EntityFramework.UnitTests\IdentityServer4.EntityFramework.UnitTests.xproj", "{94CC4E7E-DE3A-4775-B704-AA489216B937}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{211A5E6F-1713-40FF-A29B-A991C9CBA3EC}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,11 +26,16 @@ Global
 		{AB83F911-8B78-4973-A3A9-2A2D85581F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB83F911-8B78-4973-A3A9-2A2D85581F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB83F911-8B78-4973-A3A9-2A2D85581F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AB83F911-8B78-4973-A3A9-2A2D85581F25} = {8BFDA83B-FD73-4776-9C2C-5F7FFE440C1F}
+		{94CC4E7E-DE3A-4775-B704-AA489216B937} = {9FB2E7A3-FFC7-4687-850B-66763A889A78}
 	EndGlobalSection
 EndGlobal

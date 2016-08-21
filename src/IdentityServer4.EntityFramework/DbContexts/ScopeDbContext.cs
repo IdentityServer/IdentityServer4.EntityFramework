@@ -6,8 +6,10 @@ namespace IdentityServer4.EntityFramework.DbContexts
 {
     public class ScopeDbContext : DbContext
     {
-        public ScopeDbContext() : base() { }
+        public ScopeDbContext() { }
         public ScopeDbContext(DbContextOptions options) : base(options) { }
+
+        public DbSet<Scope> Scopes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
