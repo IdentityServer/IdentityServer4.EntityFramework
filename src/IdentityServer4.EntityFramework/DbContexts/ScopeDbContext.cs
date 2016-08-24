@@ -1,12 +1,12 @@
 ﻿using IdentityServer4.EntityFramework.Entities;
+using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace IdentityServer4.EntityFramework.DbContexts
 {
-    public class ScopeDbContext : DbContext
+    public class ScopeDbContext : DbContext, IScopeDbContext
     {
-        public ScopeDbContext() { }
         public ScopeDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Scope> Scopes { get; set; }
