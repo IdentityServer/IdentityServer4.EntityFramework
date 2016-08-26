@@ -7,6 +7,8 @@
             public const string Scope = "Scopes";
             public const string ScopeClaim = "ScopeClaims";
             public const string ScopeSecrets = "ScopeSecrets";
+
+            public const string PersistedGrant = "PersistedGrant";
         }
     }
 }
