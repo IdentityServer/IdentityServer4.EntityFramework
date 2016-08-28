@@ -9,6 +9,8 @@
             public const string ScopeSecrets = "ScopeSecrets";
 
             public const string PersistedGrant = "PersistedGrant";
+
+            public const string Client = "Clients";
         }
     }
 }

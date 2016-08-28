@@ -98,5 +98,45 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 
             Assert.True(scopes.All(x => x.ShowInDiscoveryDocument));
         }
+
+        [Fact]
+        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned()
+        {
+            IList<Scope> scopes;
+            using (var context = new ScopeDbContext(options))
+            {
+                var store = new ScopeStore(context);
+                scopes = store.FindScopesAsync(new List<string>
+                {
+                    testResourceScope.Name
+                }).Result.ToList();
+            }
+
+            Assert.NotNull(scopes);
+            var foundScope = scopes.Single();
+
+            Assert.NotNull(foundScope.ScopeSecrets);
+            Assert.NotEmpty(foundScope.ScopeSecrets);
+        }
+
+        [Fact]
+        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned()
+        {
+            IList<Scope> scopes;
+            using (var context = new ScopeDbContext(options))
+            {
+                var store = new ScopeStore(context);
+                scopes = store.FindScopesAsync(new List<string>
+                {
+                    testIdentityScope.Name
+                }).Result.ToList();
+            }
+
+            Assert.NotNull(scopes);
+            var foundScope = scopes.Single();
+
+            Assert.NotNull(foundScope.Claims);
+            Assert.NotEmpty(foundScope.Claims);
+        }
     }
 }
