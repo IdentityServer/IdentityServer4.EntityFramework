@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.EntityFramework.IntegrationTests", "test\IdentityServer4.EntityFramework.IntegrationTests\IdentityServer4.EntityFramework.IntegrationTests.xproj", "{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94CC4E7E-DE3A-4775-B704-AA489216B937}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +43,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AB83F911-8B78-4973-A3A9-2A2D85581F25} = {8BFDA83B-FD73-4776-9C2C-5F7FFE440C1F}
 		{94CC4E7E-DE3A-4775-B704-AA489216B937} = {9FB2E7A3-FFC7-4687-850B-66763A889A78}
+		{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81} = {9FB2E7A3-FFC7-4687-850B-66763A889A78}
 	EndGlobalSection
 EndGlobal

@@ -7,11 +7,8 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IdentityServer4.EntityFramework")]
+[assembly: AssemblyProduct("IdentityServer4.EntityFramework.IntegrationTests")]
 [assembly: AssemblyTrademark("")]
-
-[assembly: InternalsVisibleTo("IdentityServer4.EntityFramework.UnitTests")]
-[assembly: InternalsVisibleTo("IdentityServer4.EntityFramework.IntegrationTests")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
@@ -19,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ab83f911-8b78-4973-a3a9-2a2d85581f25")]
+[assembly: Guid("73cce3c6-5431-4b76-acbe-ef4ee76d6b81")]

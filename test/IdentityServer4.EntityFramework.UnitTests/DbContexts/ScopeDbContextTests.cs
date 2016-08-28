@@ -12,6 +12,7 @@ namespace IdentityServer4.EntityFramework.UnitTests.DbContexts
         [Fact]
         public void WhenScopeAddedToContext_ExpectSuccess()
         {
+            // TODO: Move...
             var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:"};
             var connectionString = connectionStringBuilder.ToString();
             var connection = new SqliteConnection(connectionString);

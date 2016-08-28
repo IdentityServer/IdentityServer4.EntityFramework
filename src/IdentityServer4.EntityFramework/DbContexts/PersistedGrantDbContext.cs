@@ -7,6 +7,8 @@ namespace IdentityServer4.EntityFramework.DbContexts
 {
     public class PersistedGrantDbContext : DbContext, IPersistedGrantDbContext
     {
+        public PersistedGrantDbContext(DbContextOptions options) : base(options) { }
+
         public DbSet<PersistedGrant> PersistedGrants { get; set; }
 
         public Task<int> SaveChangesAsync()

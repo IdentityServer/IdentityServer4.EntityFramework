@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Mappers;
@@ -37,13 +38,19 @@ namespace IdentityServer4.EntityFramework.Stores
             if (persistedGrant!= null)
             {
                 context.PersistedGrants.Remove(persistedGrant);
-                await context.SaveChangesAsync()
+                await context.SaveChangesAsync();
             }
         }
 
-        public Task RemoveAsync(string subjectId, string clientId, string type)
+        public async Task RemoveAsync(string subjectId, string clientId, string type)
         {
-            throw new System.NotImplementedException();
+            var persistedGrants = await context.PersistedGrants.Where(x =>
+                x.SubjectId == subjectId &&
+                x.ClientId == clientId &&
+                x.Type == type).ToListAsync();
+
+            context.PersistedGrants.RemoveRange(persistedGrants);
+            await context.SaveChangesAsync();
         }
     }
 }
