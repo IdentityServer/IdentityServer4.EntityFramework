@@ -11,7 +11,11 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
     public class ClientStoreTests
     {
         private readonly DbContextOptions<ClientDbContext> options;
-        private readonly Client testClient = new Client {ClientId = "test_client"};
+        private readonly Client testClient = new Client
+        {
+            ClientId = "test_client",
+            ClientName = "Test Client"
+        };
 
         public ClientStoreTests()
         {

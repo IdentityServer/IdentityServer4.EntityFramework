@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Interfaces;
@@ -32,6 +33,12 @@ namespace IdentityServer4.EntityFramework.Stores
             return persistedGrant.ToModel();
         }
 
+        public async Task<IEnumerable<PersistedGrant>> GetAsync(string subjectId, string type)
+        {
+            var persistedGrants = await context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.Type == type).ToListAsync();
+            return persistedGrants.Select(x => x.ToModel());
+        }
+
         public async Task RemoveAsync(string key)
         {
             var persistedGrant = await context.PersistedGrants.FirstOrDefaultAsync(x => x.Key == key);
@@ -40,6 +47,15 @@ namespace IdentityServer4.EntityFramework.Stores
                 context.PersistedGrants.Remove(persistedGrant);
                 await context.SaveChangesAsync();
             }
+        }
+
+        public async Task RemoveAsync(string subjectId, string clientId)
+        {
+            var persistedGrants =
+                await context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToListAsync();
+
+            context.PersistedGrants.RemoveRange(persistedGrants);
+            await context.SaveChangesAsync();
         }
 
         public async Task RemoveAsync(string subjectId, string clientId, string type)

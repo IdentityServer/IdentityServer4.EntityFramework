@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,19 +21,24 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             options = builder.Options;
         }
 
+        private static PersistedGrant CreateTestObject()
+        {
+            return new PersistedGrant
+            {
+                Key = Guid.NewGuid().ToString(),
+                Type = Constants.PersistedGrantTypes.AuthorizationCode,
+                ClientId = Guid.NewGuid().ToString(),
+                SubjectId = Guid.NewGuid().ToString(),
+                CreationTime = new DateTime(2016, 08, 01),
+                Expiration = new DateTime(2016, 08, 31),
+                Data = Guid.NewGuid().ToString()
+            };
+        }
+
         [Fact]
         public void StoreAsync_WhenPersistedGrantStored_ExpectSuccess()
         {
-            var persistedGrant = new PersistedGrant
-            {
-                Key = "F97937D6-C934-467F-AAA8-B50D257B4E65",
-                Type = Constants.PersistedGrantTypes.AuthorizationCode,
-                ClientId = "test_client",
-                SubjectId = "C6600243-6079-46FF-B18D-C39420C7A8C7",
-                CreationTime = new DateTime(2016, 08, 01),
-                Expiration = new DateTime(2016, 08, 31),
-                Data = "4B16D2BD-5B68-4B68-BB6D-EFF8449BAC21"
-            };
+            var persistedGrant = CreateTestObject();
 
             using (var context = new PersistedGrantDbContext(options))
             {
@@ -47,22 +54,13 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Fact]
-        public void GetAsync_WhenPersistedGrantExists_ExpectPersistedGrantReturned()
+        public void GetAsync_WithKeyAndPersistedGrantExists_ExpectPersistedGrantReturned()
         {
-            var persistedGrant = new Entities.PersistedGrant
-            {
-                Key = "406DC4B7-7EA0-4BF7-B00F-CC886A4B41DF",
-                Type = Constants.PersistedGrantTypes.AuthorizationCode,
-                ClientId = "test_client",
-                SubjectId = "C6600243-6079-46FF-B18D-C39420C7A8C7",
-                CreationTime = new DateTime(2016, 08, 01),
-                Expiration = new DateTime(2016, 08, 31),
-                Data = "4B16D2BD-5B68-4B68-BB6D-EFF8449BAC21"
-            };
+            var persistedGrant = CreateTestObject();
 
             using (var context = new PersistedGrantDbContext(options))
             {
-                context.PersistedGrants.Add(persistedGrant);
+                context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
@@ -77,16 +75,35 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Fact]
-        public void RemoveAsync_WhenKeyOfExistingReceived_ExpectGrantDeleted()
+        public void GetAsync_WithSubAndTypeAndPersistedGrantExists_ExpectPersistedGrantReturned()
         {
-            var persistedGrant = new Entities.PersistedGrant
-            {
-                Key = "7D02FDDB-93A0-45C4-8DC4-A4957E9ED33D"
-            };
+            var persistedGrant = CreateTestObject();
 
             using (var context = new PersistedGrantDbContext(options))
             {
-                context.PersistedGrants.Add(persistedGrant);
+                context.PersistedGrants.Add(persistedGrant.ToEntity());
+                context.SaveChanges();
+            }
+
+            IList<PersistedGrant> foundPersistedGrants;
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var store = new PersistedGrantStore(context);
+                foundPersistedGrants = store.GetAsync(persistedGrant.SubjectId, persistedGrant.Type).Result.ToList();
+            }
+
+            Assert.NotNull(foundPersistedGrants);
+            Assert.NotEmpty(foundPersistedGrants);
+        }
+
+        [Fact]
+        public void RemoveAsync_WhenKeyOfExistingReceived_ExpectGrantDeleted()
+        {
+            var persistedGrant = CreateTestObject();
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
             
@@ -104,19 +121,37 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Fact]
-        public void RemoveAsync_WhenIdAndTypeOfExistingReceived_ExpectGrantDeleted()
+        public void RemoveAsync_WhenSubIdAndClientIdOfExistingReceived_ExpectGrantDeleted()
         {
-            var persistedGrant = new Entities.PersistedGrant
-            {
-                Key = "44B02875-151D-4A44-BE31-32613C822B93",
-                ClientId = "E41BD89C-2883-43E3-8A58-5F876D26DB33",
-                SubjectId = "310C082D-8B30-4851-97FE-DAA45842BB93",
-                Type = Constants.PersistedGrantTypes.AuthorizationCode
-            };
+            var persistedGrant = CreateTestObject();
 
             using (var context = new PersistedGrantDbContext(options))
             {
-                context.PersistedGrants.Add(persistedGrant);
+                context.PersistedGrants.Add(persistedGrant.ToEntity());
+                context.SaveChanges();
+            }
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var store = new PersistedGrantStore(context);
+                store.RemoveAsync(persistedGrant.SubjectId, persistedGrant.ClientId).Wait();
+            }
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
+                Assert.Null(foundGrant);
+            }
+        }
+
+        [Fact]
+        public void RemoveAsync_WhenSubIdClientIdAndTypeOfExistingReceived_ExpectGrantDeleted()
+        {
+            var persistedGrant = CreateTestObject();
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
