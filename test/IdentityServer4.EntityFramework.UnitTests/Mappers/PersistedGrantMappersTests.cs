@@ -9,12 +9,10 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
         [Fact]
         public void PersistedGrantAutomapperConfigurationIsValid()
         {
-            var entity = new Entities.PersistedGrant();
-            var mappedModel = entity.ToModel();
-
             var model = new PersistedGrant();
             var mappedEntity = model.ToEntity();
-
+            var mappedModel = mappedEntity.ToModel();
+            
             Assert.NotNull(mappedModel);
             Assert.NotNull(mappedEntity);
             PersistedGrantMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid();

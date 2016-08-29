@@ -9,11 +9,9 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
         [Fact]
         public void ScopeAutomapperConfigurationIsValid()
         {
-            var entity = new Entities.Scope();
-            var mappedModel = entity.ToModel();
-
             var model = new Scope();
             var mappedEntity = model.ToEntity();
+            var mappedModel = mappedEntity.ToModel();
 
             Assert.NotNull(mappedModel);
             Assert.NotNull(mappedEntity);

@@ -13,7 +13,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public string LogoUri { get; set; }
         public bool RequireConsent { get; set; }
         public bool AllowRememberConsent { get; set; }
-        public IEnumerable<ClientGrantType> AllowedGrantTypes { get; set; }
+        public List<ClientGrantType> AllowedGrantTypes { get; set; }
         public bool RequirePkce { get; set; }
         public bool AllowAccessTokensViaBrowser { get; set; }
         public List<ClientRedirectUri> RedirectUris { get; set; }
@@ -38,5 +38,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool AlwaysSendClientClaims { get; set; }
         public bool PrefixClientClaims { get; set; }
         public List<ClientCorsOrigin> AllowedCorsOrigins { get; set; }
+        public bool PublicClient { get; set; }
+        public bool AllowPromptNone { get; set; }
     }
 }
