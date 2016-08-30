@@ -89,7 +89,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             using (var context = new PersistedGrantDbContext(options))
             {
                 var store = new PersistedGrantStore(context);
-                foundPersistedGrants = store.GetAsync(persistedGrant.SubjectId, persistedGrant.Type).Result.ToList();
+                foundPersistedGrants = store.GetAllAsync(persistedGrant.SubjectId).Result.ToList();
             }
 
             Assert.NotNull(foundPersistedGrants);
@@ -134,7 +134,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             using (var context = new PersistedGrantDbContext(options))
             {
                 var store = new PersistedGrantStore(context);
-                store.RemoveAsync(persistedGrant.SubjectId, persistedGrant.ClientId).Wait();
+                store.RemoveAllAsync(persistedGrant.SubjectId, persistedGrant.ClientId).Wait();
             }
 
             using (var context = new PersistedGrantDbContext(options))
@@ -158,7 +158,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             using (var context = new PersistedGrantDbContext(options))
             {
                 var store = new PersistedGrantStore(context);
-                store.RemoveAsync(persistedGrant.SubjectId, persistedGrant.ClientId, persistedGrant.Type).Wait();
+                store.RemoveAllAsync(persistedGrant.SubjectId, persistedGrant.ClientId, persistedGrant.Type).Wait();
             }
 
             using (var context = new PersistedGrantDbContext(options))

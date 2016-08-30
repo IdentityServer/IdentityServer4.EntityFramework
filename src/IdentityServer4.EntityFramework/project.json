@@ -5,7 +5,7 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",
-    "IdentityServer4": "1.0.0-rc1-build00269",
+    "IdentityServer4": "1.0.0-rc1-build00270",
     "Microsoft.EntityFrameworkCore": "1.0.0",
     "Microsoft.EntityFrameworkCore.Relational": "1.0.0",
     "AutoMapper": "5.1.1"

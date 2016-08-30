@@ -33,9 +33,9 @@ namespace IdentityServer4.EntityFramework.Stores
             return persistedGrant.ToModel();
         }
 
-        public async Task<IEnumerable<PersistedGrant>> GetAsync(string subjectId, string type)
+        public async Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
-            var persistedGrants = await context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.Type == type).ToListAsync();
+            var persistedGrants = await context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToListAsync();
             return persistedGrants.Select(x => x.ToModel());
         }
 
@@ -49,7 +49,7 @@ namespace IdentityServer4.EntityFramework.Stores
             }
         }
 
-        public async Task RemoveAsync(string subjectId, string clientId)
+        public async Task RemoveAllAsync(string subjectId, string clientId)
         {
             var persistedGrants =
                 await context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToListAsync();
@@ -58,7 +58,7 @@ namespace IdentityServer4.EntityFramework.Stores
             await context.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(string subjectId, string clientId, string type)
+        public async Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
             var persistedGrants = await context.PersistedGrants.Where(x =>
                 x.SubjectId == subjectId &&
