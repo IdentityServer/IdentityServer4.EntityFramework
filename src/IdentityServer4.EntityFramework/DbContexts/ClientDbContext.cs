@@ -15,9 +15,8 @@ namespace IdentityServer4.EntityFramework.DbContexts
         {
             modelBuilder.Entity<Client>(client =>
             {
-                client.ToTable(EfConstants.TableNames.Client);
+                client.ToTable(EfConstants.TableNames.Client).HasKey(x => x.Id);
 
-                client.HasKey(x => x.ClientId);
                 client.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientName).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientUri).HasMaxLength(2000);

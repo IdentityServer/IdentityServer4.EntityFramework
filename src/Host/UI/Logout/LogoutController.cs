@@ -26,7 +26,7 @@ namespace Host.UI.Logout
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Submit(string logoutId)
         {
-            await HttpContext.Authentication.SignOutAsync(Constants.DefaultCookieAuthenticationScheme);
+            await HttpContext.Authentication.SignOutAsync(IdentityServerConstants.DefaultCookieAuthenticationScheme);
 
             // set this so UI rendering sees an anonymous user
             HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());

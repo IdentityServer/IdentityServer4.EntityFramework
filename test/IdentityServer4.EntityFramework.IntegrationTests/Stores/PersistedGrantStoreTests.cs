@@ -10,15 +10,18 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class PersistedGrantStoreTests
+    public class PersistedGrantStoreTests : IClassFixture<DatabaseProviderFixture<PersistedGrantDbContext>>
     {
-        private readonly DbContextOptions<PersistedGrantDbContext> options;
-
-        public PersistedGrantStoreTests()
+        public static readonly TheoryData<DbContextOptions<PersistedGrantDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<PersistedGrantDbContext>>
         {
-            var builder = new DbContextOptionsBuilder<PersistedGrantDbContext>();
-            builder.UseInMemoryDatabase();
-            options = builder.Options;
+            DatabaseProviderBuilder.BuildInMemory<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests)),
+            DatabaseProviderBuilder.BuildSqlite<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests)),
+            DatabaseProviderBuilder.BuildSqlServer<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests))
+        };
+
+        public PersistedGrantStoreTests(DatabaseProviderFixture<PersistedGrantDbContext> fixture)
+        {
+            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<PersistedGrantDbContext>)y)).ToList();
         }
 
         private static PersistedGrant CreateTestObject()
@@ -26,7 +29,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             return new PersistedGrant
             {
                 Key = Guid.NewGuid().ToString(),
-                Type = Constants.PersistedGrantTypes.AuthorizationCode,
+                Type = "authorization_code",
                 ClientId = Guid.NewGuid().ToString(),
                 SubjectId = Guid.NewGuid().ToString(),
                 CreationTime = new DateTime(2016, 08, 01),
@@ -35,8 +38,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             };
         }
 
-        [Fact]
-        public void StoreAsync_WhenPersistedGrantStored_ExpectSuccess()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void StoreAsync_WhenPersistedGrantStored_ExpectSuccess(DbContextOptions options)
         {
             var persistedGrant = CreateTestObject();
 
@@ -53,8 +56,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             }
         }
 
-        [Fact]
-        public void GetAsync_WithKeyAndPersistedGrantExists_ExpectPersistedGrantReturned()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void GetAsync_WithKeyAndPersistedGrantExists_ExpectPersistedGrantReturned(DbContextOptions options)
         {
             var persistedGrant = CreateTestObject();
 
@@ -74,8 +77,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotNull(foundPersistedGrant);
         }
 
-        [Fact]
-        public void GetAsync_WithSubAndTypeAndPersistedGrantExists_ExpectPersistedGrantReturned()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void GetAsync_WithSubAndTypeAndPersistedGrantExists_ExpectPersistedGrantReturned(DbContextOptions options)
         {
             var persistedGrant = CreateTestObject();
 
@@ -96,8 +99,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotEmpty(foundPersistedGrants);
         }
 
-        [Fact]
-        public void RemoveAsync_WhenKeyOfExistingReceived_ExpectGrantDeleted()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void RemoveAsync_WhenKeyOfExistingReceived_ExpectGrantDeleted(DbContextOptions options)
         {
             var persistedGrant = CreateTestObject();
 
@@ -120,8 +123,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             }
         }
 
-        [Fact]
-        public void RemoveAsync_WhenSubIdAndClientIdOfExistingReceived_ExpectGrantDeleted()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void RemoveAsync_WhenSubIdAndClientIdOfExistingReceived_ExpectGrantDeleted(DbContextOptions options)
         {
             var persistedGrant = CreateTestObject();
 
@@ -144,8 +147,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             }
         }
 
-        [Fact]
-        public void RemoveAsync_WhenSubIdClientIdAndTypeOfExistingReceived_ExpectGrantDeleted()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void RemoveAsync_WhenSubIdClientIdAndTypeOfExistingReceived_ExpectGrantDeleted(DbContextOptions options)
         {
             var persistedGrant = CreateTestObject();
 

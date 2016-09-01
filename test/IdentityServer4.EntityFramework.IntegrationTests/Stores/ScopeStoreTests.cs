@@ -1,75 +1,85 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Models;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class ScopeStoreTests
+    public class ScopeStoreTests : IClassFixture<DatabaseProviderFixture<ScopeDbContext>>
     {
-        private readonly DbContextOptions<ScopeDbContext> options;
-
-        private readonly Scope testIdentityScope = StandardScopes.OpenId;
-
-        private readonly Scope testResourceScope = new Scope
+        public static readonly TheoryData<DbContextOptions<ScopeDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ScopeDbContext>>
         {
-            Name = "resource_scope",
-            Type = ScopeType.Resource,
-            ScopeSecrets = new List<Secret> {new Secret("secret".Sha512())}
+            DatabaseProviderBuilder.BuildInMemory<ScopeDbContext>(nameof(ScopeStoreTests)),
+            DatabaseProviderBuilder.BuildSqlite<ScopeDbContext>(nameof(ScopeStoreTests)),
+            DatabaseProviderBuilder.BuildSqlServer<ScopeDbContext>(nameof(ScopeStoreTests))
         };
-
-        public ScopeStoreTests()
+        
+        public ScopeStoreTests(DatabaseProviderFixture<ScopeDbContext> fixture)
         {
-            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
-            var connectionString = connectionStringBuilder.ToString();
-            var connection = new SqliteConnection(connectionString);
+            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ScopeDbContext>)y)).ToList();
+        }
 
-            var builder = new DbContextOptionsBuilder<ScopeDbContext>();
-            builder.UseSqlite(connection);
-            options = builder.Options;
+        private static Scope CreateTestObject()
+        {
+            return new Scope
+            {
+                Name = Guid.NewGuid().ToString(),
+                Type = ScopeType.Identity,
+                ShowInDiscoveryDocument = true,
+                ScopeSecrets = new List<Secret> {new Secret("secret".Sha256())},
+                Claims = new List<ScopeClaim>
+                {
+                    new ScopeClaim("name"),
+                    new ScopeClaim("role")
+                }
+            };
+        }
+
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindScopesAsync_WhenScopesExist_ExpectScopesReturned(DbContextOptions options)
+        {
+            var firstTestScope = CreateTestObject();
+            var secondTestScope = CreateTestObject();
 
             using (var context = new ScopeDbContext(options))
             {
-                // Create tables
-                context.Database.OpenConnection();
-                context.Database.EnsureCreated();
-
-                // Add test data
-                context.Scopes.Add(testIdentityScope.ToEntity());
-                context.Scopes.Add(testResourceScope.ToEntity());
-                context.Scopes.Add(new Entities.Scope {Name = "hidden_scope", ShowInDiscoveryDocument = false});
+                context.Scopes.Add(firstTestScope.ToEntity());
+                context.Scopes.Add(secondTestScope.ToEntity());
                 context.SaveChanges();
             }
-        }
 
-        [Fact]
-        public void FindScopesAsync_WhenScopesExist_ExpectScopesReturned()
-        {
             IList<Scope> scopes;
             using (var context = new ScopeDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.FindScopesAsync(new List<string>
                 {
-                    testIdentityScope.Name,
-                    testResourceScope.Name
+                    firstTestScope.Name,
+                    secondTestScope.Name
                 }).Result.ToList();
             }
 
             Assert.NotNull(scopes);
             Assert.NotEmpty(scopes);
-            Assert.NotNull(scopes.FirstOrDefault(x => x.Name == testIdentityScope.Name));
-            Assert.NotNull(scopes.FirstOrDefault(x => x.Name == testResourceScope.Name));
+            Assert.NotNull(scopes.FirstOrDefault(x => x.Name == firstTestScope.Name));
+            Assert.NotNull(scopes.FirstOrDefault(x => x.Name == secondTestScope.Name));
         }
 
-        [Fact]
-        public void GetScopesAsync_WhenAllScopesRequested_ExpectAllScopes()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void GetScopesAsync_WhenAllScopesRequested_ExpectAllScopes(DbContextOptions options)
         {
+            using (var context = new ScopeDbContext(options))
+            {
+                context.Scopes.Add(CreateTestObject().ToEntity());
+                context.Scopes.Add(new Entities.Scope { Name = "hidden_scope_return", ShowInDiscoveryDocument = false });
+                context.SaveChanges();
+            }
+
             IList<Scope> scopes;
             using (var context = new ScopeDbContext(options))
             {
@@ -83,9 +93,16 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.True(scopes.Any(x => !x.ShowInDiscoveryDocument));
         }
 
-        [Fact]
-        public void GetScopesAsync_WhenAllDiscoveryScopesRequested_ExpectAllDiscovryScopes()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void GetScopesAsync_WhenAllDiscoveryScopesRequested_ExpectAllDiscoveryScopes(DbContextOptions options)
         {
+            using (var context = new ScopeDbContext(options))
+            {
+                context.Scopes.Add(CreateTestObject().ToEntity());
+                context.Scopes.Add(new Entities.Scope { Name = "hidden_scope", ShowInDiscoveryDocument = false });
+                context.SaveChanges();
+            }
+
             IList<Scope> scopes;
             using (var context = new ScopeDbContext(options))
             {
@@ -99,16 +116,24 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.True(scopes.All(x => x.ShowInDiscoveryDocument));
         }
 
-        [Fact]
-        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned(DbContextOptions options)
         {
+            var scope = CreateTestObject();
+
+            using (var context = new ScopeDbContext(options))
+            {
+                context.Scopes.Add(scope.ToEntity());
+                context.SaveChanges();
+            }
+
             IList<Scope> scopes;
             using (var context = new ScopeDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.FindScopesAsync(new List<string>
                 {
-                    testResourceScope.Name
+                    scope.Name
                 }).Result.ToList();
             }
 
@@ -119,16 +144,24 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotEmpty(foundScope.ScopeSecrets);
         }
 
-        [Fact]
-        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned()
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned(DbContextOptions options)
         {
+            var scope = CreateTestObject();
+
+            using (var context = new ScopeDbContext(options))
+            {
+                context.Scopes.Add(scope.ToEntity());
+                context.SaveChanges();
+            }
+
             IList<Scope> scopes;
             using (var context = new ScopeDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.FindScopesAsync(new List<string>
                 {
-                    testIdentityScope.Name
+                    scope.Name
                 }).Result.ToList();
             }
 

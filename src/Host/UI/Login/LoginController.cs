@@ -90,7 +90,7 @@ namespace Host.UI.Login
             var ci = new ClaimsIdentity(claims, amr, JwtClaimTypes.Name, JwtClaimTypes.Role);
             var cp = new ClaimsPrincipal(ci);
 
-            await HttpContext.Authentication.SignInAsync(Constants.DefaultCookieAuthenticationScheme, cp);
+            await HttpContext.Authentication.SignInAsync(IdentityServerConstants.DefaultCookieAuthenticationScheme, cp);
         }
 
         [HttpGet("/ui/external/{provider}", Name = "External")]

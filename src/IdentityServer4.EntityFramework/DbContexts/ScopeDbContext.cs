@@ -30,7 +30,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
 
             modelBuilder.Entity<Scope>(scope =>
             {
-                scope.ToTable(EfConstants.TableNames.Scope).HasKey(x => x.Name);
+                scope.ToTable(EfConstants.TableNames.Scope).HasKey(x => x.Id);
                 scope.Property(x => x.Name).HasMaxLength(200).IsRequired();
                 scope.Property(x => x.DisplayName).HasMaxLength(200);
                 scope.Property(x => x.Description).HasMaxLength(1000);

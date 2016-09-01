@@ -1,47 +1,42 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+﻿using System.Linq;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.Stores;
-using Microsoft.Data.Sqlite;
+using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using Client = IdentityServer4.Models.Client;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class ClientStoreTests
+    public class ClientStoreTests : IClassFixture<DatabaseProviderFixture<ClientDbContext>>
     {
-        private readonly DbContextOptions<ClientDbContext> options;
-        private readonly Client testClient = new Client
+        public static readonly TheoryData<DbContextOptions<ClientDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ClientDbContext>>
         {
-            ClientId = "test_client",
-            ClientName = "Test Client"
+            DatabaseProviderBuilder.BuildInMemory<ClientDbContext>(nameof(ClientStoreTests)),
+            DatabaseProviderBuilder.BuildSqlite<ClientDbContext>(nameof(ClientStoreTests)),
+            DatabaseProviderBuilder.BuildSqlServer<ClientDbContext>(nameof(ClientStoreTests))
         };
 
-        public ClientStoreTests()
+        public ClientStoreTests(DatabaseProviderFixture<ClientDbContext> fixture)
         {
-            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
-            var connectionString = connectionStringBuilder.ToString();
-            var connection = new SqliteConnection(connectionString);
+            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ClientDbContext>)y)).ToList();
+        }
 
-            var builder = new DbContextOptionsBuilder<ClientDbContext>();
-            builder.UseSqlite(connection);
-            options = builder.Options;
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindClientByIdAsync_WhenClientExists_ExpectClientRetured(DbContextOptions options)
+        {
+            var testClient = new Client
+            {
+                ClientId = "test_client",
+                ClientName = "Test Client"
+            };
 
             using (var context = new ClientDbContext(options))
             {
-                // Create tables
-                context.Database.OpenConnection();
-                context.Database.EnsureCreated();
-
-                // Add test data
                 context.Clients.Add(testClient.ToEntity());
                 context.SaveChanges();
             }
-        }
 
-        [Fact]
-        public void FindClientByIdAsync_WhenClientExists_ExpectClientRetured()
-        {
             Client client;
             using (var context = new ClientDbContext(options))
             {
