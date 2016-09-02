@@ -1,19 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Host.Configuration;
-using Host.Extensions;
-using Host.UI.Login;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.Stores;
-using IdentityServer4.Quickstart;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog.Events;
 
 namespace Host
 {
@@ -23,73 +18,40 @@ namespace Host
         {
             const string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=Test.IdentityServer4.EntityFramework;Integrated Security=true";
 
-            var builder = services.AddIdentityServer(options =>
-                {
-                    options.UserInteractionOptions.LoginUrl = "/ui/login";
-                    options.UserInteractionOptions.LogoutUrl = "/ui/logout";
-                    options.UserInteractionOptions.ConsentUrl = "/ui/consent";
-                    options.UserInteractionOptions.ErrorUrl = "/ui/error";
-                })
-                .SetTemporarySigningCredential()
-                .AddInMemoryStores()
-                .AddInMemoryScopes(Scopes.Get());
+            services.AddMvc();
 
-            // UI service for in-memory users
-            services.AddSingleton(new InMemoryUserLoginService(Users.Get()));
-            builder.AddResourceOwnerValidator<InMemoryUserResourceOwnerPasswordValidator>();
+            services.AddIdentityServer()
+                .SetTemporarySigningCredential()
+                .AddInMemoryUsers(Users.Get());
 
             services.AddDbContext<ClientDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
             services.AddTransient<IClientStore, ClientStore>();
 
             services.AddDbContext<ScopeDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
+            services.AddTransient<IScopeStore, ScopeStore>();
 
-
-            builder.AddExtensionGrantValidator<ExtensionGrantValidator>();
-
-            services
-                .AddMvc()
-                .AddRazorOptions(razor =>
-                {
-                    razor.ViewLocationExpanders.Add(new UI.CustomViewLocationExpander());
-                });
+            services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
+            services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            // serilog filter
-            Func<LogEvent, bool> serilogFilter = e =>
-            {
-                var context = e.Properties["SourceContext"].ToString();
-
-                return context.StartsWith("\"IdentityServer") ||
-                       context.StartsWith("\"IdentityModel") ||
-                       (e.Level == LogEventLevel.Error) ||
-                       (e.Level == LogEventLevel.Fatal);
-            };
-
-            // built-in logging filter
-            Func<string, LogLevel, bool> filter = (scope, level) =>
-                scope.StartsWith("IdentityServer") ||
-                scope.StartsWith("IdentityModel") ||
-                (level == LogLevel.Error) ||
-                (level == LogLevel.Critical);
-
-            loggerFactory.AddConsole(filter);
-            loggerFactory.AddDebug(filter);
-
+            loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
             app.UseDeveloperExceptionPage();
-
+            
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetService<ClientDbContext>().Database.Migrate();
                 serviceScope.ServiceProvider.GetService<ScopeDbContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<ClientDbContext>());
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<ScopeDbContext>());
             }
 
             app.UseIdentityServer();
-
+            
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }

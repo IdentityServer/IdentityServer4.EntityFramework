@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.EntityFramework.Interfaces;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
@@ -12,9 +12,9 @@ namespace IdentityServer4.EntityFramework.Stores
 {
     public class ScopeStore : IScopeStore
     {
-        private readonly IScopeDbContext context;
+        private readonly ScopeDbContext context;
 
-        public ScopeStore(IScopeDbContext context)
+        public ScopeStore(ScopeDbContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             this.context = context;
