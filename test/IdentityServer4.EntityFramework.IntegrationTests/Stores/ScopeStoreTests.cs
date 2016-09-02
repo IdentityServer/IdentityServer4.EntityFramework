@@ -41,7 +41,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindScopesAsync_WhenScopesExist_ExpectScopesReturned(DbContextOptions options)
+        public void FindScopesAsync_WhenScopesExist_ExpectScopesReturned(DbContextOptions<ScopeDbContext> options)
         {
             var firstTestScope = CreateTestObject();
             var secondTestScope = CreateTestObject();
@@ -71,7 +71,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void GetScopesAsync_WhenAllScopesRequested_ExpectAllScopes(DbContextOptions options)
+        public void GetScopesAsync_WhenAllScopesRequested_ExpectAllScopes(DbContextOptions<ScopeDbContext> options)
         {
             using (var context = new ScopeDbContext(options))
             {
@@ -94,7 +94,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void GetScopesAsync_WhenAllDiscoveryScopesRequested_ExpectAllDiscoveryScopes(DbContextOptions options)
+        public void GetScopesAsync_WhenAllDiscoveryScopesRequested_ExpectAllDiscoveryScopes(DbContextOptions<ScopeDbContext> options)
         {
             using (var context = new ScopeDbContext(options))
             {
@@ -117,7 +117,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned(DbContextOptions options)
+        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned(DbContextOptions<ScopeDbContext> options)
         {
             var scope = CreateTestObject();
 
@@ -145,7 +145,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned(DbContextOptions options)
+        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned(DbContextOptions<ScopeDbContext> options)
         {
             var scope = CreateTestObject();
 

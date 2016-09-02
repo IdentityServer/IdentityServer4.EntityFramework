@@ -23,7 +23,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindClientByIdAsync_WhenClientExists_ExpectClientRetured(DbContextOptions options)
+        public void FindClientByIdAsync_WhenClientExists_ExpectClientRetured(DbContextOptions<ClientDbContext> options)
         {
             var testClient = new Client
             {

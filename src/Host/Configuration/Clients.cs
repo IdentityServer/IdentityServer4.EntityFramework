@@ -15,6 +15,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client",
+                    ClientName = "client",
                     ClientSecrets = new List<Secret>
                     {
                         new Secret("secret".Sha256())
@@ -34,6 +35,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client.custom",
+                    ClientName = "client.custom",
                     ClientSecrets = new List<Secret>
                     {
                         new Secret("secret".Sha256())
@@ -53,6 +55,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient",
+                    ClientName = "roclient",
                     ClientSecrets = new List<Secret>
                     {
                         new Secret("secret".Sha256())
@@ -76,6 +79,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient.public",
+                    ClientName = "roclient.public",
                     RequireClientSecret = false,
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
@@ -125,6 +129,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient.reference",
+                    ClientName = "roclient.reference",
                     ClientSecrets = new List<Secret>
                     {
                         new Secret("secret".Sha256())

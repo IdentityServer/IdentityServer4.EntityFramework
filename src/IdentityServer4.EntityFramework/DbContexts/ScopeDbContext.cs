@@ -7,7 +7,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
 {
     public class ScopeDbContext : DbContext, IScopeDbContext
     {
-        public ScopeDbContext(DbContextOptions options) : base(options) { }
+        public ScopeDbContext(DbContextOptions<ScopeDbContext> options) : base(options) { }
 
         public DbSet<Scope> Scopes { get; set; }
 

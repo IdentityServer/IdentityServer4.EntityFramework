@@ -7,7 +7,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
 {
     public class ClientDbContext : DbContext, IClientDbContext
     {
-        public ClientDbContext(DbContextOptions options) : base(options) { }
+        public ClientDbContext(DbContextOptions<ClientDbContext> options) : base(options) { }
 
         public DbSet<Client> Clients { get; set; }
 

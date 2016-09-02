@@ -25,7 +25,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void IsOriginAllowedAsync_WhenOriginIsAllowed_ExpectTrue(DbContextOptions options)
+        public void IsOriginAllowedAsync_WhenOriginIsAllowed_ExpectTrue(DbContextOptions<ClientDbContext> options)
         {
             const string testCorsOrigin = "https://identityserver.io/";
 
@@ -57,7 +57,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void IsOriginAllowedAsync_WhenOriginIsNotAllowed_ExpectFalse(DbContextOptions options)
+        public void IsOriginAllowedAsync_WhenOriginIsNotAllowed_ExpectFalse(DbContextOptions<ClientDbContext> options)
         {
             using (var context = new ClientDbContext(options))
             {
