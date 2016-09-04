@@ -35,8 +35,8 @@ namespace IdentityServer4.EntityFramework.DbContexts
                 scope.Property(x => x.DisplayName).HasMaxLength(200);
                 scope.Property(x => x.Description).HasMaxLength(1000);
                 scope.Property(x => x.ClaimsRule).HasMaxLength(200);
-                scope.HasMany(x => x.Claims).WithOne(x => x.Scope).OnDelete(DeleteBehavior.Cascade);
-                scope.HasMany(x => x.ScopeSecrets).WithOne(x => x.Scope).OnDelete(DeleteBehavior.Cascade);
+                scope.HasMany(x => x.Claims).WithOne(x => x.Scope).IsRequired().OnDelete(DeleteBehavior.Cascade);
+                scope.HasMany(x => x.ScopeSecrets).WithOne(x => x.Scope).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });
 
             base.OnModelCreating(modelBuilder);
