@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using Host.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.EntityFramework.Stores;
-using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +21,13 @@ namespace Host
 
             services.AddIdentityServer()
                 .SetTemporarySigningCredential()
-                .AddInMemoryUsers(Users.Get());
+                .AddInMemoryUsers(Users.Get())
+                .AddEntityFrameworkStores()
+                .AddEntityFrameworkGrantStore();
 
             services.AddDbContext<ClientDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
-            services.AddTransient<IClientStore, ClientStore>();
-
             services.AddDbContext<ScopeDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
-            services.AddTransient<IScopeStore, ScopeStore>();
-
             services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
-            services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -56,7 +52,7 @@ namespace Host
             app.UseMvcWithDefaultRoute();
         }
 
-        public static void EnsureSeedData(ClientDbContext context)
+        private static void EnsureSeedData(ClientDbContext context)
         {
             if (!context.Clients.Any())
             {
@@ -68,7 +64,7 @@ namespace Host
             }
         }
 
-        public static void EnsureSeedData(ScopeDbContext context)
+        private static void EnsureSeedData(ScopeDbContext context)
         {
             if (!context.Scopes.Any())
             {

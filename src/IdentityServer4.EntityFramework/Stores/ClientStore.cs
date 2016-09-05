@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
@@ -11,9 +10,9 @@ namespace IdentityServer4.EntityFramework.Stores
 {
     public class ClientStore : IClientStore
     {
-        private readonly ClientDbContext context;
+        private readonly IClientDbContext context;
 
-        public ClientStore(ClientDbContext context)
+        public ClientStore(IClientDbContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             this.context = context;
