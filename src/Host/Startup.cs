@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using System.Reflection;
 using Host.Configuration;
+using IdentityServer4.EntityFramework;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Mappers;
@@ -25,9 +27,9 @@ namespace Host
                 .AddEntityFrameworkStores()
                 .AddEntityFrameworkGrantStore();
 
-            services.AddDbContext<ClientDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
-            services.AddDbContext<ScopeDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
-            services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly("Host")));
+            services.AddDbContext<ClientDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(Assembly.GetEntryAssembly().GetName().Name)));
+            services.AddDbContext<ScopeDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(Assembly.GetEntryAssembly().GetName().Name)));
+            services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(Assembly.GetEntryAssembly().GetName().Name)));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -44,6 +46,11 @@ namespace Host
                 serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<ClientDbContext>());
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<ScopeDbContext>());
+
+                //var dbContextOptions = app.ApplicationServices.GetRequiredService<DbContextOptions<PersistedGrantDbContext>>();
+                var options = serviceScope.ServiceProvider.GetService<DbContextOptions<PersistedGrantDbContext>>();
+                var tokenCleanup = new TokenCleanup(options);
+                tokenCleanup.Start();
             }
 
             app.UseIdentityServer();
