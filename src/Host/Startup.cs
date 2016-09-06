@@ -17,8 +17,8 @@ namespace Host
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            const string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=Test.IdentityServer4.EntityFramework;Integrated Security=true";
-
+            const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework;trusted_connection=yes;";
+            
             services.AddMvc();
 
             services.AddIdentityServer()

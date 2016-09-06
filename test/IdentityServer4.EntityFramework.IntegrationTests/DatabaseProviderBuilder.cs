@@ -41,7 +41,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
         {
             var builder = new DbContextOptionsBuilder<T>();
             builder.UseSqlServer(
-                $@"Data Source=.\SQLEXPRESS;Initial Catalog=Test.IdentityServer4.EntityFramework.{name};Integrated Security=true");
+                $@"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework.{name};trusted_connection=yes;");
             var options = builder.Options;
 
             using (var context = (T)Activator.CreateInstance(typeof(T), options))
