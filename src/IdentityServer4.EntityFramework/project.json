@@ -1,11 +1,18 @@
 {
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-rc1-*",
   "authors": [ "Brock Allen", "Dominick Baier", "Scott Brady" ],
   "description": "EntityFramework persistence layer for IdentityServer4",
 
+  "packOptions": {
+    "tags": [ "OAuth2", "OAuth 2.0", "OpenID Connect", "Security", "Identity", "IdentityServer", "EntityFramework" ],
+    "projectUrl": "https://github.com/IdentityServer/IdentityServer4.EntityFramework",
+    "licenseUrl": "https://github.com/IdentityServer/IdentityServer4.EntityFramework/LICENSE",
+    "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg"
+  },
+
   "dependencies": {
     "NETStandard.Library": "1.6.0",
-    "IdentityServer4": "1.0.0-rc1-build00306",
+    "IdentityServer4": "1.0.0-rc1",
     "Microsoft.EntityFrameworkCore": "1.0.0",
     "Microsoft.EntityFrameworkCore.Relational": "1.0.0",
     "AutoMapper": "5.1.1"
