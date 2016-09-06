@@ -18,7 +18,7 @@ namespace IdentityServer4.EntityFramework.Extensions
 
         public static IIdentityServerBuilder AddEntityFrameworkGrantStore(this IIdentityServerBuilder builder)
         {
-            builder.Services.AddTransient<IPersistedGrantDbContext, PersistedGrantDbContext>();
+            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
             
             return builder;
@@ -26,7 +26,7 @@ namespace IdentityServer4.EntityFramework.Extensions
 
         public static IIdentityServerBuilder AddEntityFrameworkClientStore(this IIdentityServerBuilder builder)
         {
-            builder.Services.AddTransient<IClientDbContext, ClientDbContext>();
+            builder.Services.AddScoped<IClientDbContext, ClientDbContext>();
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IScopeStore, ScopeStore>();
 
@@ -35,7 +35,7 @@ namespace IdentityServer4.EntityFramework.Extensions
 
         public static IIdentityServerBuilder AddEntityFrameworkScopeStore(this IIdentityServerBuilder builder)
         {
-            builder.Services.AddTransient<IScopeDbContext, ScopeDbContext>();
+            builder.Services.AddScoped<IScopeDbContext, ScopeDbContext>();
             builder.Services.AddTransient<IScopeStore, ScopeStore>();
 
             return builder;
