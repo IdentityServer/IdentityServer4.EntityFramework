@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{211A5E6F-1713-40FF-A29B-A991C9CBA3EC}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		IdentityServer4.EntityFramework.licenseheader = IdentityServer4.EntityFramework.licenseheader
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.EntityFramework.IntegrationTests", "test\IdentityServer4.EntityFramework.IntegrationTests\IdentityServer4.EntityFramework.IntegrationTests.xproj", "{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}"
