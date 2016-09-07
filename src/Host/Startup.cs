@@ -22,7 +22,7 @@ namespace Host
             services.AddMvc();
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            
+
             services.AddIdentityServer()
                 .SetTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())

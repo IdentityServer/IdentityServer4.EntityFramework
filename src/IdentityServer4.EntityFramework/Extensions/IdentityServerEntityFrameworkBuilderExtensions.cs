@@ -5,12 +5,11 @@ using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace IdentityServer4.EntityFramework.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IdentityServerBuilderExtensions
+    public static class IdentityServerEntityFrameworkBuilderExtensions
     {
         public static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
