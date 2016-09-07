@@ -1,5 +1,4 @@
 ﻿using IdentityServer4.EntityFramework.Entities;
-using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -90,7 +89,6 @@ namespace IdentityServer4.EntityFramework.Extensions
                 grant.Property(x => x.CreationTime).IsRequired();
                 grant.Property(x => x.Expiration).IsRequired();
                 grant.Property(x => x.Data).IsRequired();
-
             });
         }
 

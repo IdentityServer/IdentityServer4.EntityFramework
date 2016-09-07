@@ -3,7 +3,7 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",
-    "IdentityServer4.EntityFramework": "1.0.0-beta1",
+    "IdentityServer4.EntityFramework": "1.0.0-rc1",
     "Microsoft.EntityFrameworkCore.InMemory": "1.0.0",
     "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
