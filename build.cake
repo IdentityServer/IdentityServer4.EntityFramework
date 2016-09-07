@@ -22,6 +22,7 @@ Task("Build")
         var settings = new DotNetCoreBuildSettings 
         {
             Configuration = configuration
+            // Runtime = IsRunningOnWindows() ? null : "unix-x64"
         };
 
 	    DotNetCoreBuild(project.GetDirectory().FullPath, settings); 
@@ -81,12 +82,12 @@ Task("Restore")
     };
 
     DotNetCoreRestore(sourcePath, settings);
-    //DotNetCoreRestore(testsPath, settings);
+    DotNetCoreRestore(testsPath, settings);
 });
 
 Task("Default")
   .IsDependentOn("Build")
-//  .IsDependentOn("RunTests")
+  .IsDependentOn("RunTests")
   .IsDependentOn("Pack");
 
 RunTarget(target);
