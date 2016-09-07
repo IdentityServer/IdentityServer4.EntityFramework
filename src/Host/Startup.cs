@@ -21,14 +21,19 @@ namespace Host
             
             services.AddMvc();
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            
             services.AddIdentityServer()
                 .SetTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
-                .AddEntityFrameworkStores()
-                .AddEntityFrameworkGrantStore();
 
-            services.AddDbContext<ConfigurationDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name)));
-            services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name)));
+                .AddConfigurationStore(builder =>
+                    builder.UseSqlServer(connectionString, 
+                        options => options.MigrationsAssembly(migrationsAssembly)))
+
+                .AddOperationalStore(builder => 
+                    builder.UseSqlServer(connectionString, 
+                        options => options.MigrationsAssembly(migrationsAssembly)));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

@@ -89,8 +89,9 @@ namespace IdentityServer4.EntityFramework
                     await context.SaveChangesAsync();
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
+                // TODO
                 //Logger.ErrorException("Exception cleaning tokens", exception);
             }
         }
