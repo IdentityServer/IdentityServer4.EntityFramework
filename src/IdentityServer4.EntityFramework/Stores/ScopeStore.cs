@@ -12,9 +12,9 @@ namespace IdentityServer4.EntityFramework.Stores
 {
     public class ScopeStore : IScopeStore
     {
-        private readonly IScopeDbContext context;
+        private readonly IConfigurationDbContext context;
 
-        public ScopeStore(IScopeDbContext context)
+        public ScopeStore(IConfigurationDbContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             this.context = context;

@@ -7,11 +7,10 @@ using IdentityServer4.EntityFramework.DbContexts;
 
 namespace Host.Migrations
 {
-    [DbContext(typeof(ClientDbContext))]
-    [Migration("20160902152332_ClientTest")]
-    partial class ClientTest
+    [DbContext(typeof(ConfigurationDbContext))]
+    partial class ConfigurationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
@@ -93,7 +92,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -115,7 +115,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("Origin")
                         .IsRequired()
@@ -133,7 +134,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("GrantType")
                         .IsRequired()
@@ -151,7 +153,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("Provider")
                         .IsRequired()
@@ -169,7 +172,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("PostLogoutRedirectUri")
                         .IsRequired()
@@ -187,7 +191,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("RedirectUri")
                         .IsRequired()
@@ -205,7 +210,8 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("Scope")
                         .IsRequired()
@@ -223,12 +229,13 @@ namespace Host.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ClientId");
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
 
                     b.Property<string>("Description")
                         .HasAnnotation("MaxLength", 2000);
 
-                    b.Property<DateTimeOffset?>("Expiration");
+                    b.Property<DateTime?>("Expiration");
 
                     b.Property<string>("Type")
                         .HasAnnotation("MaxLength", 250);
@@ -242,6 +249,93 @@ namespace Host.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("ClientSecrets");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.Scope", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AllowUnrestrictedIntrospection");
+
+                    b.Property<string>("ClaimsRule")
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<string>("DisplayName")
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.Property<bool>("Emphasize");
+
+                    b.Property<bool>("Enabled");
+
+                    b.Property<bool>("IncludeAllClaimsForUser");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.Property<bool>("Required");
+
+                    b.Property<bool>("ShowInDiscoveryDocument");
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Scopes");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AlwaysIncludeInIdToken");
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.Property<int?>("ScopeId")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScopeId");
+
+                    b.ToTable("ScopeClaims");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeSecret", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<DateTime?>("Expiration");
+
+                    b.Property<int?>("ScopeId")
+                        .IsRequired();
+
+                    b.Property<string>("Type")
+                        .HasAnnotation("MaxLength", 250);
+
+                    b.Property<string>("Value")
+                        .HasAnnotation("MaxLength", 250);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScopeId");
+
+                    b.ToTable("ScopeSecrets");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ClientClaim", b =>
@@ -305,6 +399,22 @@ namespace Host.Migrations
                     b.HasOne("IdentityServer4.EntityFramework.Entities.Client", "Client")
                         .WithMany("ClientSecrets")
                         .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeClaim", b =>
+                {
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.Scope", "Scope")
+                        .WithMany("Claims")
+                        .HasForeignKey("ScopeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeSecret", b =>
+                {
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.Scope", "Scope")
+                        .WithMany("ScopeSecrets")
+                        .HasForeignKey("ScopeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

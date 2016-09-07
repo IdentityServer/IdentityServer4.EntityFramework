@@ -8,7 +8,7 @@
             public const string ScopeClaim = "ScopeClaims";
             public const string ScopeSecrets = "ScopeSecrets";
 
-            public const string PersistedGrant = "PersistedGrant";
+            public const string PersistedGrant = "PersistedGrants";
             
             public const string Client = "Clients";
             public const string ClientGrantType = "ClientGrantTypes";

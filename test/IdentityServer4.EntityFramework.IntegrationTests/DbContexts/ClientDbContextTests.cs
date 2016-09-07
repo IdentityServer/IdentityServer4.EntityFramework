@@ -6,24 +6,24 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
 {
-    public class ClientDbContextTests : IClassFixture<DatabaseProviderFixture<ClientDbContext>>
+    public class ClientDbContextTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
     {
-        public static readonly TheoryData<DbContextOptions<ClientDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ClientDbContext>>
+        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
         {
-            DatabaseProviderBuilder.BuildInMemory<ClientDbContext>(nameof(ClientDbContextTests)),
-            DatabaseProviderBuilder.BuildSqlite<ClientDbContext>(nameof(ClientDbContextTests)),
-            DatabaseProviderBuilder.BuildSqlServer<ClientDbContext>(nameof(ClientDbContextTests))
+            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientDbContextTests)),
+            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientDbContextTests)),
+            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ClientDbContextTests))
         };
 
-        public ClientDbContextTests(DatabaseProviderFixture<ClientDbContext> fixture)
+        public ClientDbContextTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
         {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ClientDbContext>)y)).ToList();
+            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void CanAddAndDeleteClientScopes(DbContextOptions<ClientDbContext> options)
+        public void CanAddAndDeleteClientScopes(DbContextOptions<ConfigurationDbContext> options)
         {
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 db.Clients.Add(new Client
                 {
@@ -34,7 +34,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
                 db.SaveChanges();
             }
 
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 // explicit include due to lack of EF Core lazy loading
                 var client = db.Clients.Include(x => x.AllowedScopes).First();
@@ -47,7 +47,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
                 db.SaveChanges();
             }
 
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 var client = db.Clients.Include(x => x.AllowedScopes).First();
                 var scope = client.AllowedScopes.First();
@@ -57,7 +57,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
                 db.SaveChanges();
             }
 
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 var client = db.Clients.Include(x => x.AllowedScopes).First();
 
@@ -66,9 +66,9 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void CanAddAndDeleteClientRedirectUri(DbContextOptions<ClientDbContext> options)
+        public void CanAddAndDeleteClientRedirectUri(DbContextOptions<ConfigurationDbContext> options)
         {
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 db.Clients.Add(new Client
                 {
@@ -79,7 +79,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
                 db.SaveChanges();
             }
 
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 var client = db.Clients.Include(x => x.RedirectUris).First();
 
@@ -91,7 +91,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
                 db.SaveChanges();
             }
 
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 var client = db.Clients.Include(x => x.RedirectUris).First();
                 var redirectUri = client.RedirectUris.First();
@@ -101,7 +101,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
                 db.SaveChanges();
             }
 
-            using (var db = new ClientDbContext(options))
+            using (var db = new ConfigurationDbContext(options))
             {
                 var client = db.Clients.Include(x => x.RedirectUris).First();
 

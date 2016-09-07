@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Host.Migrations
 {
-    public partial class ClientTest : Migration
+    public partial class Configuration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,12 +50,35 @@ namespace Host.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Scopes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AllowUnrestrictedIntrospection = table.Column<bool>(nullable: false),
+                    ClaimsRule = table.Column<string>(maxLength: 200, nullable: true),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    DisplayName = table.Column<string>(maxLength: 200, nullable: true),
+                    Emphasize = table.Column<bool>(nullable: false),
+                    Enabled = table.Column<bool>(nullable: false),
+                    IncludeAllClaimsForUser = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    Required = table.Column<bool>(nullable: false),
+                    ShowInDiscoveryDocument = table.Column<bool>(nullable: false),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Scopes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ClientClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     Type = table.Column<string>(maxLength: 250, nullable: false),
                     Value = table.Column<string>(maxLength: 250, nullable: false)
                 },
@@ -76,7 +99,7 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     Origin = table.Column<string>(maxLength: 150, nullable: false)
                 },
                 constraints: table =>
@@ -96,7 +119,7 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     GrantType = table.Column<string>(maxLength: 250, nullable: false)
                 },
                 constraints: table =>
@@ -116,7 +139,7 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     Provider = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -136,7 +159,7 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     PostLogoutRedirectUri = table.Column<string>(maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
@@ -156,7 +179,7 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     RedirectUri = table.Column<string>(maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
@@ -176,7 +199,7 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     Scope = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -196,9 +219,9 @@ namespace Host.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientId = table.Column<int>(nullable: true),
+                    ClientId = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
-                    Expiration = table.Column<DateTimeOffset>(nullable: true),
+                    Expiration = table.Column<DateTime>(nullable: true),
                     Type = table.Column<string>(maxLength: 250, nullable: true),
                     Value = table.Column<string>(maxLength: 250, nullable: false)
                 },
@@ -209,6 +232,51 @@ namespace Host.Migrations
                         name: "FK_ClientSecrets_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScopeClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    ScopeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScopeClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScopeClaims_Scopes_ScopeId",
+                        column: x => x.ScopeId,
+                        principalTable: "Scopes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScopeSecrets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    Expiration = table.Column<DateTime>(nullable: true),
+                    ScopeId = table.Column<int>(nullable: false),
+                    Type = table.Column<string>(maxLength: 250, nullable: true),
+                    Value = table.Column<string>(maxLength: 250, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScopeSecrets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScopeSecrets_Scopes_ScopeId",
+                        column: x => x.ScopeId,
+                        principalTable: "Scopes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -252,6 +320,16 @@ namespace Host.Migrations
                 name: "IX_ClientSecrets_ClientId",
                 table: "ClientSecrets",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScopeClaims_ScopeId",
+                table: "ScopeClaims",
+                column: "ScopeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScopeSecrets_ScopeId",
+                table: "ScopeSecrets",
+                column: "ScopeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -281,7 +359,16 @@ namespace Host.Migrations
                 name: "ClientSecrets");
 
             migrationBuilder.DropTable(
+                name: "ScopeClaims");
+
+            migrationBuilder.DropTable(
+                name: "ScopeSecrets");
+
+            migrationBuilder.DropTable(
                 name: "Clients");
+
+            migrationBuilder.DropTable(
+                name: "Scopes");
         }
     }
 }

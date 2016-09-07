@@ -8,8 +8,8 @@ using IdentityServer4.EntityFramework.DbContexts;
 namespace Host.Migrations.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20160902152513_PersistedGrantTest")]
-    partial class PersistedGrantTest
+    [Migration("20160907142354_PersistedGrant")]
+    partial class PersistedGrant
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

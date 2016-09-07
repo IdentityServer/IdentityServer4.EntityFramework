@@ -27,9 +27,8 @@ namespace Host
                 .AddEntityFrameworkStores()
                 .AddEntityFrameworkGrantStore();
 
-            services.AddDbContext<ClientDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(Assembly.GetEntryAssembly().GetName().Name)));
-            services.AddDbContext<ScopeDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(Assembly.GetEntryAssembly().GetName().Name)));
-            services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(Assembly.GetEntryAssembly().GetName().Name)));
+            services.AddDbContext<ConfigurationDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name)));
+            services.AddDbContext<PersistedGrantDbContext>(options => options.UseSqlServer(connectionString, x => x.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name)));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -41,11 +40,9 @@ namespace Host
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                serviceScope.ServiceProvider.GetService<ClientDbContext>().Database.Migrate();
-                serviceScope.ServiceProvider.GetService<ScopeDbContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetService<ConfigurationDbContext>().Database.Migrate();
                 serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
-                EnsureSeedData(serviceScope.ServiceProvider.GetService<ClientDbContext>());
-                EnsureSeedData(serviceScope.ServiceProvider.GetService<ScopeDbContext>());
+                EnsureSeedData(serviceScope.ServiceProvider.GetService<ConfigurationDbContext>());
 
                 //var dbContextOptions = app.ApplicationServices.GetRequiredService<DbContextOptions<PersistedGrantDbContext>>();
                 var options = serviceScope.ServiceProvider.GetService<DbContextOptions<PersistedGrantDbContext>>();
@@ -59,7 +56,7 @@ namespace Host
             app.UseMvcWithDefaultRoute();
         }
 
-        private static void EnsureSeedData(ClientDbContext context)
+        private static void EnsureSeedData(ConfigurationDbContext context)
         {
             if (!context.Clients.Any())
             {
@@ -69,10 +66,7 @@ namespace Host
                 }
                 context.SaveChanges();
             }
-        }
 
-        private static void EnsureSeedData(ScopeDbContext context)
-        {
             if (!context.Scopes.Any())
             {
                 foreach (var client in Scopes.Get().ToList())

@@ -10,9 +10,9 @@ namespace IdentityServer4.EntityFramework.Stores
 {
     public class ClientStore : IClientStore
     {
-        private readonly IClientDbContext context;
+        private readonly IConfigurationDbContext context;
 
-        public ClientStore(IClientDbContext context)
+        public ClientStore(IConfigurationDbContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             this.context = context;

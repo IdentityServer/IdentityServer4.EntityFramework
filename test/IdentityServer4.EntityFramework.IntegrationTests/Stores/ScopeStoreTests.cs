@@ -10,18 +10,18 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class ScopeStoreTests : IClassFixture<DatabaseProviderFixture<ScopeDbContext>>
+    public class ScopeStoreTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
     {
-        public static readonly TheoryData<DbContextOptions<ScopeDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ScopeDbContext>>
+        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
         {
-            DatabaseProviderBuilder.BuildInMemory<ScopeDbContext>(nameof(ScopeStoreTests)),
-            DatabaseProviderBuilder.BuildSqlite<ScopeDbContext>(nameof(ScopeStoreTests)),
-            DatabaseProviderBuilder.BuildSqlServer<ScopeDbContext>(nameof(ScopeStoreTests))
+            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ScopeStoreTests)),
+            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ScopeStoreTests)),
+            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ScopeStoreTests))
         };
         
-        public ScopeStoreTests(DatabaseProviderFixture<ScopeDbContext> fixture)
+        public ScopeStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
         {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ScopeDbContext>)y)).ToList();
+            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
         }
 
         private static Scope CreateTestObject()
@@ -41,12 +41,12 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindScopesAsync_WhenScopesExist_ExpectScopesReturned(DbContextOptions<ScopeDbContext> options)
+        public void FindScopesAsync_WhenScopesExist_ExpectScopesReturned(DbContextOptions<ConfigurationDbContext> options)
         {
             var firstTestScope = CreateTestObject();
             var secondTestScope = CreateTestObject();
 
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 context.Scopes.Add(firstTestScope.ToEntity());
                 context.Scopes.Add(secondTestScope.ToEntity());
@@ -54,7 +54,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             }
 
             IList<Scope> scopes;
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.FindScopesAsync(new List<string>
@@ -71,9 +71,9 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void GetScopesAsync_WhenAllScopesRequested_ExpectAllScopes(DbContextOptions<ScopeDbContext> options)
+        public void GetScopesAsync_WhenAllScopesRequested_ExpectAllScopes(DbContextOptions<ConfigurationDbContext> options)
         {
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 context.Scopes.Add(CreateTestObject().ToEntity());
                 context.Scopes.Add(new Entities.Scope { Name = "hidden_scope_return", ShowInDiscoveryDocument = false });
@@ -81,7 +81,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             }
 
             IList<Scope> scopes;
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.GetScopesAsync(false).Result.ToList();
@@ -94,9 +94,9 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void GetScopesAsync_WhenAllDiscoveryScopesRequested_ExpectAllDiscoveryScopes(DbContextOptions<ScopeDbContext> options)
+        public void GetScopesAsync_WhenAllDiscoveryScopesRequested_ExpectAllDiscoveryScopes(DbContextOptions<ConfigurationDbContext> options)
         {
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 context.Scopes.Add(CreateTestObject().ToEntity());
                 context.Scopes.Add(new Entities.Scope { Name = "hidden_scope", ShowInDiscoveryDocument = false });
@@ -104,7 +104,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             }
 
             IList<Scope> scopes;
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.GetScopesAsync().Result.ToList();
@@ -117,18 +117,18 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned(DbContextOptions<ScopeDbContext> options)
+        public void FindScopesAsync_WhenScopeHasSecrets_ExpectScopeAndSecretsReturned(DbContextOptions<ConfigurationDbContext> options)
         {
             var scope = CreateTestObject();
 
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 context.Scopes.Add(scope.ToEntity());
                 context.SaveChanges();
             }
 
             IList<Scope> scopes;
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.FindScopesAsync(new List<string>
@@ -145,18 +145,18 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned(DbContextOptions<ScopeDbContext> options)
+        public void FindScopesAsync_WhenScopeHasClaims_ExpectScopeAndClaimsReturned(DbContextOptions<ConfigurationDbContext> options)
         {
             var scope = CreateTestObject();
 
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 context.Scopes.Add(scope.ToEntity());
                 context.SaveChanges();
             }
 
             IList<Scope> scopes;
-            using (var context = new ScopeDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 var store = new ScopeStore(context);
                 scopes = store.FindScopesAsync(new List<string>

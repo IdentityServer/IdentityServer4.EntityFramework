@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.EntityFramework.Interfaces;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.Services;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer4.EntityFramework.Services
 {
     public class CorsPolicyService : ICorsPolicyService
     {
-        private readonly IClientDbContext context;
+        private readonly ConfigurationDbContext context;
 
-        public CorsPolicyService(IClientDbContext context)
+        public CorsPolicyService(ConfigurationDbContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             this.context = context;

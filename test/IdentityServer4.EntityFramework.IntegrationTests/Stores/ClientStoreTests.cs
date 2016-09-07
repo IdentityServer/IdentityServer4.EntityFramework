@@ -8,22 +8,22 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class ClientStoreTests : IClassFixture<DatabaseProviderFixture<ClientDbContext>>
+    public class ClientStoreTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
     {
-        public static readonly TheoryData<DbContextOptions<ClientDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ClientDbContext>>
+        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
         {
-            DatabaseProviderBuilder.BuildInMemory<ClientDbContext>(nameof(ClientStoreTests)),
-            DatabaseProviderBuilder.BuildSqlite<ClientDbContext>(nameof(ClientStoreTests)),
-            DatabaseProviderBuilder.BuildSqlServer<ClientDbContext>(nameof(ClientStoreTests))
+            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientStoreTests)),
+            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientStoreTests)),
+            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ClientStoreTests))
         };
 
-        public ClientStoreTests(DatabaseProviderFixture<ClientDbContext> fixture)
+        public ClientStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
         {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ClientDbContext>)y)).ToList();
+            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
-        public void FindClientByIdAsync_WhenClientExists_ExpectClientRetured(DbContextOptions<ClientDbContext> options)
+        public void FindClientByIdAsync_WhenClientExists_ExpectClientRetured(DbContextOptions<ConfigurationDbContext> options)
         {
             var testClient = new Client
             {
@@ -31,14 +31,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 ClientName = "Test Client"
             };
 
-            using (var context = new ClientDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 context.Clients.Add(testClient.ToEntity());
                 context.SaveChanges();
             }
 
             Client client;
-            using (var context = new ClientDbContext(options))
+            using (var context = new ConfigurationDbContext(options))
             {
                 var store = new ClientStore(context);
                 client = store.FindClientByIdAsync(testClient.ClientId).Result;
