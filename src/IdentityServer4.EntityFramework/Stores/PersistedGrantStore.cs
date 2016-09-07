@@ -6,7 +6,6 @@ using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
-using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer4.EntityFramework.Stores
 {
@@ -20,53 +19,64 @@ namespace IdentityServer4.EntityFramework.Stores
             this.context = context;
         }
 
-        public async Task StoreAsync(PersistedGrant token)
+        public Task StoreAsync(PersistedGrant token)
         {
             var persistedGrant = token.ToEntity();
             context.PersistedGrants.Add(persistedGrant);
-            await context.SaveChangesAsync();
+            context.SaveChanges();
+
+            return Task.FromResult(0);
         }
 
-        public async Task<PersistedGrant> GetAsync(string key)
+        public Task<PersistedGrant> GetAsync(string key)
         {
-            var persistedGrant = await context.PersistedGrants.FirstOrDefaultAsync(x => x.Key == key);
-            return persistedGrant.ToModel();
+            var persistedGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == key);
+            var model = persistedGrant.ToModel();
+
+            return Task.FromResult(model);
         }
 
-        public async Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
+        public Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
-            var persistedGrants = await context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToListAsync();
-            return persistedGrants.Select(x => x.ToModel());
+            var persistedGrants = context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
+            var model = persistedGrants.Select(x => x.ToModel());
+
+            return Task.FromResult(model);
         }
 
-        public async Task RemoveAsync(string key)
+        public Task RemoveAsync(string key)
         {
-            var persistedGrant = await context.PersistedGrants.FirstOrDefaultAsync(x => x.Key == key);
+            var persistedGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == key);
             if (persistedGrant!= null)
             {
                 context.PersistedGrants.Remove(persistedGrant);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
             }
+
+            return Task.FromResult(0);
         }
 
-        public async Task RemoveAllAsync(string subjectId, string clientId)
+        public Task RemoveAllAsync(string subjectId, string clientId)
         {
-            var persistedGrants =
-                await context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToListAsync();
+            var persistedGrants = context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToList();
 
             context.PersistedGrants.RemoveRange(persistedGrants);
-            await context.SaveChangesAsync();
+            context.SaveChanges();
+
+            return Task.FromResult(0);
         }
 
-        public async Task RemoveAllAsync(string subjectId, string clientId, string type)
+        public Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
-            var persistedGrants = await context.PersistedGrants.Where(x =>
+            var persistedGrants = context.PersistedGrants.Where(x =>
                 x.SubjectId == subjectId &&
                 x.ClientId == clientId &&
-                x.Type == type).ToListAsync();
+                x.Type == type).ToList();
 
             context.PersistedGrants.RemoveRange(persistedGrants);
-            await context.SaveChangesAsync();
+            context.SaveChanges();
+
+            return Task.FromResult(0);
         }
     }
 }

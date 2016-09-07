@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Mappers;
@@ -18,9 +19,9 @@ namespace IdentityServer4.EntityFramework.Stores
             this.context = context;
         }
 
-        public async Task<Client> FindClientByIdAsync(string clientId)
+        public Task<Client> FindClientByIdAsync(string clientId)
         {
-            var client = await context.Clients
+            var client = context.Clients
                 .Include(x => x.AllowedGrantTypes)
                 .Include(x => x.RedirectUris)
                 .Include(x => x.PostLogoutRedirectUris)
@@ -29,9 +30,10 @@ namespace IdentityServer4.EntityFramework.Stores
                 .Include(x => x.Claims)
                 .Include(x => x.IdentityProviderRestrictions)
                 .Include(x => x.AllowedCorsOrigins)
-                .FirstOrDefaultAsync(x => x.ClientId == clientId);
+                .FirstOrDefault(x => x.ClientId == clientId);
+            var model = client.ToModel();
 
-            return client.ToModel();
+            return Task.FromResult(model);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Interfaces;
+using IdentityServer4.EntityFramework.Services;
 using IdentityServer4.EntityFramework.Stores;
+using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,7 @@ namespace IdentityServer4.EntityFramework.Extensions
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IScopeStore, ScopeStore>();
+            builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
 
             return builder;
         }

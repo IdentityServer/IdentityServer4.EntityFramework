@@ -9,6 +9,8 @@ namespace IdentityServer4.EntityFramework.Interfaces
     {
         DbSet<Client> Clients { get; set; }
         DbSet<Scope> Scopes { get; set; }
+
+        int SaveChanges();
         Task<int> SaveChangesAsync();
     }
 }

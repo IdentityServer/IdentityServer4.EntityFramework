@@ -20,7 +20,7 @@ namespace IdentityServer4.EntityFramework.Stores
             this.context = context;
         }
 
-        public async Task<IEnumerable<Scope>> FindScopesAsync(IEnumerable<string> scopeNames)
+        public Task<IEnumerable<Scope>> FindScopesAsync(IEnumerable<string> scopeNames)
         {
             IQueryable<Entities.Scope> scopes = context.Scopes
                 .Include(x => x.Claims)
@@ -31,11 +31,13 @@ namespace IdentityServer4.EntityFramework.Stores
                 scopes = scopes.Where(x => scopeNames.Contains(x.Name));
             }
 
-            var foundScopes = await scopes.ToListAsync();
-            return foundScopes.Select(x => x.ToModel());
+            var foundScopes = scopes.ToList();
+            var model = foundScopes.Select(x => x.ToModel());
+
+            return Task.FromResult(model);
         }
 
-        public async Task<IEnumerable<Scope>> GetScopesAsync(bool publicOnly = true)
+        public Task<IEnumerable<Scope>> GetScopesAsync(bool publicOnly = true)
         {
             IQueryable<Entities.Scope> scopes = context.Scopes
                 .Include(x => x.Claims)
@@ -46,8 +48,10 @@ namespace IdentityServer4.EntityFramework.Stores
                 scopes = scopes.Where(x => x.ShowInDiscoveryDocument);
             }
 
-            var foundScopes = await scopes.ToListAsync();
-            return foundScopes.Select(x => x.ToModel());
+            var foundScopes = scopes.ToList();
+            var model = foundScopes.Select(x => x.ToModel());
+
+            return Task.FromResult(model);
         }
     }
 }
