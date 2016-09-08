@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Host.Migrations.PersistedGrantDb
 {
-    public partial class PersistedGrants : Migration
+    public partial class Grants : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,7 +18,7 @@ namespace Host.Migrations.PersistedGrantDb
                     CreationTime = table.Column<DateTime>(nullable: false),
                     Data = table.Column<string>(nullable: false),
                     Expiration = table.Column<DateTime>(nullable: false),
-                    SubjectId = table.Column<string>(nullable: false)
+                    SubjectId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

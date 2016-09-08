@@ -88,7 +88,7 @@ namespace IdentityServer4.EntityFramework.Extensions
             {
                 grant.ToTable(EfConstants.TableNames.PersistedGrant);
                 grant.HasKey(x => new {x.Key, x.Type});
-                grant.Property(x => x.SubjectId).IsRequired();
+                grant.Property(x => x.SubjectId);
                 grant.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 grant.Property(x => x.CreationTime).IsRequired();
                 grant.Property(x => x.Expiration).IsRequired();

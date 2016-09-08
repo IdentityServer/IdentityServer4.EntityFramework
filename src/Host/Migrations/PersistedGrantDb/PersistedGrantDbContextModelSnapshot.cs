@@ -33,8 +33,7 @@ namespace Host.Migrations.PersistedGrantDb
 
                     b.Property<DateTime>("Expiration");
 
-                    b.Property<string>("SubjectId")
-                        .IsRequired();
+                    b.Property<string>("SubjectId");
 
                     b.HasKey("Key", "Type");
 
