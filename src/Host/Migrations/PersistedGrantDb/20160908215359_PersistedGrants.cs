@@ -1,19 +1,15 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Host.Migrations.PersistedGrantDb
 {
-    public partial class PersistedGrant : Migration
+    public partial class PersistedGrants : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "PersistedGrant",
+                name: "PersistedGrants",
                 columns: table => new
                 {
                     Key = table.Column<string>(nullable: false),
@@ -26,14 +22,14 @@ namespace Host.Migrations.PersistedGrantDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersistedGrant", x => new { x.Key, x.Type });
+                    table.PrimaryKey("PK_PersistedGrants", x => new { x.Key, x.Type });
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PersistedGrant");
+                name: "PersistedGrants");
         }
     }
 }

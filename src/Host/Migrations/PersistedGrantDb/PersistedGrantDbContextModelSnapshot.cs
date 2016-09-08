@@ -1,8 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -42,7 +38,7 @@ namespace Host.Migrations.PersistedGrantDb
 
                     b.HasKey("Key", "Type");
 
-                    b.ToTable("PersistedGrant");
+                    b.ToTable("PersistedGrants");
                 });
         }
     }
