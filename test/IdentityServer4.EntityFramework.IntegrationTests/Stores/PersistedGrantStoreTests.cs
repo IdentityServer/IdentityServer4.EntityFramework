@@ -49,7 +49,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 
             using (var context = new PersistedGrantDbContext(options))
             {
-                var store = new PersistedGrantStore(context);
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.StoreAsync(persistedGrant).Wait();
             }
 
@@ -74,7 +74,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             PersistedGrant foundPersistedGrant;
             using (var context = new PersistedGrantDbContext(options))
             {
-                var store = new PersistedGrantStore(context);
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 foundPersistedGrant = store.GetAsync(persistedGrant.Key).Result;
             }
 
@@ -95,7 +95,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<PersistedGrant> foundPersistedGrants;
             using (var context = new PersistedGrantDbContext(options))
             {
-                var store = new PersistedGrantStore(context);
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 foundPersistedGrants = store.GetAllAsync(persistedGrant.SubjectId).Result.ToList();
             }
 
@@ -116,7 +116,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             
             using (var context = new PersistedGrantDbContext(options))
             {
-                var store = new PersistedGrantStore(context);
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.RemoveAsync(persistedGrant.Key).Wait();
             }
 
@@ -140,7 +140,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 
             using (var context = new PersistedGrantDbContext(options))
             {
-                var store = new PersistedGrantStore(context);
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.RemoveAllAsync(persistedGrant.SubjectId, persistedGrant.ClientId).Wait();
             }
 
@@ -164,7 +164,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 
             using (var context = new PersistedGrantDbContext(options))
             {
-                var store = new PersistedGrantStore(context);
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.RemoveAllAsync(persistedGrant.SubjectId, persistedGrant.ClientId, persistedGrant.Type).Wait();
             }
 

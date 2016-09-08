@@ -10,31 +10,40 @@ using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer4.EntityFramework.Stores
 {
     public class PersistedGrantStore : IPersistedGrantStore
     {
-        private readonly IPersistedGrantDbContext context;
+        private readonly IPersistedGrantDbContext _context;
+        private readonly ILogger _logger;
 
-        public PersistedGrantStore(IPersistedGrantDbContext context)
+        public PersistedGrantStore(IPersistedGrantDbContext context, ILogger<PersistedGrantStore> logger)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            this.context = context;
+            _context = context;
+            _logger = logger;
         }
 
         public Task StoreAsync(PersistedGrant token)
         {
             var persistedGrant = token.ToEntity();
-            context.PersistedGrants.Add(persistedGrant);
-            context.SaveChanges();
+            _context.PersistedGrants.Add(persistedGrant);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(0, ex, "StoreAsync");
+            }
 
             return Task.FromResult(0);
         }
 
         public Task<PersistedGrant> GetAsync(string key)
         {
-            var persistedGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == key);
+            var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
             var model = persistedGrant.ToModel();
 
             return Task.FromResult(model);
@@ -42,7 +51,7 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
-            var persistedGrants = context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
+            var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
             var model = persistedGrants.Select(x => x.ToModel());
 
             return Task.FromResult(model);
@@ -50,11 +59,11 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task RemoveAsync(string key)
         {
-            var persistedGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == key);
+            var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
             if (persistedGrant!= null)
             {
-                context.PersistedGrants.Remove(persistedGrant);
-                context.SaveChanges();
+                _context.PersistedGrants.Remove(persistedGrant);
+                _context.SaveChanges();
             }
 
             return Task.FromResult(0);
@@ -62,23 +71,23 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task RemoveAllAsync(string subjectId, string clientId)
         {
-            var persistedGrants = context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToList();
+            var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToList();
 
-            context.PersistedGrants.RemoveRange(persistedGrants);
-            context.SaveChanges();
+            _context.PersistedGrants.RemoveRange(persistedGrants);
+            _context.SaveChanges();
 
             return Task.FromResult(0);
         }
 
         public Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
-            var persistedGrants = context.PersistedGrants.Where(x =>
+            var persistedGrants = _context.PersistedGrants.Where(x =>
                 x.SubjectId == subjectId &&
                 x.ClientId == clientId &&
                 x.Type == type).ToList();
 
-            context.PersistedGrants.RemoveRange(persistedGrants);
-            context.SaveChanges();
+            _context.PersistedGrants.RemoveRange(persistedGrants);
+            _context.SaveChanges();
 
             return Task.FromResult(0);
         }
