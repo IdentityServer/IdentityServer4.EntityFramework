@@ -28,11 +28,29 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        public static IIdentityServerBuilder AddConfigurationStoreCache(
+            this IIdentityServerBuilder builder)
+        {
+            builder.Services.AddMemoryCache(); // TODO: remove once update idsvr since it does this
+            builder.AddInMemoryCaching();
+
+            // these need to be registered as concrete classes in DI for
+            // the caching decorators to work
+            builder.Services.AddTransient<ClientStore>();
+            builder.Services.AddTransient<ScopeStore>();
+
+            // add the caching decorators
+            builder.AddClientStoreCache<ClientStore>();
+            builder.AddScopeStoreCache<ScopeStore>();
+
+            return builder;
+        }
+
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
             Action<DbContextOptionsBuilder> optionsAction = null)
         {
-            builder.Services.AddDbContext<PersistedGrantDbContext>(optionsAction);
+           builder.Services.AddDbContext<PersistedGrantDbContext>(optionsAction);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
