@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Host
 {
@@ -32,19 +33,26 @@ namespace Host
                 .AddInMemoryUsers(Users.Get())
 
                 .AddConfigurationStore(builder =>
-                    builder.UseSqlServer(connectionString, 
+                    builder.UseSqlServer(connectionString,
                         options => options.MigrationsAssembly(migrationsAssembly)))
 
-                .AddOperationalStore(builder => 
-                    builder.UseSqlServer(connectionString, 
+                .AddOperationalStore(builder =>
+                    builder.UseSqlServer(connectionString,
                         options => options.MigrationsAssembly(migrationsAssembly)));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.File(@"c:\logs\IdentityServer4.EntityFramework.Host.txt")
+                .CreateLogger();
+
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
-            app.UseDeveloperExceptionPage();
+            loggerFactory.AddSerilog();
+
+            //app.UseDeveloperExceptionPage();
             
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -55,8 +63,8 @@ namespace Host
 
                 //var dbContextOptions = app.ApplicationServices.GetRequiredService<DbContextOptions<PersistedGrantDbContext>>();
                 var options = serviceScope.ServiceProvider.GetService<DbContextOptions<PersistedGrantDbContext>>();
-                var tokenCleanup = new TokenCleanup(options);
-                tokenCleanup.Start();
+                //var tokenCleanup = new TokenCleanup(options);
+                //tokenCleanup.Start();
             }
 
             app.UseIdentityServer();
