@@ -27,8 +27,17 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task StoreAsync(PersistedGrant token)
         {
-            var persistedGrant = token.ToEntity();
-            _context.PersistedGrants.Add(persistedGrant);
+            var existing = _context.PersistedGrants.SingleOrDefault(x => x.Key == token.Key);
+            if (existing == null)
+            {
+                var persistedGrant = token.ToEntity();
+                _context.PersistedGrants.Add(persistedGrant);
+            }
+            else
+            {
+                token.UpdateEntity(existing);
+            }
+
             try
             {
                 _context.SaveChanges();

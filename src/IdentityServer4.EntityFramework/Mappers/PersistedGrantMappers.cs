@@ -33,5 +33,10 @@ namespace IdentityServer4.EntityFramework.Mappers
 
             return Mapper.Map<PersistedGrant, Entities.PersistedGrant>(token);
         }
+
+        public static void UpdateEntity(this PersistedGrant token, Entities.PersistedGrant target)
+        {
+            Mapper.Map<PersistedGrant, Entities.PersistedGrant>(token, target);
+        }
     }
 }
