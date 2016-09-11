@@ -174,5 +174,56 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 Assert.Null(foundGrant);
             }
         }
+
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void Store_should_create_new_record_if_key_does_not_exist(DbContextOptions<PersistedGrantDbContext> options)
+        {
+            var persistedGrant = CreateTestObject();
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
+                Assert.Null(foundGrant);
+            }
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
+                store.StoreAsync(persistedGrant).Wait();
+            }
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
+                Assert.NotNull(foundGrant);
+            }
+        }
+
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void Store_should_update_record_if_key_already_exists(DbContextOptions<PersistedGrantDbContext> options)
+        {
+            var persistedGrant = CreateTestObject();
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                context.PersistedGrants.Add(persistedGrant.ToEntity());
+                context.SaveChanges();
+            }
+
+            var newDate = persistedGrant.Expiration.AddHours(1);
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
+                persistedGrant.Expiration = newDate;
+                store.StoreAsync(persistedGrant).Wait();
+            }
+
+            using (var context = new PersistedGrantDbContext(options))
+            {
+                var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
+                Assert.NotNull(foundGrant);
+                Assert.Equal(newDate, persistedGrant.Expiration);
+            }
+        }
     }
 }
