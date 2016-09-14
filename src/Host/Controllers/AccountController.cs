@@ -5,6 +5,7 @@
 using IdentityModel;
 using IdentityServer4.Quickstart.UI.Models;
 using IdentityServer4.Services;
+using IdentityServer4.Services.InMemory;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System;
