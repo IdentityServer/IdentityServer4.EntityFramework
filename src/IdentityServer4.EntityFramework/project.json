@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-*",
+  "version": "1.0.0-rc1-update2",
   "authors": [ "Brock Allen", "Dominick Baier", "Scott Brady" ],
   "description": "EntityFramework persistence layer for IdentityServer4",
 
