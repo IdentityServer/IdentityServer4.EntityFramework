@@ -30,11 +30,15 @@ namespace IdentityServer4.EntityFramework.Stores
             var existing = _context.PersistedGrants.SingleOrDefault(x => x.Key == token.Key);
             if (existing == null)
             {
+                _logger.LogDebug("{persistedGrantKey} not found in database", token.Key);
+
                 var persistedGrant = token.ToEntity();
                 _context.PersistedGrants.Add(persistedGrant);
             }
             else
             {
+                _logger.LogDebug("{persistedGrantKey} found in database", token.Key);
+
                 token.UpdateEntity(existing);
             }
 
@@ -44,7 +48,7 @@ namespace IdentityServer4.EntityFramework.Stores
             }
             catch (Exception ex)
             {
-                _logger.LogError(0, ex, "StoreAsync");
+                _logger.LogError(0, ex, "Exception storing persisted grant");
             }
 
             return Task.FromResult(0);
@@ -53,7 +57,9 @@ namespace IdentityServer4.EntityFramework.Stores
         public Task<PersistedGrant> GetAsync(string key)
         {
             var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
-            var model = persistedGrant.ToModel();
+            var model = persistedGrant?.ToModel();
+
+            _logger.LogDebug("{persistedGrantKey} found in database: {persistedGrantKeyFound}", key, model != null);
 
             return Task.FromResult(model);
         }
@@ -63,6 +69,8 @@ namespace IdentityServer4.EntityFramework.Stores
             var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
             var model = persistedGrants.Select(x => x.ToModel());
 
+            _logger.LogDebug("{persistedGrantCount} persisted grants found for {subjectId}", persistedGrants.Count, subjectId);
+
             return Task.FromResult(model);
         }
 
@@ -71,8 +79,14 @@ namespace IdentityServer4.EntityFramework.Stores
             var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
             if (persistedGrant!= null)
             {
+                _logger.LogDebug("removing {persistedGrantKey} persisted grant from database", key);
+
                 _context.PersistedGrants.Remove(persistedGrant);
                 _context.SaveChanges();
+            }
+            else
+            {
+                _logger.LogDebug("no {persistedGrantKey} persisted grant found in database", key);
             }
 
             return Task.FromResult(0);
@@ -81,6 +95,8 @@ namespace IdentityServer4.EntityFramework.Stores
         public Task RemoveAllAsync(string subjectId, string clientId)
         {
             var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToList();
+
+            _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}", persistedGrants.Count, subjectId, clientId);
 
             _context.PersistedGrants.RemoveRange(persistedGrants);
             _context.SaveChanges();
@@ -94,6 +110,8 @@ namespace IdentityServer4.EntityFramework.Stores
                 x.SubjectId == subjectId &&
                 x.ClientId == clientId &&
                 x.Type == type).ToList();
+
+            _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}, grantType {persistedGrantType}", persistedGrants.Count, subjectId, clientId, type);
 
             _context.PersistedGrants.RemoveRange(persistedGrants);
             _context.SaveChanges();

@@ -11,22 +11,26 @@ using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer4.EntityFramework.Stores
 {
     public class ScopeStore : IScopeStore
     {
-        private readonly IConfigurationDbContext context;
+        private readonly IConfigurationDbContext _context;
+        private readonly ILogger<ScopeStore> _logger;
 
-        public ScopeStore(IConfigurationDbContext context)
+        public ScopeStore(IConfigurationDbContext context, ILogger<ScopeStore> logger)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            this.context = context;
+
+            _context = context;
+            _logger = logger;
         }
 
         public Task<IEnumerable<Scope>> FindScopesAsync(IEnumerable<string> scopeNames)
         {
-            IQueryable<Entities.Scope> scopes = context.Scopes
+            IQueryable<Entities.Scope> scopes = _context.Scopes
                 .Include(x => x.Claims)
                 .Include(x => x.ScopeSecrets);
 
@@ -36,6 +40,9 @@ namespace IdentityServer4.EntityFramework.Stores
             }
 
             var foundScopes = scopes.ToList();
+
+            _logger.LogDebug("Found {scopes} scopes in database", foundScopes.Select(x => x.Name));
+
             var model = foundScopes.Select(x => x.ToModel());
 
             return Task.FromResult(model);
@@ -43,7 +50,7 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<Scope>> GetScopesAsync(bool publicOnly = true)
         {
-            IQueryable<Entities.Scope> scopes = context.Scopes
+            IQueryable<Entities.Scope> scopes = _context.Scopes
                 .Include(x => x.Claims)
                 .Include(x => x.ScopeSecrets);
 
@@ -53,6 +60,9 @@ namespace IdentityServer4.EntityFramework.Stores
             }
 
             var foundScopes = scopes.ToList();
+
+            _logger.LogDebug("Found {scopes} scopes in database", foundScopes.Select(x => x.Name));
+
             var model = foundScopes.Select(x => x.ToModel());
 
             return Task.FromResult(model);

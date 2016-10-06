@@ -9,38 +9,53 @@ using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer4.EntityFramework
 {
+    public class TokenCleanupOptions
+    {
+        public DbContextOptions<PersistedGrantDbContext> DbContextOptions { get; set; }
+        public ILoggerFactory LoggerFactory { get; set; }
+        public int Interval { get; set; } = 60;
+    }
+
     public class TokenCleanup
     {
-        private readonly DbContextOptions<PersistedGrantDbContext> options;
-        private readonly TimeSpan interval;
-        private CancellationTokenSource source;
+        private readonly DbContextOptions<PersistedGrantDbContext> _options;
+        private readonly TimeSpan _interval;
+        private CancellationTokenSource _source;
+        private readonly ILogger _logger;
 
-        public TokenCleanup(DbContextOptions<PersistedGrantDbContext> options, int interval = 60)
+        public TokenCleanup(TokenCleanupOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
-            if (interval < 1) throw new ArgumentException("interval must be more than 1 second");
-            this.options = options;
+            if (options.DbContextOptions == null) throw new ArgumentNullException(nameof(options.DbContextOptions));
+            if (options.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
 
-            this.interval = TimeSpan.FromSeconds(interval);
+            _options = options.DbContextOptions;
+            _interval = TimeSpan.FromSeconds(options.Interval);
+            _logger = options.LoggerFactory?.CreateLogger(typeof(TokenCleanup).FullName) ?? new NopLogger();
         }
 
         public void Start()
         {
-            if (source != null) throw new InvalidOperationException("Already started. Call Stop first.");
+            if (_source != null) throw new InvalidOperationException("Already started. Call Stop first.");
 
-            source = new CancellationTokenSource();
-            Task.Factory.StartNew(() => Start(source.Token));
+            _logger.LogDebug("Starting token cleanup");
+
+            _source = new CancellationTokenSource();
+            Task.Factory.StartNew(() => Start(_source.Token));
         }
 
         public void Stop()
         {
-            if (source == null) throw new InvalidOperationException("Not started. Call Start first.");
+            if (_source == null) throw new InvalidOperationException("Not started. Call Start first.");
 
-            source.Cancel();
-            source = null;
+            _logger.LogDebug("Stopping token cleanup");
+
+            _source.Cancel();
+            _source = null;
         }
 
         public async Task Start(CancellationToken cancellationToken)
@@ -49,56 +64,56 @@ namespace IdentityServer4.EntityFramework
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    //Logger.Info("CancellationRequested");
+                    _logger.LogDebug("CancellationRequested");
                     break;
                 }
 
                 try
                 {
-                    await Task.Delay(interval, cancellationToken);
+                    await Task.Delay(_interval, cancellationToken);
                 }
                 catch
                 {
-                    //Logger.Info("Task.Delay exception. exiting.");
+                    _logger.LogDebug("Task.Delay exception. exiting.");
                     break;
                 }
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    //Logger.Info("CancellationRequested");
+                    _logger.LogDebug("CancellationRequested");
                     break;
                 }
 
-                await ClearTokens();
+                ClearTokens();
             }
         }
 
         protected virtual IPersistedGrantDbContext CreateOperationalDbContext()
         {
-            return new PersistedGrantDbContext(options);
+            return new PersistedGrantDbContext(_options);
         }
 
-        private async Task ClearTokens()
+        private void ClearTokens()
         {
             try
             {
-                //Logger.Info("Clearing tokens");
+                _logger.LogTrace("Querying for tokens to clear");
 
                 using (var context = CreateOperationalDbContext())
                 {
-                    var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow);
+                    var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
+
+                    _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
 
                     context.PersistedGrants.RemoveRange(expired);
 
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO
-                //Logger.ErrorException("Exception cleaning tokens", exception);
+                _logger.LogError("Exception cleaning tokens {exception}", ex.Message);
             }
         }
-
     }
 }

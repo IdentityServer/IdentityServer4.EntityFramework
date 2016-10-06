@@ -53,7 +53,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             bool result;
             using (var context = new ConfigurationDbContext(options))
             {
-                var service = new CorsPolicyService(context);
+                var service = new CorsPolicyService(context, FakeLogger<CorsPolicyService>.Create());
                 result = service.IsOriginAllowedAsync(testCorsOrigin).Result;
             }
 
@@ -77,7 +77,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             bool result;
             using (var context = new ConfigurationDbContext(options))
             {
-                var service = new CorsPolicyService(context);
+                var service = new CorsPolicyService(context, FakeLogger<CorsPolicyService>.Create());
                 result = service.IsOriginAllowedAsync("InvalidOrigin").Result;
             }
 

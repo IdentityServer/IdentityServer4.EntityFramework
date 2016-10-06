@@ -44,7 +44,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Client client;
             using (var context = new ConfigurationDbContext(options))
             {
-                var store = new ClientStore(context);
+                var store = new ClientStore(context, FakeLogger<ClientStore>.Create());
                 client = store.FindClientByIdAsync(testClient.ClientId).Result;
             }
 

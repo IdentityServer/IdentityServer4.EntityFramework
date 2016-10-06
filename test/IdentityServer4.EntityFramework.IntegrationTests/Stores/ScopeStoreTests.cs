@@ -60,7 +60,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<Scope> scopes;
             using (var context = new ConfigurationDbContext(options))
             {
-                var store = new ScopeStore(context);
+                var store = new ScopeStore(context, FakeLogger<ScopeStore>.Create());
                 scopes = store.FindScopesAsync(new List<string>
                 {
                     firstTestScope.Name,
@@ -87,7 +87,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<Scope> scopes;
             using (var context = new ConfigurationDbContext(options))
             {
-                var store = new ScopeStore(context);
+                var store = new ScopeStore(context, FakeLogger<ScopeStore>.Create());
                 scopes = store.GetScopesAsync(false).Result.ToList();
             }
 
@@ -110,7 +110,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<Scope> scopes;
             using (var context = new ConfigurationDbContext(options))
             {
-                var store = new ScopeStore(context);
+                var store = new ScopeStore(context, FakeLogger<ScopeStore>.Create());
                 scopes = store.GetScopesAsync().Result.ToList();
             }
 
@@ -134,7 +134,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<Scope> scopes;
             using (var context = new ConfigurationDbContext(options))
             {
-                var store = new ScopeStore(context);
+                var store = new ScopeStore(context, FakeLogger<ScopeStore>.Create());
                 scopes = store.FindScopesAsync(new List<string>
                 {
                     scope.Name
@@ -162,7 +162,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             IList<Scope> scopes;
             using (var context = new ConfigurationDbContext(options))
             {
-                var store = new ScopeStore(context);
+                var store = new ScopeStore(context, FakeLogger<ScopeStore>.Create());
                 scopes = store.FindScopesAsync(new List<string>
                 {
                     scope.Name

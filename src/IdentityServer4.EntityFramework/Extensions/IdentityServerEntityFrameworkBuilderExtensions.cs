@@ -50,11 +50,11 @@ namespace Microsoft.Extensions.DependencyInjection
             this IIdentityServerBuilder builder,
             Action<DbContextOptionsBuilder> optionsAction = null)
         {
-           builder.Services.AddDbContext<PersistedGrantDbContext>(optionsAction);
+            builder.Services.AddDbContext<PersistedGrantDbContext>(optionsAction);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
-            
+
             return builder;
         }
     }
