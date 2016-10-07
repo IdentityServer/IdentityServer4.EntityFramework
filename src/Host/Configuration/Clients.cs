@@ -251,6 +251,8 @@ namespace Host.Configuration
 
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
+                    AccessTokenType = AccessTokenType.Reference,
+
                     RedirectUris = new List<string>
                     {
                         "http://localhost:7017/index.html",

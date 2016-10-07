@@ -32,6 +32,8 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.Property(x => x.ClientName).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientUri).HasMaxLength(2000);
 
+                client.HasIndex(x => x.ClientId).IsUnique();
+
                 client.HasMany(x => x.AllowedGrantTypes).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.RedirectUris).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.PostLogoutRedirectUris).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
@@ -102,11 +104,16 @@ namespace IdentityServer4.EntityFramework.Extensions
             {
                 grant.ToTable(storeOptions.PersistedGrants);
                 grant.HasKey(x => new {x.Key, x.Type});
+
                 grant.Property(x => x.SubjectId);
                 grant.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 grant.Property(x => x.CreationTime).IsRequired();
                 grant.Property(x => x.Expiration).IsRequired();
                 grant.Property(x => x.Data).IsRequired();
+
+                grant.HasIndex(x => x.SubjectId);
+                grant.HasIndex(x => new { x.SubjectId, x.ClientId });
+                grant.HasIndex(x => new { x.SubjectId, x.ClientId, x.Type });
             });
         }
 
@@ -132,10 +139,14 @@ namespace IdentityServer4.EntityFramework.Extensions
             modelBuilder.Entity<Scope>(scope =>
             {
                 scope.ToTable(storeOptions.Scope).HasKey(x => x.Id);
+
                 scope.Property(x => x.Name).HasMaxLength(200).IsRequired();
                 scope.Property(x => x.DisplayName).HasMaxLength(200);
                 scope.Property(x => x.Description).HasMaxLength(1000);
                 scope.Property(x => x.ClaimsRule).HasMaxLength(200);
+
+                scope.HasIndex(x => x.Name).IsUnique();
+
                 scope.HasMany(x => x.Claims).WithOne(x => x.Scope).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 scope.HasMany(x => x.ScopeSecrets).WithOne(x => x.Scope).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });

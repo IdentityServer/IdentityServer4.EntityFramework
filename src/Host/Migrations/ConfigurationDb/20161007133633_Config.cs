@@ -1,15 +1,11 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Host.Migrations
+namespace Host.Migrations.ConfigurationDb
 {
-    public partial class Configuration : Migration
+    public partial class Config : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -286,6 +282,12 @@ namespace Host.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clients_ClientId",
+                table: "Clients",
+                column: "ClientId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClientClaims_ClientId",
                 table: "ClientClaims",
                 column: "ClientId");
@@ -324,6 +326,12 @@ namespace Host.Migrations
                 name: "IX_ClientSecrets_ClientId",
                 table: "ClientSecrets",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Scopes_Name",
+                table: "Scopes",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScopeClaims_ScopeId",
