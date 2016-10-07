@@ -10,20 +10,27 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.EntityFrameworkCore;
 using System;
+using IdentityServer4.EntityFramework.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IdentityServerEntityFrameworkBuilderExtensions
     {
         public static IIdentityServerBuilder AddConfigurationStore(
-            this IIdentityServerBuilder builder, Action<DbContextOptionsBuilder> optionsAction = null)
+            this IIdentityServerBuilder builder, 
+            Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
+            Action<ConfigurationStoreOptions> optionsAction = null)
         {
-            builder.Services.AddDbContext<ConfigurationDbContext>(optionsAction);
+            builder.Services.AddDbContext<ConfigurationDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IScopeStore, ScopeStore>();
             builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
+
+            var options = new ConfigurationStoreOptions();
+            optionsAction?.Invoke(options);
+            builder.Services.AddSingleton(options);
 
             return builder;
         }
@@ -48,12 +55,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
-            Action<DbContextOptionsBuilder> optionsAction = null)
+            Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
+            Action<OperationStoreOptions> optionsAction = null)
         {
-            builder.Services.AddDbContext<PersistedGrantDbContext>(optionsAction);
+            builder.Services.AddDbContext<PersistedGrantDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+
+            var options = new OperationStoreOptions();
+            optionsAction?.Invoke(options);
+            builder.Services.AddSingleton(options);
 
             return builder;
         }
