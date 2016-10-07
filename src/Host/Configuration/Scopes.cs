@@ -26,11 +26,11 @@ namespace Host.Configuration
                     Description = "API 1 features and data",
                     Type = ScopeType.Resource,
 
-                    ScopeSecrets = new List<Secret>
+                    ScopeSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    Claims = new List<ScopeClaim>
+                    Claims =
                     {
                         new ScopeClaim("role")
                     }
