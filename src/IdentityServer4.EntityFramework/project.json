@@ -6,8 +6,8 @@
   "packOptions": {
     "tags": [ "OAuth2", "OAuth 2.0", "OpenID Connect", "Security", "Identity", "IdentityServer", "EntityFramework" ],
     "projectUrl": "https://github.com/IdentityServer/IdentityServer4.EntityFramework",
-    "licenseUrl": "https://github.com/IdentityServer/IdentityServer4.EntityFramework/LICENSE",
-    "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg"
+    "licenseUrl": "https://github.com/IdentityServer/IdentityServer4.EntityFramework/blob/release/LICENSE",
+    "iconUrl": "https://raw.githubusercontent.com/IdentityServer/Artwork/master/Logos/IDserver_icon128.jpg"
   },
 
   "dependencies": {
