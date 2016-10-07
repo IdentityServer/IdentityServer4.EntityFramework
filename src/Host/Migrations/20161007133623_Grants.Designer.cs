@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using IdentityServer4.EntityFramework.DbContexts;
 
-namespace Host.Migrations.PersistedGrantDb
+namespace Host.Migrations
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20160908225302_Grants")]
+    [Migration("20161007133623_Grants")]
     partial class Grants
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
+                .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.PersistedGrant", b =>
@@ -37,6 +37,12 @@ namespace Host.Migrations.PersistedGrantDb
                     b.Property<string>("SubjectId");
 
                     b.HasKey("Key", "Type");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("SubjectId", "ClientId");
+
+                    b.HasIndex("SubjectId", "ClientId", "Type");
 
                     b.ToTable("PersistedGrants");
                 });

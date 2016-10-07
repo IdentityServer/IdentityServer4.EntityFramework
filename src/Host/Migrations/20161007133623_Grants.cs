@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Host.Migrations.PersistedGrantDb
+namespace Host.Migrations
 {
     public partial class Grants : Migration
     {
@@ -24,6 +24,21 @@ namespace Host.Migrations.PersistedGrantDb
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => new { x.Key, x.Type });
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersistedGrants_SubjectId",
+                table: "PersistedGrants",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersistedGrants_SubjectId_ClientId",
+                table: "PersistedGrants",
+                columns: new[] { "SubjectId", "ClientId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersistedGrants_SubjectId_ClientId_Type",
+                table: "PersistedGrants",
+                columns: new[] { "SubjectId", "ClientId", "Type" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
