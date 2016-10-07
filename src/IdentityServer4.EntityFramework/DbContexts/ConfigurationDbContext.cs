@@ -33,8 +33,8 @@ namespace IdentityServer4.EntityFramework.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ConfigureClientContext();
-            modelBuilder.ConfigureScopeContext();
+            modelBuilder.ConfigureClientContext(storeOptions);
+            modelBuilder.ConfigureScopeContext(storeOptions);
 
             base.OnModelCreating(modelBuilder);
         }

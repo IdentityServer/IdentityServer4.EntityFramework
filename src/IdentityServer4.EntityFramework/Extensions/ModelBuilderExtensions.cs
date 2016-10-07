@@ -3,6 +3,7 @@
 
 
 using IdentityServer4.EntityFramework.Entities;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -10,8 +11,10 @@ namespace IdentityServer4.EntityFramework.Extensions
 {
     public static class ModelBuilderExtensions
     {
-        public static void ConfigureClientContext(this ModelBuilder modelBuilder)
+        public static void ConfigureClientContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
         {
+            if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);
+
             modelBuilder.Entity<Client>(client =>
             {
                 client.ToTable(EfConstants.TableNames.Client).HasKey(x => x.Id);
@@ -82,8 +85,10 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
-        public static void ConfigurePersistedGrantContext(this ModelBuilder modelBuilder)
+        public static void ConfigurePersistedGrantContext(this ModelBuilder modelBuilder, OperationalStoreOptions options)
         {
+            if (!string.IsNullOrWhiteSpace(options.DefaultSchema)) modelBuilder.HasDefaultSchema(options.DefaultSchema);
+
             modelBuilder.Entity<PersistedGrant>(grant =>
             {
                 grant.ToTable(EfConstants.TableNames.PersistedGrant);
@@ -96,8 +101,10 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
-        public static void ConfigureScopeContext(this ModelBuilder modelBuilder)
+        public static void ConfigureScopeContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions options)
         {
+            if (!string.IsNullOrWhiteSpace(options.DefaultSchema)) modelBuilder.HasDefaultSchema(options.DefaultSchema);
+
             modelBuilder.Entity<ScopeClaim>(scopeClaim =>
             {
                 scopeClaim.ToTable(EfConstants.TableNames.ScopeClaim).HasKey(x => x.Id);
