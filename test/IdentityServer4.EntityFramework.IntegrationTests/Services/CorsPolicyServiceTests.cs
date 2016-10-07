@@ -11,21 +11,24 @@ using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using System.Linq;
+using IdentityServer4.EntityFramework.Options;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Services
 {
     public class CorsPolicyServiceTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
     {
+        private static readonly ConfigurationStoreOptions StoreOptions = new ConfigurationStoreOptions();
         public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
         {
-            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(CorsPolicyServiceTests)),
-            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(CorsPolicyServiceTests)),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(CorsPolicyServiceTests))
+            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions),
+            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions),
+            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions)
         };
 
         public CorsPolicyServiceTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
         {
             fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
+            fixture.StoreOptions = StoreOptions;
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
@@ -33,7 +36,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
         {
             const string testCorsOrigin = "https://identityserver.io/";
 
-            using (var context = new ConfigurationDbContext(options))
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 context.Clients.Add(new Client
                 {
@@ -51,7 +54,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             }
 
             bool result;
-            using (var context = new ConfigurationDbContext(options))
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 var service = new CorsPolicyService(context, FakeLogger<CorsPolicyService>.Create());
                 result = service.IsOriginAllowedAsync(testCorsOrigin).Result;
@@ -63,7 +66,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
         [Theory, MemberData(nameof(TestDatabaseProviders))]
         public void IsOriginAllowedAsync_WhenOriginIsNotAllowed_ExpectFalse(DbContextOptions<ConfigurationDbContext> options)
         {
-            using (var context = new ConfigurationDbContext(options))
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 context.Clients.Add(new Client
                 {
@@ -75,7 +78,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             }
 
             bool result;
-            using (var context = new ConfigurationDbContext(options))
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 var service = new CorsPolicyService(context, FakeLogger<CorsPolicyService>.Create());
                 result = service.IsOriginAllowedAsync("InvalidOrigin").Result;

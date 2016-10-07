@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Interfaces;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -90,7 +91,8 @@ namespace IdentityServer4.EntityFramework
 
         protected virtual IPersistedGrantDbContext CreateOperationalDbContext()
         {
-            return new PersistedGrantDbContext(_options);
+            // TODO: Replace with DI.
+            return new PersistedGrantDbContext(_options, new OperationalStoreOptions());
         }
 
         private void ClearTokens()

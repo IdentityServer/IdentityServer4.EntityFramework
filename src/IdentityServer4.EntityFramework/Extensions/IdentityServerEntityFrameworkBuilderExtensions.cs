@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder, 
             Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
-            Action<ConfigurationStoreOptions> optionsAction = null)
+            Action<ConfigurationStoreOptions> storeOptionsAction = null)
         {
             builder.Services.AddDbContext<ConfigurationDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
 
             var options = new ConfigurationStoreOptions();
-            optionsAction?.Invoke(options);
+            storeOptionsAction?.Invoke(options);
             builder.Services.AddSingleton(options);
 
             return builder;
@@ -56,15 +56,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
             Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
-            Action<OperationStoreOptions> optionsAction = null)
+            Action<OperationalStoreOptions> storeOptionsAction = null)
         {
             builder.Services.AddDbContext<PersistedGrantDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
 
-            var options = new OperationStoreOptions();
-            optionsAction?.Invoke(options);
+            var options = new OperationalStoreOptions();
+            storeOptionsAction?.Invoke(options);
             builder.Services.AddSingleton(options);
 
             return builder;

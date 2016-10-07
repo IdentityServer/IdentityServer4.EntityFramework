@@ -5,6 +5,7 @@
 using System.Linq;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,16 +15,18 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
     public class ClientStoreTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
     {
+        private static readonly ConfigurationStoreOptions StoreOptions = new ConfigurationStoreOptions();
         public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
         {
-            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientStoreTests)),
-            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientStoreTests)),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ClientStoreTests))
+            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions),
+            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions),
+            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions)
         };
 
         public ClientStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
         {
             fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
+            fixture.StoreOptions = StoreOptions;
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
@@ -35,14 +38,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 ClientName = "Test Client"
             };
 
-            using (var context = new ConfigurationDbContext(options))
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 context.Clients.Add(testClient.ToEntity());
                 context.SaveChanges();
             }
 
             Client client;
-            using (var context = new ConfigurationDbContext(options))
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 var store = new ClientStore(context, FakeLogger<ClientStore>.Create());
                 client = store.FindClientByIdAsync(testClient.ClientId).Result;

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,16 +17,18 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
     public class PersistedGrantStoreTests : IClassFixture<DatabaseProviderFixture<PersistedGrantDbContext>>
     {
+        private static readonly OperationalStoreOptions StoreOptions = new OperationalStoreOptions();
         public static readonly TheoryData<DbContextOptions<PersistedGrantDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<PersistedGrantDbContext>>
         {
-            DatabaseProviderBuilder.BuildInMemory<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests)),
-            DatabaseProviderBuilder.BuildSqlite<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests)),
-            DatabaseProviderBuilder.BuildSqlServer<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests))
+            DatabaseProviderBuilder.BuildInMemory<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions),
+            DatabaseProviderBuilder.BuildSqlite<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions),
+            DatabaseProviderBuilder.BuildSqlServer<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions)
         };
 
         public PersistedGrantStoreTests(DatabaseProviderFixture<PersistedGrantDbContext> fixture)
         {
             fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<PersistedGrantDbContext>)y)).ToList();
+            fixture.StoreOptions = StoreOptions;
         }
 
         private static PersistedGrant CreateTestObject()
@@ -47,13 +50,13 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.StoreAsync(persistedGrant).Wait();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.NotNull(foundGrant);
@@ -65,14 +68,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
             PersistedGrant foundPersistedGrant;
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 foundPersistedGrant = store.GetAsync(persistedGrant.Key).Result;
@@ -86,14 +89,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
             IList<PersistedGrant> foundPersistedGrants;
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 foundPersistedGrants = store.GetAllAsync(persistedGrant.SubjectId).Result.ToList();
@@ -108,19 +111,19 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
             
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.RemoveAsync(persistedGrant.Key).Wait();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.Null(foundGrant);
@@ -132,19 +135,19 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.RemoveAllAsync(persistedGrant.SubjectId, persistedGrant.ClientId).Wait();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.Null(foundGrant);
@@ -156,19 +159,19 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.RemoveAllAsync(persistedGrant.SubjectId, persistedGrant.ClientId, persistedGrant.Type).Wait();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.Null(foundGrant);
@@ -180,19 +183,19 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.Null(foundGrant);
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 store.StoreAsync(persistedGrant).Wait();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.NotNull(foundGrant);
@@ -204,21 +207,21 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             var persistedGrant = CreateTestObject();
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 context.PersistedGrants.Add(persistedGrant.ToEntity());
                 context.SaveChanges();
             }
 
             var newDate = persistedGrant.Expiration.AddHours(1);
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());
                 persistedGrant.Expiration = newDate;
                 store.StoreAsync(persistedGrant).Wait();
             }
 
-            using (var context = new PersistedGrantDbContext(options))
+            using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var foundGrant = context.PersistedGrants.FirstOrDefault(x => x.Key == persistedGrant.Key);
                 Assert.NotNull(foundGrant);

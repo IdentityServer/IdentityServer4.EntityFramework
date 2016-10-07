@@ -12,13 +12,13 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
     /// </summary>
     public class DatabaseProviderBuilder
     {
-        public static DbContextOptions<T> BuildInMemory<T>(string name) where T : DbContext
+        public static DbContextOptions<T> BuildInMemory<T>(string name, object tableOptions) where T : DbContext
         {
             var builder = new DbContextOptionsBuilder<T>();
             builder.UseInMemoryDatabase(name);
             var options = builder.Options;
 
-            using (var context = (T)Activator.CreateInstance(typeof(T), options))
+            using (var context = (T)Activator.CreateInstance(typeof(T), options, tableOptions))
             {
                 context.Database.EnsureCreated();
             }
@@ -26,13 +26,13 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
             return options;
         }
 
-        public static DbContextOptions<T> BuildSqlite<T>(string name) where T : DbContext
+        public static DbContextOptions<T> BuildSqlite<T>(string name, object tableOptions) where T : DbContext
         {
             var builder = new DbContextOptionsBuilder<T>();
             builder.UseSqlite($"Filename=./Test.IdentityServer4.EntityFramework.{name}.db");
             var options = builder.Options;
 
-            using (var context = (T)Activator.CreateInstance(typeof(T), options))
+            using (var context = (T)Activator.CreateInstance(typeof(T), options, tableOptions))
             {
                 context.Database.OpenConnection();
                 context.Database.EnsureCreated();
@@ -41,14 +41,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
             return options;
         }
 
-        public static DbContextOptions<T> BuildSqlServer<T>(string name) where T : DbContext
+        public static DbContextOptions<T> BuildSqlServer<T>(string name, object tableOptions) where T : DbContext
         {
             var builder = new DbContextOptionsBuilder<T>();
             builder.UseSqlServer(
                 $@"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework.{name};trusted_connection=yes;");
             var options = builder.Options;
 
-            using (var context = (T)Activator.CreateInstance(typeof(T), options))
+            using (var context = (T)Activator.CreateInstance(typeof(T), options, tableOptions))
             {
                 context.Database.EnsureCreated();
             }
