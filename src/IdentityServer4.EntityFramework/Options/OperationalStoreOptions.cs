@@ -2,7 +2,15 @@
 {
     public class OperationalStoreOptions
     {
+        public class TokenCleanupOptions
+        {
+            public bool Enabled { get; set; } = true;
+            public int Interval { get; set; } = 60;
+        }
+
         public string DefaultSchema { get; set; } = null;
+
+        public TokenCleanupOptions TokenCleanup { get; set; } = new TokenCleanupOptions();
 
         public TableConfiguration PersistedGrants { get; set; } = new TableConfiguration("PersistedGrants");
     }

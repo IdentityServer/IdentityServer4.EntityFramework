@@ -20,6 +20,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client",
+                    ClientName = "ClientName is required in IdentityServer4.EntityFramework",
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())

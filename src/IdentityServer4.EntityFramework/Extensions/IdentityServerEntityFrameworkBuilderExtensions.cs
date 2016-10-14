@@ -11,6 +11,7 @@ using IdentityServer4.Stores;
 using Microsoft.EntityFrameworkCore;
 using System;
 using IdentityServer4.EntityFramework.Options;
+using IdentityServer4.EntityFramework;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -66,6 +67,12 @@ namespace Microsoft.Extensions.DependencyInjection
             var options = new OperationalStoreOptions();
             storeOptionsAction?.Invoke(options);
             builder.Services.AddSingleton(options);
+
+            // If token cleanup enabled
+            if(options.TokenCleanup.Enabled)
+            {
+                builder.Services.AddSingleton<TokenCleanup>();
+            }
 
             return builder;
         }

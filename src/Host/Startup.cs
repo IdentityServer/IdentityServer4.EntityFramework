@@ -41,7 +41,7 @@ namespace Host
                         options => options.MigrationsAssembly(migrationsAssembly)));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -53,6 +53,9 @@ namespace Host
             loggerFactory.AddSerilog();
 
             //app.UseDeveloperExceptionPage();
+
+            // Attach token cleanup
+            appLifetime.AttachIdentityServerTokenCleanup(app.ApplicationServices);
             
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
