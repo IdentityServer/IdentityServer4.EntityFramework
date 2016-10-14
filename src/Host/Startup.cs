@@ -5,9 +5,7 @@
 using System.Linq;
 using System.Reflection;
 using Host.Configuration;
-using IdentityServer4.EntityFramework;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,8 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
-namespace Host
-{
+namespace Host {
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
@@ -41,7 +38,7 @@ namespace Host
                         options => options.MigrationsAssembly(migrationsAssembly)));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -60,11 +57,6 @@ namespace Host
                 serviceScope.ServiceProvider.GetService<ConfigurationDbContext>().Database.Migrate();
                 serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<ConfigurationDbContext>());
-
-                //var dbContextOptions = app.ApplicationServices.GetRequiredService<DbContextOptions<PersistedGrantDbContext>>();
-                var options = serviceScope.ServiceProvider.GetService<DbContextOptions<PersistedGrantDbContext>>();
-                //var tokenCleanup = new TokenCleanup(options);
-                //tokenCleanup.Start();
             }
 
             app.UseIdentityServer();

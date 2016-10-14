@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServer4.EntityFramework {
-    // internal enough.
     internal class TokenCleanup
     {
         private readonly TimeSpan _interval;
@@ -85,6 +84,11 @@ namespace IdentityServer4.EntityFramework {
             try
             {
                 _logger.LogTrace("Querying for tokens to clear");
+
+                // 1. CreateScope() each clear token cycle.
+                // 2. CreateScope() in Start(), and dispose the 'serviceScope' in Stop().
+                // 
+                // I choose solution 1.
 
                 // PersistedGrantDbContext is scoped lifetime.
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
