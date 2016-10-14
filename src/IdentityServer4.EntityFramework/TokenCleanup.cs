@@ -12,24 +12,22 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServer4.EntityFramework {
-    public class TokenCleanup
+    // internal enough.
+    internal class TokenCleanup
     {
         private readonly TimeSpan _interval;
         private CancellationTokenSource _source;
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        // The logger cross-thread, so ...
-        //public TokenCleanup(OperationalStoreOptions options, ILogger<TokenCleanup> logger, IServiceProvider serviceProvider)
-        public TokenCleanup(OperationalStoreOptions options, IServiceProvider serviceProvider)
+        public TokenCleanup(OperationalStoreOptions.TokenCleanupOptions options, IServiceProvider serviceProvider)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
-            if (options.TokenCleanup == null) throw new ArgumentNullException(nameof(options.TokenCleanup));
-            if (options.TokenCleanup.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
+            if (options.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
 
             _serviceProvider = serviceProvider;
-            _interval = TimeSpan.FromSeconds(options.TokenCleanup.Interval);
-            _logger = new NopLogger();
+            _interval = TimeSpan.FromSeconds(options.Interval);
+            _logger = options.LoggerFactory?.CreateLogger(typeof(TokenCleanup).FullName) ?? new NopLogger();
         }
 
         public void Start()
@@ -88,7 +86,7 @@ namespace IdentityServer4.EntityFramework {
             {
                 _logger.LogTrace("Querying for tokens to clear");
 
-                // Because the PersistedGrantDbContext is scoped lifetime.
+                // PersistedGrantDbContext is scoped lifetime.
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())

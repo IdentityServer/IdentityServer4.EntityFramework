@@ -1,11 +1,14 @@
-﻿namespace IdentityServer4.EntityFramework.Options
+﻿using Microsoft.Extensions.Logging;
+
+namespace IdentityServer4.EntityFramework.Options
 {
     public class OperationalStoreOptions
     {
         public class TokenCleanupOptions
         {
             public bool Enabled { get; set; } = true;
-            public int Interval { get; set; } = 60;
+            public int Interval { get; set; } = 6;
+            public ILoggerFactory LoggerFactory { get; set; }
         }
 
         public string DefaultSchema { get; set; } = null;

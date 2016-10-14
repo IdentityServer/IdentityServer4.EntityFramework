@@ -54,9 +54,6 @@ namespace Host
 
             //app.UseDeveloperExceptionPage();
 
-            // Attach token cleanup
-            appLifetime.AttachIdentityServerTokenCleanup(app.ApplicationServices);
-            
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
