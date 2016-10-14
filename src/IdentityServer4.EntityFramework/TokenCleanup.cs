@@ -11,7 +11,8 @@ using IdentityServer4.EntityFramework.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdentityServer4.EntityFramework {
+namespace IdentityServer4.EntityFramework
+{
     internal class TokenCleanup
     {
         private readonly TimeSpan _interval;

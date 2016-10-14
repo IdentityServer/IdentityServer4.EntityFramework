@@ -14,7 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
-namespace Host {
+namespace Host
+{
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
