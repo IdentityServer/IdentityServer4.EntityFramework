@@ -7,7 +7,7 @@ namespace IdentityServer4.EntityFramework.Options
         public class TokenCleanupOptions
         {
             public bool Enabled { get; set; } = true;
-            public int Interval { get; set; } = 6;
+            public int Interval { get; set; } = 60;
             public ILoggerFactory LoggerFactory { get; set; }
         }
 
