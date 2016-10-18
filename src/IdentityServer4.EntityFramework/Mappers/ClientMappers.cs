@@ -2,12 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Linq;
-using System.Security.Claims;
 using AutoMapper;
-using IdentityServer4.EntityFramework.Entities;
-using IdentityServer4.Models;
-using Client = IdentityServer4.Models.Client;
 
 namespace IdentityServer4.EntityFramework.Mappers
 {
@@ -15,42 +10,20 @@ namespace IdentityServer4.EntityFramework.Mappers
     {
         static ClientMappers()
         {
-            Mapper = new MapperConfiguration(config =>
-            {
-                config.CreateMap<Entities.Client, Client>(MemberList.Destination)
-                    .ForMember(x => x.AllowedGrantTypes, opt => opt.MapFrom(src => src.AllowedGrantTypes.Select(x => x.GrantType)))
-                    .ForMember(x => x.RedirectUris, opt => opt.MapFrom(src => src.RedirectUris.Select(x => x.RedirectUri)))
-                    .ForMember(x => x.PostLogoutRedirectUris, opt => opt.MapFrom(src => src.PostLogoutRedirectUris.Select(x => x.PostLogoutRedirectUri)))
-                    .ForMember(x => x.AllowedScopes, opt => opt.MapFrom(src => src.AllowedScopes.Select(x => x.Scope)))
-                    .ForMember(x => x.ClientSecrets, opt => opt.MapFrom(src => src.ClientSecrets.Select(x => x)))
-                    .ForMember(x => x.Claims, opt => opt.MapFrom(src => src.Claims.Select(x => new Claim(x.Type, x.Value))))
-                    .ForMember(x => x.IdentityProviderRestrictions, opt => opt.MapFrom(src => src.IdentityProviderRestrictions.Select(x => x.Provider)))
-                    .ForMember(x => x.AllowedCorsOrigins, opt => opt.MapFrom(src => src.AllowedCorsOrigins.Select(x => x.Origin)));
-                config.CreateMap<ClientSecret, Secret>(MemberList.Destination)
-                    .ForMember(dest => dest.Type, opt => opt.Condition(srs => srs != null));
-                
-                config.CreateMap<Client, Entities.Client>(MemberList.Source)
-                    .ForMember(x => x.AllowedGrantTypes, opt => opt.MapFrom(src => src.AllowedGrantTypes.Select(x => new ClientGrantType {GrantType = x})))
-                    .ForMember(x => x.RedirectUris, opt => opt.MapFrom(src => src.RedirectUris.Select(x => new ClientRedirectUri {RedirectUri = x})))
-                    .ForMember(x => x.PostLogoutRedirectUris, opt => opt.MapFrom(src => src.PostLogoutRedirectUris.Select(x => new ClientPostLogoutRedirectUri {PostLogoutRedirectUri = x})))
-                    .ForMember(x => x.AllowedScopes, opt => opt.MapFrom(src => src.AllowedScopes.Select(x => new ClientScope {Scope = x})))
-                    .ForMember(x => x.Claims, opt => opt.MapFrom( src => src.Claims.Select(x => new ClientClaim {Type = x.Type, Value = x.Value})))
-                    .ForMember(x => x.IdentityProviderRestrictions, opt => opt.MapFrom(src => src.IdentityProviderRestrictions.Select(x => new ClientIdPRestriction {Provider = x})))
-                    .ForMember(x => x.AllowedCorsOrigins, opt => opt.MapFrom(src => src.AllowedCorsOrigins.Select(x => new ClientCorsOrigin {Origin = x})));
-                config.CreateMap<Secret, ClientSecret>(MemberList.Source);
-            }).CreateMapper();
+            Mapper = new MapperConfiguration(cfg => cfg.AddProfile<ClientMapperProfile>())
+                .CreateMapper();
         }
 
         internal static IMapper Mapper { get; }
 
-        public static Client ToModel(this Entities.Client client)
+        public static Models.Client ToModel(this Entities.Client client)
         {
-            return Mapper.Map<Entities.Client, Client>(client);
+            return Mapper.Map<Models.Client>(client);
         }
 
-        public static Entities.Client ToEntity(this Client client)
+        public static Entities.Client ToEntity(this Models.Client client)
         {
-            return Mapper.Map<Client, Entities.Client>(client);
+            return Mapper.Map<Entities.Client>(client);
         }
     }
 }
