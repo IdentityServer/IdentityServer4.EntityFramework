@@ -7,6 +7,7 @@ using System.Reflection;
 using Host.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ namespace Host
                         options => options.MigrationsAssembly(migrationsAssembly)));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -61,6 +62,7 @@ namespace Host
             }
 
             app.UseIdentityServer();
+            app.UseIdentityServerEfTokenCleanup(applicationLifetime);
             
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

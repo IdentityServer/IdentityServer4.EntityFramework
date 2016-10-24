@@ -20,7 +20,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client",
-                    ClientName = "ClientName is required in IdentityServer4.EntityFramework",
+                    ClientName = "Console Client Credentials Flow Sample",
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
@@ -33,9 +33,10 @@ namespace Host.Configuration
                 ///////////////////////////////////////////
                 // Console Client Credentials Flow with client JWT assertion
                 //////////////////////////////////////////
-                new Client
+                /*new Client
                 {
                     ClientId = "client.jwt",
+                    ClientName = "Console Client Credentials Flow with client JWT assertion",
                     ClientSecrets =
                     {
                         new Secret
@@ -47,7 +48,7 @@ namespace Host.Configuration
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     AllowedScopes = { "api1", "api2" }
-                },
+                },*/
 
                 ///////////////////////////////////////////
                 // Custom Grant Sample
@@ -55,6 +56,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client.custom",
+                    ClientName = "Custom Grant Sample",
                     ClientSecrets = 
                     {
                         new Secret("secret".Sha256())
@@ -70,6 +72,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient",
+                    ClientName = "Console Resource Owner Flow Sample",
                     ClientSecrets = 
                     {
                         new Secret("secret".Sha256())
@@ -93,6 +96,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient.public",
+                    ClientName = "Console Public Resource Owner Flow Sample",
                     RequireClientSecret = false,
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
@@ -139,6 +143,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient.reference",
+                    ClientName = "Introspection Client Sample",
                     ClientSecrets = 
                     {
                         new Secret("secret".Sha256())

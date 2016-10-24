@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -58,34 +59,34 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
             Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
-            Action<OperationalStoreOptions> storeOptionsAction = null)
+            Action<OperationalStoreOptions> storeOptionsAction = null,
+            Action<TokenCleanupOptions> tokenCleanUpOptions = null)
         {
             builder.Services.AddDbContext<PersistedGrantDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
 
-            var options = new OperationalStoreOptions();
-            storeOptionsAction?.Invoke(options);
-            builder.Services.AddSingleton(options);
+            var storeOptions = new OperationalStoreOptions();
+            storeOptionsAction?.Invoke(storeOptions);
+            builder.Services.AddSingleton(storeOptions);
 
-            // If token cleanup enabled
-            if(options.TokenCleanup.Enabled)
-            {
-                // Here, the required service had been injected, so we maybe can use BuildServiceProvider()
-                var serviceProvider = builder.Services.BuildServiceProvider();
-
-                var tokenCleanup = new TokenCleanup(options.TokenCleanup, serviceProvider);
-
-                var appLifetime = serviceProvider.GetService<IApplicationLifetime>();
-                // Will null? maybe never.
-                if(appLifetime != null) {
-                    appLifetime.ApplicationStarted.Register(tokenCleanup.Start);
-                    appLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
-                }
-            }
-
+            var tokenCleanupOptions = new TokenCleanupOptions();
+            tokenCleanUpOptions?.Invoke(tokenCleanupOptions);
+            builder.Services.AddSingleton(tokenCleanupOptions);
+            builder.Services.AddSingleton<TokenCleanup>();
+            
             return builder;
+        }
+
+        public static IApplicationBuilder UseIdentityServerEfTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
+        {
+            var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
+
+            applicationLifetime.ApplicationStarted.Register(tokenCleanup.Start);
+            applicationLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
+
+            return app;
         }
     }
 }

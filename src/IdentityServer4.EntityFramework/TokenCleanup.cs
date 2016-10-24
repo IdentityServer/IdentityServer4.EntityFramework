@@ -8,26 +8,28 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Options;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer4.EntityFramework
 {
     internal class TokenCleanup
     {
+        private readonly ILogger<TokenCleanup> _logger;
+        private readonly IServiceProvider _serviceProvider;
         private readonly TimeSpan _interval;
         private CancellationTokenSource _source;
-        private readonly ILogger _logger;
-        private readonly IServiceProvider _serviceProvider;
 
-        public TokenCleanup(OperationalStoreOptions.TokenCleanupOptions options, IServiceProvider serviceProvider)
+        public TokenCleanup(IServiceProvider serviceProvider, ILogger<TokenCleanup> logger, TokenCleanupOptions options)
         {
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (options.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
-
+            
+            _logger = logger;
             _serviceProvider = serviceProvider;
             _interval = TimeSpan.FromSeconds(options.Interval);
-            _logger = options.LoggerFactory?.CreateLogger(typeof(TokenCleanup).FullName) ?? new NopLogger();
         }
 
         public void Start()
@@ -50,7 +52,7 @@ namespace IdentityServer4.EntityFramework
             _source = null;
         }
 
-        public async Task Start(CancellationToken cancellationToken)
+        private async Task Start(CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -85,13 +87,7 @@ namespace IdentityServer4.EntityFramework
             try
             {
                 _logger.LogTrace("Querying for tokens to clear");
-
-                // 1. CreateScope() each clear token cycle.
-                // 2. CreateScope() in Start(), and dispose the 'serviceScope' in Stop().
-                // 
-                // I choose solution 1.
-
-                // PersistedGrantDbContext is scoped lifetime.
+                
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())
@@ -100,14 +96,14 @@ namespace IdentityServer4.EntityFramework
 
                         _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
 
-                        if (expired.Length > 0) 
+                        if (expired.Length > 0)
                         {
                             context.PersistedGrants.RemoveRange(expired);
-
                             context.SaveChanges();
                         }
                     }
                 }
+
             }
             catch (Exception ex)
             {
