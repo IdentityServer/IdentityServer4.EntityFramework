@@ -20,6 +20,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool AllowRememberConsent { get; set; }
         public List<ClientGrantType> AllowedGrantTypes { get; set; }
         public bool RequirePkce { get; set; }
+        public bool AllowPlainTextPkce { get; set; }
         public bool AllowAccessTokensViaBrowser { get; set; }
         public List<ClientRedirectUri> RedirectUris { get; set; }
         public List<ClientPostLogoutRedirectUri> PostLogoutRedirectUris { get; set; }
