@@ -82,7 +82,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IApplicationBuilder UseIdentityServerEfTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
             var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
-
+            if(tokenCleanup == null)
+            {
+                throw new InvalidOperationException("AddOperationalStore must be called on the service collection.");
+            }
             applicationLifetime.ApplicationStarted.Register(tokenCleanup.Start);
             applicationLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
 
