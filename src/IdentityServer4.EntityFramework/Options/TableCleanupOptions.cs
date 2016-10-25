@@ -2,6 +2,6 @@
 {
     public class TokenCleanupOptions
     {
-        public int Interval { get; set; } = 6;
+        public int Interval { get; set; } = 60;
     }
 }
