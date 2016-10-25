@@ -10,10 +10,10 @@ using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServer4.EntityFramework {
+namespace IdentityServer4.EntityFramework
+{
     internal class TokenCleanup
     {
-        // This logger cross multi-thread, any UI about logger not work correctly. Why EFCore logger correctly?
         private readonly ILogger<TokenCleanup> _logger;
         // The lifetime as long as this singleton, what's scoped lifetime?
         private readonly PersistedGrantDbContext _persistedGrantDbContext;
@@ -52,7 +52,7 @@ namespace IdentityServer4.EntityFramework {
             _source = null;
 
             // Need to dispose here?
-            _persistedGrantDbContext.Dispose();
+            _persistedGrantDbContext?.Dispose();
         }
 
         private async Task Start(CancellationToken cancellationToken)
