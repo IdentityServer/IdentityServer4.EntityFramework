@@ -8,27 +8,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServer4.EntityFramework
-{
+namespace IdentityServer4.EntityFramework {
     internal class TokenCleanup
     {
+        // This logger cross multi-thread, any UI about logger not work correctly. Why EFCore logger correctly?
         private readonly ILogger<TokenCleanup> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        // The lifetime as long as this singleton, what's scoped lifetime?
+        private readonly PersistedGrantDbContext _persistedGrantDbContext;
         private readonly TimeSpan _interval;
         private CancellationTokenSource _source;
 
-        public TokenCleanup(IServiceProvider serviceProvider, ILogger<TokenCleanup> logger, TokenCleanupOptions options)
+        public TokenCleanup(PersistedGrantDbContext persistedGrantDbContext, ILogger<TokenCleanup> logger, TokenCleanupOptions options)
         {
-            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+            if (persistedGrantDbContext == null) throw new ArgumentNullException(nameof(persistedGrantDbContext));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (options.Interval < 1) throw new ArgumentException("interval must be more than 1 second");
             
             _logger = logger;
-            _serviceProvider = serviceProvider;
+            _persistedGrantDbContext = persistedGrantDbContext;
             _interval = TimeSpan.FromSeconds(options.Interval);
         }
 
@@ -50,6 +50,9 @@ namespace IdentityServer4.EntityFramework
 
             _source.Cancel();
             _source = null;
+
+            // Need to dispose here?
+            _persistedGrantDbContext.Dispose();
         }
 
         private async Task Start(CancellationToken cancellationToken)
@@ -87,23 +90,16 @@ namespace IdentityServer4.EntityFramework
             try
             {
                 _logger.LogTrace("Querying for tokens to clear");
-                
-                using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+
+                var expired = _persistedGrantDbContext.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
+
+                _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
+
+                if (expired.Length > 0)
                 {
-                    using (var context = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>())
-                    {
-                        var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
-
-                        _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
-
-                        if (expired.Length > 0)
-                        {
-                            context.PersistedGrants.RemoveRange(expired);
-                            context.SaveChanges();
-                        }
-                    }
+                    _persistedGrantDbContext.PersistedGrants.RemoveRange(expired);
+                    _persistedGrantDbContext.SaveChanges();
                 }
-
             }
             catch (Exception ex)
             {
