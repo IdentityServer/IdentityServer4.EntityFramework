@@ -31,7 +31,7 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("AllowAccessTokensViaBrowser");
 
-                    b.Property<bool>("AllowPromptNone");
+                    b.Property<bool>("AllowPlainTextPkce");
 
                     b.Property<bool>("AllowRememberConsent");
 
@@ -66,7 +66,9 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("PrefixClientClaims");
 
-                    b.Property<bool>("PublicClient");
+                    b.Property<string>("ProtocolType")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
 
                     b.Property<int>("RefreshTokenExpiration");
 

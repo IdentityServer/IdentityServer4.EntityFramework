@@ -10,6 +10,7 @@ namespace IdentityServer4.EntityFramework.Entities
     {
         public int Id { get; set; }
         public string ClientId { get; set; }
+        public string ProtocolType { get; set; }
         public string ClientName { get; set; }
         public bool Enabled { get; set; }
         public List<ClientSecret> ClientSecrets { get; set; }

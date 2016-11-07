@@ -5,10 +5,9 @@
 using System.Linq;
 using System.Reflection;
 using Host.Configuration;
-using IdentityServer4.EntityFramework;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +28,7 @@ namespace Host
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
-                .SetTemporarySigningCredential()
+                .AddTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
 
                 .AddConfigurationStore(builder =>
@@ -41,7 +40,7 @@ namespace Host
                         options => options.MigrationsAssembly(migrationsAssembly)));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -53,21 +52,17 @@ namespace Host
             loggerFactory.AddSerilog();
 
             //app.UseDeveloperExceptionPage();
-            
+
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetService<ConfigurationDbContext>().Database.Migrate();
                 serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
                 EnsureSeedData(serviceScope.ServiceProvider.GetService<ConfigurationDbContext>());
-
-                //var dbContextOptions = app.ApplicationServices.GetRequiredService<DbContextOptions<PersistedGrantDbContext>>();
-                var options = serviceScope.ServiceProvider.GetService<DbContextOptions<PersistedGrantDbContext>>();
-                //var tokenCleanup = new TokenCleanup(options);
-                //tokenCleanup.Start();
             }
 
             app.UseIdentityServer();
+            app.UseIdentityServerEfTokenCleanup(applicationLifetime);
             
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
