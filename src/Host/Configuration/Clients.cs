@@ -20,6 +20,7 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client",
+                    ClientName = "Console Client Credentials Flow Sample",
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
@@ -32,9 +33,10 @@ namespace Host.Configuration
                 ///////////////////////////////////////////
                 // Console Client Credentials Flow with client JWT assertion
                 //////////////////////////////////////////
-                new Client
+                /*new Client
                 {
                     ClientId = "client.jwt",
+                    ClientName = "Console Client Credentials Flow with client JWT assertion",
                     ClientSecrets =
                     {
                         new Secret
@@ -46,7 +48,7 @@ namespace Host.Configuration
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     AllowedScopes = { "api1", "api2" }
-                },
+                },*/
 
                 ///////////////////////////////////////////
                 // Custom Grant Sample
@@ -54,7 +56,8 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "client.custom",
-                    ClientSecrets = 
+                    ClientName = "Custom Grant Sample",
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -69,14 +72,15 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient",
-                    ClientSecrets = 
+                    ClientName = "Console Resource Owner Flow Sample",
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Email.Name,
@@ -92,11 +96,12 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient.public",
+                    ClientName = "Console Public Resource Owner Flow Sample",
                     RequireClientSecret = false,
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Email.Name,
@@ -138,7 +143,8 @@ namespace Host.Configuration
                 new Client
                 {
                     ClientId = "roclient.reference",
-                    ClientSecrets = 
+                    ClientName = "Introspection Client Sample",
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -203,11 +209,11 @@ namespace Host.Configuration
                     ClientName = "MVC Hybrid",
                     ClientUri = "http://identityserver.io",
 
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    
+
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     AllowAccessTokensViaBrowser = false,
 
@@ -215,7 +221,7 @@ namespace Host.Configuration
                     LogoutUri = "http://localhost:21402/signout-oidc",
                     PostLogoutRedirectUris = { "http://localhost:21402/" },
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Profile.Name,
@@ -257,7 +263,7 @@ namespace Host.Configuration
                     RequireClientSecret = false,
                     AccessTokenType = AccessTokenType.Reference,
 
-                    RedirectUris = 
+                    RedirectUris =
                     {
                         "http://localhost:7017/index.html",
                         "http://localhost:7017/silent_renew.html",
