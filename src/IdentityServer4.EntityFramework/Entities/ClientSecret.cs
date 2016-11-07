@@ -3,6 +3,7 @@
 
 
 using System;
+using static IdentityServer4.IdentityServerConstants;
 
 namespace IdentityServer4.EntityFramework.Entities
 {
@@ -12,7 +13,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public string Description { get; set; }
         public string Value { get; set; }
         public DateTime? Expiration { get; set; }
-        public string Type { get; set; }
+        public string Type { get; set; } = SecretTypes.SharedSecret;
         public Client Client { get; set; }
     }
 }
