@@ -28,7 +28,7 @@ namespace Host
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
-                .SetTemporarySigningCredential()
+                .AddTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
 
                 .AddConfigurationStore(builder =>

@@ -8,7 +8,7 @@ using IdentityServer4.EntityFramework.DbContexts;
 namespace Host.Migrations
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20161007133623_Grants")]
+    [Migration("20161107131124_Grants")]
     partial class Grants
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -8,7 +8,7 @@ using IdentityServer4.EntityFramework.DbContexts;
 namespace Host.Migrations.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20161007133633_Config")]
+    [Migration("20161107131132_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("AllowAccessTokensViaBrowser");
 
-                    b.Property<bool>("AllowPromptNone");
+                    b.Property<bool>("AllowPlainTextPkce");
 
                     b.Property<bool>("AllowRememberConsent");
 
@@ -67,7 +67,9 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("PrefixClientClaims");
 
-                    b.Property<bool>("PublicClient");
+                    b.Property<string>("ProtocolType")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
 
                     b.Property<int>("RefreshTokenExpiration");
 

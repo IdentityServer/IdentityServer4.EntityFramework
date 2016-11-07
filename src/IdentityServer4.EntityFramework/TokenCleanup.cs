@@ -103,7 +103,6 @@ namespace IdentityServer4.EntityFramework
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {

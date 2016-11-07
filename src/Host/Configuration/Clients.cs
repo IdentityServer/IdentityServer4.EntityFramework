@@ -57,7 +57,7 @@ namespace Host.Configuration
                 {
                     ClientId = "client.custom",
                     ClientName = "Custom Grant Sample",
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -73,14 +73,14 @@ namespace Host.Configuration
                 {
                     ClientId = "roclient",
                     ClientName = "Console Resource Owner Flow Sample",
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Email.Name,
@@ -101,7 +101,7 @@ namespace Host.Configuration
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Email.Name,
@@ -144,7 +144,7 @@ namespace Host.Configuration
                 {
                     ClientId = "roclient.reference",
                     ClientName = "Introspection Client Sample",
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -209,11 +209,11 @@ namespace Host.Configuration
                     ClientName = "MVC Hybrid",
                     ClientUri = "http://identityserver.io",
 
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    
+
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     AllowAccessTokensViaBrowser = false,
 
@@ -221,7 +221,7 @@ namespace Host.Configuration
                     LogoutUri = "http://localhost:21402/signout-oidc",
                     PostLogoutRedirectUris = { "http://localhost:21402/" },
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Profile.Name,
@@ -263,7 +263,7 @@ namespace Host.Configuration
                     RequireClientSecret = false,
                     AccessTokenType = AccessTokenType.Reference,
 
-                    RedirectUris = 
+                    RedirectUris =
                     {
                         "http://localhost:7017/index.html",
                         "http://localhost:7017/silent_renew.html",

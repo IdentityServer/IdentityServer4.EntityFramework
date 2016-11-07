@@ -29,6 +29,7 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.HasKey(x => x.Id);
 
                 client.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
+                client.Property(x => x.ProtocolType).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientName).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientUri).HasMaxLength(2000);
 
