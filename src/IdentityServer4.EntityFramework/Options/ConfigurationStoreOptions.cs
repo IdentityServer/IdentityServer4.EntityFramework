@@ -1,12 +1,21 @@
-﻿namespace IdentityServer4.EntityFramework.Options
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
+namespace IdentityServer4.EntityFramework.Options
 {
     public class ConfigurationStoreOptions
     {
         public string DefaultSchema { get; set; } = null;
 
-        public TableConfiguration Scope { get; set; } = new TableConfiguration("Scopes");
-        public TableConfiguration ScopeClaim { get; set; } = new TableConfiguration("ScopeClaims");
-        public TableConfiguration ScopeSecret { get; set; } = new TableConfiguration("ScopeSecrets");
+        public TableConfiguration IdentityResource { get; set; } = new TableConfiguration("IdentityResources");
+        public TableConfiguration IdentityClaim { get; set; } = new TableConfiguration("IdentityClaims");
+
+        public TableConfiguration ApiResource { get; set; } = new TableConfiguration("ApiResources");
+        public TableConfiguration ApiSecret { get; set; } = new TableConfiguration("ApiSecrets");
+        public TableConfiguration ApiScope { get; set; } = new TableConfiguration("ApiScopes");
+        public TableConfiguration ApiClaim { get; set; } = new TableConfiguration("ApiClaims");
+        public TableConfiguration ApiScopeClaim { get; set; } = new TableConfiguration("ApiScopeClaims");
 
         public TableConfiguration Client { get; set; } = new TableConfiguration("Clients");
         public TableConfiguration ClientGrantType { get; set; } = new TableConfiguration("ClientGrantTypes");

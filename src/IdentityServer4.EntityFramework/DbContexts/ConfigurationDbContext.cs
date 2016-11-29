@@ -24,7 +24,8 @@ namespace IdentityServer4.EntityFramework.DbContexts
         }
 
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Scope> Scopes { get; set; }
+        public DbSet<IdentityResource> IdentityResources { get; set; }
+        public DbSet<ApiResource> ApiResources { get; set; }
 
         public Task<int> SaveChangesAsync()
         {
@@ -34,7 +35,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ConfigureClientContext(storeOptions);
-            modelBuilder.ConfigureScopeContext(storeOptions);
+            modelBuilder.ConfigureResourcesContext(storeOptions);
 
             base.OnModelCreating(modelBuilder);
         }

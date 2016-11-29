@@ -10,6 +10,20 @@ namespace Host.Migrations.ConfigurationDb
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ApiResources",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Enabled = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApiResources", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Clients",
                 columns: table => new
                 {
@@ -20,12 +34,13 @@ namespace Host.Migrations.ConfigurationDb
                     AccessTokenType = table.Column<int>(nullable: false),
                     AllowAccessToAllScopes = table.Column<bool>(nullable: false),
                     AllowAccessTokensViaBrowser = table.Column<bool>(nullable: false),
+                    AllowOfflineAccess = table.Column<bool>(nullable: false),
                     AllowPlainTextPkce = table.Column<bool>(nullable: false),
                     AllowRememberConsent = table.Column<bool>(nullable: false),
                     AlwaysSendClientClaims = table.Column<bool>(nullable: false),
                     AuthorizationCodeLifetime = table.Column<int>(nullable: false),
                     ClientId = table.Column<string>(maxLength: 200, nullable: false),
-                    ClientName = table.Column<string>(maxLength: 200, nullable: false),
+                    ClientName = table.Column<string>(maxLength: 200, nullable: true),
                     ClientUri = table.Column<string>(maxLength: 2000, nullable: true),
                     EnableLocalLogin = table.Column<bool>(nullable: false),
                     Enabled = table.Column<bool>(nullable: false),
@@ -50,26 +65,92 @@ namespace Host.Migrations.ConfigurationDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "Scopes",
+                name: "IdentityResources",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AllowUnrestrictedIntrospection = table.Column<bool>(nullable: false),
-                    ClaimsRule = table.Column<string>(maxLength: 200, nullable: true),
                     Description = table.Column<string>(maxLength: 1000, nullable: true),
                     DisplayName = table.Column<string>(maxLength: 200, nullable: true),
                     Emphasize = table.Column<bool>(nullable: false),
                     Enabled = table.Column<bool>(nullable: false),
-                    IncludeAllClaimsForUser = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 200, nullable: false),
                     Required = table.Column<bool>(nullable: false),
-                    ShowInDiscoveryDocument = table.Column<bool>(nullable: false),
-                    Type = table.Column<int>(nullable: false)
+                    ShowInDiscoveryDocument = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Scopes", x => x.Id);
+                    table.PrimaryKey("PK_IdentityResources", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApiClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
+                    ApiResourceId = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    Type = table.Column<string>(maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApiClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ApiClaims_ApiResources_ApiResourceId",
+                        column: x => x.ApiResourceId,
+                        principalTable: "ApiResources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApiScopes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApiResourceId = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    DisplayName = table.Column<string>(maxLength: 200, nullable: true),
+                    Emphasize = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    Required = table.Column<bool>(nullable: false),
+                    ShowInDiscoveryDocument = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApiScopes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ApiScopes_ApiResources_ApiResourceId",
+                        column: x => x.ApiResourceId,
+                        principalTable: "ApiResources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApiSecrets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApiResourceId = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    Expiration = table.Column<DateTime>(nullable: true),
+                    Type = table.Column<string>(maxLength: 250, nullable: true),
+                    Value = table.Column<string>(maxLength: 2000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApiSecrets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ApiSecrets_ApiResources_ApiResourceId",
+                        column: x => x.ApiResourceId,
+                        principalTable: "ApiResources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -223,7 +304,7 @@ namespace Host.Migrations.ConfigurationDb
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     Expiration = table.Column<DateTime>(nullable: true),
                     Type = table.Column<string>(maxLength: 250, nullable: true),
-                    Value = table.Column<string>(maxLength: 250, nullable: false)
+                    Value = table.Column<string>(maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,49 +318,80 @@ namespace Host.Migrations.ConfigurationDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScopeClaims",
+                name: "IdentityClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
                     Description = table.Column<string>(maxLength: 1000, nullable: true),
-                    Name = table.Column<string>(maxLength: 200, nullable: false),
-                    ScopeId = table.Column<int>(nullable: false)
+                    IdentityResourceId = table.Column<int>(nullable: false),
+                    Type = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScopeClaims", x => x.Id);
+                    table.PrimaryKey("PK_IdentityClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScopeClaims_Scopes_ScopeId",
-                        column: x => x.ScopeId,
-                        principalTable: "Scopes",
+                        name: "FK_IdentityClaims_IdentityResources_IdentityResourceId",
+                        column: x => x.IdentityResourceId,
+                        principalTable: "IdentityResources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScopeSecrets",
+                name: "ApiScopeClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
+                    ApiScopeId = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 1000, nullable: true),
-                    Expiration = table.Column<DateTime>(nullable: true),
-                    ScopeId = table.Column<int>(nullable: false),
-                    Type = table.Column<string>(maxLength: 250, nullable: true),
-                    Value = table.Column<string>(maxLength: 250, nullable: true)
+                    Type = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScopeSecrets", x => x.Id);
+                    table.PrimaryKey("PK_ApiScopeClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScopeSecrets_Scopes_ScopeId",
-                        column: x => x.ScopeId,
-                        principalTable: "Scopes",
+                        name: "FK_ApiScopeClaims_ApiScopes_ApiScopeId",
+                        column: x => x.ApiScopeId,
+                        principalTable: "ApiScopes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApiResources_Name",
+                table: "ApiResources",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApiClaims_ApiResourceId",
+                table: "ApiClaims",
+                column: "ApiResourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApiScopes_ApiResourceId",
+                table: "ApiScopes",
+                column: "ApiResourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApiScopes_Name",
+                table: "ApiScopes",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApiScopeClaims_ApiScopeId",
+                table: "ApiScopeClaims",
+                column: "ApiScopeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApiSecrets_ApiResourceId",
+                table: "ApiSecrets",
+                column: "ApiResourceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clients_ClientId",
@@ -328,24 +440,28 @@ namespace Host.Migrations.ConfigurationDb
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Scopes_Name",
-                table: "Scopes",
+                name: "IX_IdentityClaims_IdentityResourceId",
+                table: "IdentityClaims",
+                column: "IdentityResourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IdentityResources_Name",
+                table: "IdentityResources",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ScopeClaims_ScopeId",
-                table: "ScopeClaims",
-                column: "ScopeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ScopeSecrets_ScopeId",
-                table: "ScopeSecrets",
-                column: "ScopeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApiClaims");
+
+            migrationBuilder.DropTable(
+                name: "ApiScopeClaims");
+
+            migrationBuilder.DropTable(
+                name: "ApiSecrets");
+
             migrationBuilder.DropTable(
                 name: "ClientClaims");
 
@@ -371,16 +487,19 @@ namespace Host.Migrations.ConfigurationDb
                 name: "ClientSecrets");
 
             migrationBuilder.DropTable(
-                name: "ScopeClaims");
+                name: "IdentityClaims");
 
             migrationBuilder.DropTable(
-                name: "ScopeSecrets");
+                name: "ApiScopes");
 
             migrationBuilder.DropTable(
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "Scopes");
+                name: "IdentityResources");
+
+            migrationBuilder.DropTable(
+                name: "ApiResources");
         }
     }
 }

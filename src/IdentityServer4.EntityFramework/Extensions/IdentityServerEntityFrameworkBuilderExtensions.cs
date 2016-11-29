@@ -28,7 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
-            builder.Services.AddTransient<IScopeStore, ScopeStore>();
+            builder.Services.AddTransient<IResourceStore, ResourceStore>();
             builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
 
             var options = new ConfigurationStoreOptions();
@@ -41,17 +41,16 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddConfigurationStoreCache(
             this IIdentityServerBuilder builder)
         {
-            builder.Services.AddMemoryCache(); // TODO: remove once update idsvr since it does this
             builder.AddInMemoryCaching();
 
             // these need to be registered as concrete classes in DI for
             // the caching decorators to work
             builder.Services.AddTransient<ClientStore>();
-            builder.Services.AddTransient<ScopeStore>();
+            builder.Services.AddTransient<ResourceStore>();
 
             // add the caching decorators
             builder.AddClientStoreCache<ClientStore>();
-            builder.AddScopeStoreCache<ScopeStore>();
+            builder.AddResourceStoreCache<ResourceStore>();
 
             return builder;
         }

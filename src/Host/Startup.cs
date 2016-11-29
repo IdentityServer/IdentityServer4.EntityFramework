@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using IdentityServer4.Validation;
 
 namespace Host
 {
@@ -30,6 +31,8 @@ namespace Host
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
                 .AddInMemoryUsers(Users.Get())
+                .AddSecretParser<ClientAssertionSecretParser>()
+                .AddSecretValidator<PrivateKeyJwtSecretValidator>()
 
                 .AddConfigurationStore(builder =>
                     builder.UseSqlServer(connectionString,
@@ -79,11 +82,20 @@ namespace Host
                 context.SaveChanges();
             }
 
-            if (!context.Scopes.Any())
+            if (!context.IdentityResources.Any())
             {
-                foreach (var client in Scopes.Get().ToList())
+                foreach (var resource in Resources.GetIdentityResources().ToList())
                 {
-                    context.Scopes.Add(client.ToEntity());
+                    context.IdentityResources.Add(resource.ToEntity());
+                }
+                context.SaveChanges();
+            }
+
+            if (!context.ApiResources.Any())
+            {
+                foreach (var resource in Resources.GetApiResources().ToList())
+                {
+                    context.ApiResources.Add(resource.ToEntity());
                 }
                 context.SaveChanges();
             }

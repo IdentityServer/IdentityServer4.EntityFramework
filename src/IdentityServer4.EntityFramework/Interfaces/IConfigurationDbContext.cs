@@ -12,7 +12,8 @@ namespace IdentityServer4.EntityFramework.Interfaces
     public interface IConfigurationDbContext : IDisposable
     {
         DbSet<Client> Clients { get; set; }
-        DbSet<Scope> Scopes { get; set; }
+        DbSet<IdentityResource> IdentityResources { get; set; }
+        DbSet<ApiResource> ApiResources { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync();

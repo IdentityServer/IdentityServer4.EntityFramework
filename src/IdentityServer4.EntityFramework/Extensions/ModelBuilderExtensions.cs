@@ -30,7 +30,7 @@ namespace IdentityServer4.EntityFramework.Extensions
 
                 client.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ProtocolType).HasMaxLength(200).IsRequired();
-                client.Property(x => x.ClientName).HasMaxLength(200).IsRequired();
+                client.Property(x => x.ClientName).HasMaxLength(200);
                 client.Property(x => x.ClientUri).HasMaxLength(2000);
 
                 client.HasIndex(x => x.ClientId).IsUnique();
@@ -72,7 +72,7 @@ namespace IdentityServer4.EntityFramework.Extensions
             modelBuilder.Entity<ClientSecret>(secret =>
             {
                 secret.ToTable(storeOptions.ClientSecret);
-                secret.Property(x => x.Value).HasMaxLength(250).IsRequired();
+                secret.Property(x => x.Value).HasMaxLength(2000).IsRequired();
                 secret.Property(x => x.Type).HasMaxLength(250);
                 secret.Property(x => x.Description).HasMaxLength(2000);
             });
@@ -118,38 +118,81 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
-        public static void ConfigureScopeContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
+        public static void ConfigureResourcesContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);
 
-            modelBuilder.Entity<ScopeClaim>(scopeClaim =>
+            modelBuilder.Entity<IdentityResource>(identityResource =>
             {
-                scopeClaim.ToTable(storeOptions.ScopeClaim).HasKey(x => x.Id);
-                scopeClaim.Property(x => x.Name).HasMaxLength(200).IsRequired();
-                scopeClaim.Property(x => x.Description).HasMaxLength(1000);
+                identityResource.ToTable(storeOptions.IdentityResource).HasKey(x => x.Id);
+
+                identityResource.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                identityResource.Property(x => x.DisplayName).HasMaxLength(200);
+                identityResource.Property(x => x.Description).HasMaxLength(1000);
+
+                identityResource.HasIndex(x => x.Name).IsUnique();
+
+                identityResource.HasMany(x => x.UserClaims).WithOne(x => x.IdentityResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<ScopeSecret>(scopeSecret =>
+            modelBuilder.Entity<IdentityClaim>(claim =>
             {
-                scopeSecret.ToTable(storeOptions.ScopeSecret).HasKey(x => x.Id);
-                scopeSecret.Property(x => x.Description).HasMaxLength(1000);
-                scopeSecret.Property(x => x.Type).HasMaxLength(250);
-                scopeSecret.Property(x => x.Value).HasMaxLength(250);
+                claim.ToTable(storeOptions.IdentityClaim).HasKey(x => x.Id);
+
+                claim.Property(x => x.Type).HasMaxLength(200).IsRequired();
+                claim.Property(x => x.Description).HasMaxLength(1000);
             });
 
-            modelBuilder.Entity<Scope>(scope =>
+
+            modelBuilder.Entity<ApiResource>(apiResource =>
             {
-                scope.ToTable(storeOptions.Scope).HasKey(x => x.Id);
+                apiResource.ToTable(storeOptions.ApiResource).HasKey(x => x.Id);
 
-                scope.Property(x => x.Name).HasMaxLength(200).IsRequired();
-                scope.Property(x => x.DisplayName).HasMaxLength(200);
-                scope.Property(x => x.Description).HasMaxLength(1000);
-                scope.Property(x => x.ClaimsRule).HasMaxLength(200);
+                apiResource.Property(x => x.Name).HasMaxLength(200).IsRequired();
 
-                scope.HasIndex(x => x.Name).IsUnique();
+                apiResource.HasIndex(x => x.Name).IsUnique();
 
-                scope.HasMany(x => x.Claims).WithOne(x => x.Scope).IsRequired().OnDelete(DeleteBehavior.Cascade);
-                scope.HasMany(x => x.ScopeSecrets).WithOne(x => x.Scope).IsRequired().OnDelete(DeleteBehavior.Cascade);
+                apiResource.HasMany(x => x.Secrets).WithOne(x => x.ApiResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
+                apiResource.HasMany(x => x.Scopes).WithOne(x => x.ApiResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
+                apiResource.HasMany(x => x.UserClaims).WithOne(x => x.ApiResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ApiSecret>(apiSecret =>
+            {
+                apiSecret.ToTable(storeOptions.ApiSecret).HasKey(x => x.Id);
+
+                apiSecret.Property(x => x.Description).HasMaxLength(1000);
+                apiSecret.Property(x => x.Value).HasMaxLength(2000);
+                apiSecret.Property(x => x.Type).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<ApiResourceClaim>(apiClaim =>
+            {
+                apiClaim.ToTable(storeOptions.ApiClaim).HasKey(x => x.Id);
+
+                apiClaim.Property(x => x.Type).HasMaxLength(200).IsRequired();
+                apiClaim.Property(x => x.Description).HasMaxLength(1000);
+            });
+
+            modelBuilder.Entity<ApiScope>(apiScope =>
+            {
+                apiScope.ToTable(storeOptions.ApiScope).HasKey(x => x.Id);
+
+                apiScope.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                apiScope.Property(x => x.DisplayName).HasMaxLength(200);
+                apiScope.Property(x => x.Description).HasMaxLength(1000);
+
+                apiScope.HasIndex(x => x.Name).IsUnique();
+
+                apiScope.HasMany(x => x.UserClaims).WithOne(x => x.ApiScope).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ApiScopeClaim>(apiScopeClaim =>
+            {
+                apiScopeClaim.ToTable(storeOptions.ApiScopeClaim).HasKey(x => x.Id);
+
+                apiScopeClaim.Property(x => x.Type).HasMaxLength(200).IsRequired();
+                apiScopeClaim.Property(x => x.Description).HasMaxLength(1000);
             });
         }
     }

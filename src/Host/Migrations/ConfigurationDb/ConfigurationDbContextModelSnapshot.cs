@@ -16,6 +16,133 @@ namespace Host.Migrations.ConfigurationDb
                 .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Enabled");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ApiResources");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResourceClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AlwaysIncludeInIdToken");
+
+                    b.Property<int?>("ApiResourceId")
+                        .IsRequired();
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiResourceId");
+
+                    b.ToTable("ApiClaims");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiScope", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ApiResourceId")
+                        .IsRequired();
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<string>("DisplayName")
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.Property<bool>("Emphasize");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.Property<bool>("Required");
+
+                    b.Property<bool>("ShowInDiscoveryDocument");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiResourceId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ApiScopes");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiScopeClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AlwaysIncludeInIdToken");
+
+                    b.Property<int?>("ApiScopeId")
+                        .IsRequired();
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiScopeId");
+
+                    b.ToTable("ApiScopeClaims");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiSecret", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ApiResourceId")
+                        .IsRequired();
+
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<DateTime?>("Expiration");
+
+                    b.Property<string>("Type")
+                        .HasAnnotation("MaxLength", 250);
+
+                    b.Property<string>("Value")
+                        .HasAnnotation("MaxLength", 2000);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApiResourceId");
+
+                    b.ToTable("ApiSecrets");
+                });
+
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.Client", b =>
                 {
                     b.Property<int>("Id")
@@ -31,6 +158,8 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("AllowAccessTokensViaBrowser");
 
+                    b.Property<bool>("AllowOfflineAccess");
+
                     b.Property<bool>("AllowPlainTextPkce");
 
                     b.Property<bool>("AllowRememberConsent");
@@ -44,7 +173,6 @@ namespace Host.Migrations.ConfigurationDb
                         .HasAnnotation("MaxLength", 200);
 
                     b.Property<string>("ClientName")
-                        .IsRequired()
                         .HasAnnotation("MaxLength", 200);
 
                     b.Property<string>("ClientUri")
@@ -247,7 +375,7 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasAnnotation("MaxLength", 250);
+                        .HasAnnotation("MaxLength", 2000);
 
                     b.HasKey("Id");
 
@@ -256,15 +384,34 @@ namespace Host.Migrations.ConfigurationDb
                     b.ToTable("ClientSecrets");
                 });
 
-            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.Scope", b =>
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.IdentityClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AllowUnrestrictedIntrospection");
+                    b.Property<bool>("AlwaysIncludeInIdToken");
 
-                    b.Property<string>("ClaimsRule")
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<int?>("IdentityResourceId")
+                        .IsRequired();
+
+                    b.Property<string>("Type")
+                        .IsRequired()
                         .HasAnnotation("MaxLength", 200);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityResourceId");
+
+                    b.ToTable("IdentityClaims");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.IdentityResource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description")
                         .HasAnnotation("MaxLength", 1000);
@@ -276,8 +423,6 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("Enabled");
 
-                    b.Property<bool>("IncludeAllClaimsForUser");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasAnnotation("MaxLength", 200);
@@ -286,64 +431,44 @@ namespace Host.Migrations.ConfigurationDb
 
                     b.Property<bool>("ShowInDiscoveryDocument");
 
-                    b.Property<int>("Type");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Scopes");
+                    b.ToTable("IdentityResources");
                 });
 
-            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeClaim", b =>
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResourceClaim", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("AlwaysIncludeInIdToken");
-
-                    b.Property<string>("Description")
-                        .HasAnnotation("MaxLength", 1000);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasAnnotation("MaxLength", 200);
-
-                    b.Property<int?>("ScopeId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScopeId");
-
-                    b.ToTable("ScopeClaims");
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.ApiResource", "ApiResource")
+                        .WithMany("UserClaims")
+                        .HasForeignKey("ApiResourceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeSecret", b =>
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiScope", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.ApiResource", "ApiResource")
+                        .WithMany("Scopes")
+                        .HasForeignKey("ApiResourceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
 
-                    b.Property<string>("Description")
-                        .HasAnnotation("MaxLength", 1000);
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiScopeClaim", b =>
+                {
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.ApiScope", "ApiScope")
+                        .WithMany("UserClaims")
+                        .HasForeignKey("ApiScopeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
 
-                    b.Property<DateTime?>("Expiration");
-
-                    b.Property<int?>("ScopeId")
-                        .IsRequired();
-
-                    b.Property<string>("Type")
-                        .HasAnnotation("MaxLength", 250);
-
-                    b.Property<string>("Value")
-                        .HasAnnotation("MaxLength", 250);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScopeId");
-
-                    b.ToTable("ScopeSecrets");
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiSecret", b =>
+                {
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.ApiResource", "ApiResource")
+                        .WithMany("Secrets")
+                        .HasForeignKey("ApiResourceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ClientClaim", b =>
@@ -410,19 +535,11 @@ namespace Host.Migrations.ConfigurationDb
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeClaim", b =>
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.IdentityClaim", b =>
                 {
-                    b.HasOne("IdentityServer4.EntityFramework.Entities.Scope", "Scope")
-                        .WithMany("Claims")
-                        .HasForeignKey("ScopeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ScopeSecret", b =>
-                {
-                    b.HasOne("IdentityServer4.EntityFramework.Entities.Scope", "Scope")
-                        .WithMany("ScopeSecrets")
-                        .HasForeignKey("ScopeId")
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.IdentityResource", "IdentityResource")
+                        .WithMany("UserClaims")
+                        .HasForeignKey("IdentityResourceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

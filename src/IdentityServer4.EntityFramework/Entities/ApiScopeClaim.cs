@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-namespace IdentityServer4.Quickstart.UI.Models
+namespace IdentityServer4.EntityFramework.Entities
 {
-    public class LogoutViewModel
+    public class ApiScopeClaim : UserClaim
     {
-        public string LogoutId { get; set; }
+        public ApiScope ApiScope { get; set; }
     }
 }

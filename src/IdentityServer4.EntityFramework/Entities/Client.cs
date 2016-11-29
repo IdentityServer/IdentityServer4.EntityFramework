@@ -31,6 +31,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool LogoutSessionRequired { get; set; } = true;
         public bool AllowAccessToAllScopes { get; set; }
         public List<ClientScope> AllowedScopes { get; set; }
+        public bool AllowOfflineAccess { get; set; }
         public int IdentityTokenLifetime { get; set; } = 300;
         public int AccessTokenLifetime { get; set; } = 3600;
         public int AuthorizationCodeLifetime { get; set; } = 300;
