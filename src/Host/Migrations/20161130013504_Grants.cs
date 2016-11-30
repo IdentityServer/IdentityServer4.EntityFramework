@@ -12,13 +12,13 @@ namespace Host.Migrations
                 name: "PersistedGrants",
                 columns: table => new
                 {
-                    Key = table.Column<string>(nullable: false),
-                    Type = table.Column<string>(nullable: false),
+                    Key = table.Column<string>(maxLength: 200, nullable: false),
+                    Type = table.Column<string>(maxLength: 50, nullable: false),
                     ClientId = table.Column<string>(maxLength: 200, nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
                     Data = table.Column<string>(nullable: false),
                     Expiration = table.Column<DateTime>(nullable: false),
-                    SubjectId = table.Column<string>(nullable: true)
+                    SubjectId = table.Column<string>(maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
