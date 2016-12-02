@@ -267,7 +267,7 @@ namespace Host.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "api1", "api2.read_only"
+                        "api1", "api2.read_only", "api2.full_access"
                     },
                 },
             };
