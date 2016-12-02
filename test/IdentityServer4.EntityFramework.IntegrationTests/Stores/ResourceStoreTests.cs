@@ -92,7 +92,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 resources = store.FindResourcesAsync(new List<string>
                 {
                     testIdentityResource.Name,
-                    testApiResource.Name
+                    testApiResource.Scopes.First().Name
                 }).Result;
             }
 
@@ -126,7 +126,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 resources = store.FindResourcesAsync(new List<string>
                 {
                     testIdentityResource.Name,
-                    testApiResource.Name
+                    testApiResource.Scopes.First().Name
                 }).Result;
             }
 

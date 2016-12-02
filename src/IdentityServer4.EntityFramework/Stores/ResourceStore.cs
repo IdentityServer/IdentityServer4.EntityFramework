@@ -61,8 +61,8 @@ namespace IdentityServer4.EntityFramework.Stores
 
             var query =
                 from api in _context.ApiResources
-                let scopes = api.Scopes.SelectMany(x => x.Name)
-                where names.Intersect(scopeNames).Any()
+                let scopes = api.Scopes.Select(x => x.Name)
+                where scopes.Intersect(names).Any()
                 select api;
 
             var apis = query
