@@ -104,6 +104,40 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotNull(resources.IdentityResources.FirstOrDefault(x => x.Name == testIdentityResource.Name));
             Assert.NotNull(resources.ApiResources.FirstOrDefault(x => x.Name == testApiResource.Name));
         }
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindResourcesAsync_WhenResourcesExist_ExpectOnlyResourcesRequestedReturned(DbContextOptions<ConfigurationDbContext> options)
+        {
+            var testIdentityResource = CreateIdentityTestResource();
+            var testApiResource = CreateApiTestResource();
+
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
+            {
+                context.IdentityResources.Add(testIdentityResource.ToEntity());
+                context.ApiResources.Add(testApiResource.ToEntity());
+                context.IdentityResources.Add(CreateIdentityTestResource().ToEntity());
+                context.ApiResources.Add(CreateApiTestResource().ToEntity());
+                context.SaveChanges();
+            }
+
+            Resources resources;
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
+            {
+                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                resources = store.FindResourcesAsync(new List<string>
+                {
+                    testIdentityResource.Name,
+                    testApiResource.Name
+                }).Result;
+            }
+
+            Assert.NotNull(resources);
+            Assert.NotNull(resources.IdentityResources);
+            Assert.NotEmpty(resources.IdentityResources);
+            Assert.NotNull(resources.ApiResources);
+            Assert.NotEmpty(resources.ApiResources);
+            Assert.Equal(1, resources.IdentityResources.Count);
+            Assert.Equal(1, resources.ApiResources.Count);
+        }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
         public void GetAllResources_WhenAllResourcesRequested_ExpectAllResourcesIncludingHidden(DbContextOptions<ConfigurationDbContext> options)
@@ -172,6 +206,33 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindIdentityResourcesByScopeAsync_WhenResourcesExist_ExpectOnlyRequestedReturned(DbContextOptions<ConfigurationDbContext> options)
+        {
+            var resource = CreateIdentityTestResource();
+
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
+            {
+                context.IdentityResources.Add(resource.ToEntity());
+                context.IdentityResources.Add(CreateIdentityTestResource().ToEntity());
+                context.SaveChanges();
+            }
+
+            IList<IdentityResource> resources;
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
+            {
+                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                resources = store.FindIdentityResourcesByScopeAsync(new List<string>
+                {
+                    resource.Name
+                }).Result.ToList();
+            }
+
+            Assert.NotNull(resources);
+            Assert.NotEmpty(resources);
+            Assert.Equal(1, resources.Count);
+        }
+
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
         public void FindApiResourceAsync_WhenResourceExists_ExpectResourceAndCollectionsReturned(DbContextOptions<ConfigurationDbContext> options)
         {
             var resource = CreateApiTestResource();
@@ -228,6 +289,31 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotNull(resources.First().Scopes);
             Assert.NotEmpty(resources.First().Scopes);
             Assert.True(resources.First().Scopes.Any(x => x.UserClaims.Any()));
+        }
+
+        [Theory, MemberData(nameof(TestDatabaseProviders))]
+        public void FindApiResourcesByScopeAsync_WhenMultipleResourcesExist_ExpectOnlyRequestedResourcesReturned(DbContextOptions<ConfigurationDbContext> options)
+        {
+            var resource = CreateApiTestResource();
+
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
+            {
+                context.ApiResources.Add(resource.ToEntity());
+                context.ApiResources.Add(CreateApiTestResource().ToEntity());
+                context.ApiResources.Add(CreateApiTestResource().ToEntity());
+                context.SaveChanges();
+            }
+
+            IList<ApiResource> resources;
+            using (var context = new ConfigurationDbContext(options, StoreOptions))
+            {
+                var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
+                resources = store.FindApiResourcesByScopeAsync(new List<string> {resource.Scopes.First().Name}).Result.ToList();
+            }
+
+            Assert.NotNull(resources);
+            Assert.NotEmpty(resources);
+            Assert.Equal(1, resources.Count);
         }
     }
 }
