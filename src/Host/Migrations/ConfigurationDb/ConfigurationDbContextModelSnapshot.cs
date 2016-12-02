@@ -21,6 +21,12 @@ namespace Host.Migrations.ConfigurationDb
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Description")
+                        .HasAnnotation("MaxLength", 1000);
+
+                    b.Property<string>("DisplayName")
+                        .HasAnnotation("MaxLength", 200);
+
                     b.Property<bool>("Enabled");
 
                     b.Property<string>("Name")
@@ -40,13 +46,8 @@ namespace Host.Migrations.ConfigurationDb
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AlwaysIncludeInIdToken");
-
                     b.Property<int?>("ApiResourceId")
                         .IsRequired();
-
-                    b.Property<string>("Description")
-                        .HasAnnotation("MaxLength", 1000);
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -98,13 +99,8 @@ namespace Host.Migrations.ConfigurationDb
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AlwaysIncludeInIdToken");
-
                     b.Property<int?>("ApiScopeId")
                         .IsRequired();
-
-                    b.Property<string>("Description")
-                        .HasAnnotation("MaxLength", 1000);
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -153,8 +149,6 @@ namespace Host.Migrations.ConfigurationDb
                     b.Property<int>("AccessTokenLifetime");
 
                     b.Property<int>("AccessTokenType");
-
-                    b.Property<bool>("AllowAccessToAllScopes");
 
                     b.Property<bool>("AllowAccessTokensViaBrowser");
 
@@ -388,11 +382,6 @@ namespace Host.Migrations.ConfigurationDb
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("AlwaysIncludeInIdToken");
-
-                    b.Property<string>("Description")
-                        .HasAnnotation("MaxLength", 1000);
 
                     b.Property<int?>("IdentityResourceId")
                         .IsRequired();

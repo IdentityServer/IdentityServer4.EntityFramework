@@ -15,6 +15,8 @@ namespace Host.Migrations.ConfigurationDb
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(maxLength: 1000, nullable: true),
+                    DisplayName = table.Column<string>(maxLength: 200, nullable: true),
                     Enabled = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 200, nullable: false)
                 },
@@ -32,7 +34,6 @@ namespace Host.Migrations.ConfigurationDb
                     AbsoluteRefreshTokenLifetime = table.Column<int>(nullable: false),
                     AccessTokenLifetime = table.Column<int>(nullable: false),
                     AccessTokenType = table.Column<int>(nullable: false),
-                    AllowAccessToAllScopes = table.Column<bool>(nullable: false),
                     AllowAccessTokensViaBrowser = table.Column<bool>(nullable: false),
                     AllowOfflineAccess = table.Column<bool>(nullable: false),
                     AllowPlainTextPkce = table.Column<bool>(nullable: false),
@@ -89,9 +90,7 @@ namespace Host.Migrations.ConfigurationDb
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
                     ApiResourceId = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(maxLength: 1000, nullable: true),
                     Type = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -323,8 +322,6 @@ namespace Host.Migrations.ConfigurationDb
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
-                    Description = table.Column<string>(maxLength: 1000, nullable: true),
                     IdentityResourceId = table.Column<int>(nullable: false),
                     Type = table.Column<string>(maxLength: 200, nullable: false)
                 },
@@ -345,9 +342,7 @@ namespace Host.Migrations.ConfigurationDb
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AlwaysIncludeInIdToken = table.Column<bool>(nullable: false),
                     ApiScopeId = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(maxLength: 1000, nullable: true),
                     Type = table.Column<string>(maxLength: 200, nullable: false)
                 },
                 constraints: table =>

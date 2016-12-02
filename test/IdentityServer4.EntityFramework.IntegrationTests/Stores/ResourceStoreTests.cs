@@ -41,10 +41,10 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 DisplayName = Guid.NewGuid().ToString(),
                 Description = Guid.NewGuid().ToString(),
                 ShowInDiscoveryDocument = true,
-                UserClaims = new List<UserClaim>
+                UserClaims = 
                 {
-                    new UserClaim(JwtClaimTypes.Subject),
-                    new UserClaim(JwtClaimTypes.Name),
+                    JwtClaimTypes.Subject,
+                    JwtClaimTypes.Name,
                 }
             };
         }
@@ -61,13 +61,13 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                         new Scope
                         {
                             Name = Guid.NewGuid().ToString(),
-                            UserClaims = new List<UserClaim> {new UserClaim(Guid.NewGuid().ToString())}
+                            UserClaims = {Guid.NewGuid().ToString()}
                         }
                     },
-                UserClaims = new List<UserClaim>
+                UserClaims = 
                 {
-                    new UserClaim(Guid.NewGuid().ToString()),
-                    new UserClaim(Guid.NewGuid().ToString()),
+                    Guid.NewGuid().ToString(),
+                    Guid.NewGuid().ToString(),
                 }
             };
         }

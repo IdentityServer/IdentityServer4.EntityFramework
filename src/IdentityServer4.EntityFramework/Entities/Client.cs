@@ -29,7 +29,6 @@ namespace IdentityServer4.EntityFramework.Entities
         public List<ClientPostLogoutRedirectUri> PostLogoutRedirectUris { get; set; }
         public string LogoutUri { get; set; }
         public bool LogoutSessionRequired { get; set; } = true;
-        public bool AllowAccessToAllScopes { get; set; }
         public List<ClientScope> AllowedScopes { get; set; }
         public bool AllowOfflineAccess { get; set; }
         public int IdentityTokenLifetime { get; set; } = 300;

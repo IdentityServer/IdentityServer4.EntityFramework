@@ -143,7 +143,6 @@ namespace IdentityServer4.EntityFramework.Extensions
                 claim.ToTable(storeOptions.IdentityClaim).HasKey(x => x.Id);
 
                 claim.Property(x => x.Type).HasMaxLength(200).IsRequired();
-                claim.Property(x => x.Description).HasMaxLength(1000);
             });
 
 
@@ -152,6 +151,8 @@ namespace IdentityServer4.EntityFramework.Extensions
                 apiResource.ToTable(storeOptions.ApiResource).HasKey(x => x.Id);
 
                 apiResource.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                apiResource.Property(x => x.DisplayName).HasMaxLength(200);
+                apiResource.Property(x => x.Description).HasMaxLength(1000);
 
                 apiResource.HasIndex(x => x.Name).IsUnique();
 
@@ -174,7 +175,6 @@ namespace IdentityServer4.EntityFramework.Extensions
                 apiClaim.ToTable(storeOptions.ApiClaim).HasKey(x => x.Id);
 
                 apiClaim.Property(x => x.Type).HasMaxLength(200).IsRequired();
-                apiClaim.Property(x => x.Description).HasMaxLength(1000);
             });
 
             modelBuilder.Entity<ApiScope>(apiScope =>
@@ -195,7 +195,6 @@ namespace IdentityServer4.EntityFramework.Extensions
                 apiScopeClaim.ToTable(storeOptions.ApiScopeClaim).HasKey(x => x.Id);
 
                 apiScopeClaim.Property(x => x.Type).HasMaxLength(200).IsRequired();
-                apiScopeClaim.Property(x => x.Description).HasMaxLength(1000);
             });
         }
     }

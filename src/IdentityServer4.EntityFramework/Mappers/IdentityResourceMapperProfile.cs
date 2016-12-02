@@ -21,13 +21,11 @@ namespace IdentityServer4.EntityFramework.Mappers
         {
             // entity to model
             CreateMap<IdentityResource, Models.IdentityResource>(MemberList.Destination)
-                .ForMember(x => x.UserClaims, opt => opt.MapFrom(src => src.UserClaims.Select(x => x)));
-            CreateMap<IdentityClaim, Models.UserClaim>(MemberList.Destination);
+                .ForMember(x => x.UserClaims, opt => opt.MapFrom(src => src.UserClaims.Select(x => x.Type)));
 
             // model to entity
             CreateMap<Models.IdentityResource, IdentityResource>(MemberList.Source)
-                .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => x)));
-            CreateMap<Models.UserClaim, IdentityClaim>(MemberList.Source);
+                .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new IdentityClaim { Type = x })));
         }
     }
 }

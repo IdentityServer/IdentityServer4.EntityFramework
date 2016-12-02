@@ -47,8 +47,8 @@ namespace Host.Configuration
 
                     UserClaims =
                     {
-                        new UserClaim(JwtClaimTypes.Name),
-                        new UserClaim(JwtClaimTypes.Email)
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.Email
                     },
 
                     Scopes =
