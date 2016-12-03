@@ -54,7 +54,7 @@ namespace Host
             loggerFactory.AddDebug();
             loggerFactory.AddSerilog();
 
-            //app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
 
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
