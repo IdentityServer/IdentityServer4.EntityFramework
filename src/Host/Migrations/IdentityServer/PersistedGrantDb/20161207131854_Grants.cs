@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Host.Migrations
+namespace Host.Migrations.IdentityServer.PersistedGrantDb
 {
     public partial class Grants : Migration
     {
