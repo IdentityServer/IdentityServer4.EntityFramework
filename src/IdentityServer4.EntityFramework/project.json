@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-rc5-*",
   "authors": [ "Brock Allen", "Dominick Baier", "Scott Brady" ],
   "description": "EntityFramework persistence layer for IdentityServer4",
 
@@ -11,7 +11,7 @@
   },
 
   "dependencies": {
-    "IdentityServer4": "1.0.0",
+    "IdentityServer4": "1.0.0-rc5",
     "Microsoft.EntityFrameworkCore": "1.1.0",
     "Microsoft.EntityFrameworkCore.Relational": "1.1.0",
     "AutoMapper": "5.1.1"
