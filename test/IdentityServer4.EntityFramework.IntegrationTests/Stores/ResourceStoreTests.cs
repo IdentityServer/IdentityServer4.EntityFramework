@@ -89,7 +89,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
-                resources = store.FindResourcesAsync(new List<string>
+                resources = store.FindResourcesByScopeAsync(new List<string>
                 {
                     testIdentityResource.Name,
                     testApiResource.Scopes.First().Name
@@ -123,7 +123,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
-                resources = store.FindResourcesAsync(new List<string>
+                resources = store.FindResourcesByScopeAsync(new List<string>
                 {
                     testIdentityResource.Name,
                     testApiResource.Scopes.First().Name

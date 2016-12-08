@@ -11,12 +11,12 @@ namespace IdentityServer4.EntityFramework.Entities
     public class Client
     {
         public int Id { get; set; }
+        public bool Enabled { get; set; } = true;
         public string ClientId { get; set; }
         public string ProtocolType { get; set; } = ProtocolTypes.OpenIdConnect;
-        public string ClientName { get; set; }
-        public bool Enabled { get; set; } = true;
         public List<ClientSecret> ClientSecrets { get; set; }
         public bool RequireClientSecret { get; set; } = true;
+        public string ClientName { get; set; }
         public string ClientUri { get; set; }
         public string LogoUri { get; set; }
         public bool RequireConsent { get; set; } = true;
@@ -29,8 +29,8 @@ namespace IdentityServer4.EntityFramework.Entities
         public List<ClientPostLogoutRedirectUri> PostLogoutRedirectUris { get; set; }
         public string LogoutUri { get; set; }
         public bool LogoutSessionRequired { get; set; } = true;
-        public List<ClientScope> AllowedScopes { get; set; }
         public bool AllowOfflineAccess { get; set; }
+        public List<ClientScope> AllowedScopes { get; set; }
         public int IdentityTokenLifetime { get; set; } = 300;
         public int AccessTokenLifetime { get; set; } = 3600;
         public int AuthorizationCodeLifetime { get; set; } = 300;
