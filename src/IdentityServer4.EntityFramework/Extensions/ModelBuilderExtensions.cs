@@ -110,7 +110,6 @@ namespace IdentityServer4.EntityFramework.Extensions
                 grant.Property(x => x.SubjectId).HasMaxLength(200);
                 grant.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 grant.Property(x => x.CreationTime).IsRequired();
-                grant.Property(x => x.Expiration).IsRequired();
                 grant.Property(x => x.Data).IsRequired();
 
                 grant.HasKey(x => new {x.Key, x.Type});

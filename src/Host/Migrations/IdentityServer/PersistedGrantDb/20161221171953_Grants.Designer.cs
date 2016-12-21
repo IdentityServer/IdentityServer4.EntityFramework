@@ -8,7 +8,7 @@ using IdentityServer4.EntityFramework.DbContexts;
 namespace Host.Migrations.IdentityServer.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20161221000717_Grants")]
+    [Migration("20161221171953_Grants")]
     partial class Grants
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     b.Property<string>("Data")
                         .IsRequired();
 
-                    b.Property<DateTime>("Expiration");
+                    b.Property<DateTime?>("Expiration");
 
                     b.Property<string>("SubjectId")
                         .HasAnnotation("MaxLength", 200);

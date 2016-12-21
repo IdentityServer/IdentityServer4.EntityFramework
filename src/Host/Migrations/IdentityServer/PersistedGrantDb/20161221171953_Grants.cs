@@ -17,7 +17,7 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     ClientId = table.Column<string>(maxLength: 200, nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
                     Data = table.Column<string>(nullable: false),
-                    Expiration = table.Column<DateTime>(nullable: false),
+                    Expiration = table.Column<DateTime>(nullable: true),
                     SubjectId = table.Column<string>(maxLength: 200, nullable: true)
                 },
                 constraints: table =>
