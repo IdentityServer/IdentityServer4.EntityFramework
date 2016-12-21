@@ -13,7 +13,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.1")
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResource", b =>
@@ -157,6 +157,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<bool>("AllowPlainTextPkce");
 
                     b.Property<bool>("AllowRememberConsent");
+
+                    b.Property<bool>("AlwaysIncludeUserClaimsInIdToken");
 
                     b.Property<bool>("AlwaysSendClientClaims");
 

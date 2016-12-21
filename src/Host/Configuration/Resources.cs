@@ -29,7 +29,7 @@ namespace Host.Configuration
             return new[]
             {
                 // simple version with ctor
-                new ApiResource("api1", "Your API 1")
+                new ApiResource("api1", "Some API 1")
                 {
                     // this is needed for introspection when using reference tokens
                     ApiSecrets = { new Secret("secret".Sha256()) }
@@ -39,8 +39,6 @@ namespace Host.Configuration
                 new ApiResource
                 {
                     Name = "api2",
-                    DisplayName = "Your API 2",
-                    Description = "Something interesting",
 
                     ApiSecrets =
                     {
@@ -50,6 +48,7 @@ namespace Host.Configuration
                     UserClaims =
                     {
                         JwtClaimTypes.Name,
+                        JwtClaimTypes.Email
                     },
 
                     Scopes =
@@ -58,7 +57,6 @@ namespace Host.Configuration
                         {
                             Name = "api2.full_access",
                             DisplayName = "Full access to API 2",
-                            UserClaims = { "email" }
                         },
                         new Scope
                         {

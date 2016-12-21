@@ -30,9 +30,9 @@ namespace Host
 
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
-                .AddInMemoryUsers(Users.Get())
                 .AddSecretParser<ClientAssertionSecretParser>()
                 .AddSecretValidator<PrivateKeyJwtSecretValidator>()
+                .AddTestUsers()
 
                 .AddConfigurationStore(builder =>
                     builder.UseSqlServer(connectionString,

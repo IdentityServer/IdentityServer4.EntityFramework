@@ -8,13 +8,13 @@ using IdentityServer4.EntityFramework.DbContexts;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20161207131859_Config")]
+    [Migration("20161221000731_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.1")
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResource", b =>
@@ -158,6 +158,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<bool>("AllowPlainTextPkce");
 
                     b.Property<bool>("AllowRememberConsent");
+
+                    b.Property<bool>("AlwaysIncludeUserClaimsInIdToken");
 
                     b.Property<bool>("AlwaysSendClientClaims");
 

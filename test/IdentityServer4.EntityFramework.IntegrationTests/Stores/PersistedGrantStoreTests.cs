@@ -213,7 +213,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 context.SaveChanges();
             }
 
-            var newDate = persistedGrant.Expiration.AddHours(1);
+            var newDate = persistedGrant.Expiration.Value.AddHours(1);
             using (var context = new PersistedGrantDbContext(options, StoreOptions))
             {
                 var store = new PersistedGrantStore(context, FakeLogger<PersistedGrantStore>.Create());

@@ -38,6 +38,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     AllowOfflineAccess = table.Column<bool>(nullable: false),
                     AllowPlainTextPkce = table.Column<bool>(nullable: false),
                     AllowRememberConsent = table.Column<bool>(nullable: false),
+                    AlwaysIncludeUserClaimsInIdToken = table.Column<bool>(nullable: false),
                     AlwaysSendClientClaims = table.Column<bool>(nullable: false),
                     AuthorizationCodeLifetime = table.Column<int>(nullable: false),
                     ClientId = table.Column<string>(maxLength: 200, nullable: false),

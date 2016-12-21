@@ -160,7 +160,7 @@ namespace Host.Configuration
 
                     RedirectUris =  { "http://localhost:44077/signin-oidc" },
                     LogoutUri = "http://localhost:44077/signout-oidc",
-                    PostLogoutRedirectUris = { "http://localhost:44077/" },
+                    PostLogoutRedirectUris = { "http://localhost:44077/signout-callback-oidc" },
 
                     AllowedScopes =
                     {
@@ -208,7 +208,7 @@ namespace Host.Configuration
 
                     RedirectUris = { "http://localhost:21402/signin-oidc" },
                     LogoutUri = "http://localhost:21402/signout-oidc",
-                    PostLogoutRedirectUris = { "http://localhost:21402/" },
+                    PostLogoutRedirectUris = { "http://localhost:21402/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
 
@@ -267,7 +267,7 @@ namespace Host.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "api1", "api2.read_only", "api2.full_access"
+                        "api1", "api2.read_only"
                     },
                 },
             };

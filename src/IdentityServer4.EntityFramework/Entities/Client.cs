@@ -21,6 +21,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public string LogoUri { get; set; }
         public bool RequireConsent { get; set; } = true;
         public bool AllowRememberConsent { get; set; } = true;
+        public bool AlwaysIncludeUserClaimsInIdToken { get; set; }
         public List<ClientGrantType> AllowedGrantTypes { get; set; }
         public bool RequirePkce { get; set; }
         public bool AllowPlainTextPkce { get; set; }
