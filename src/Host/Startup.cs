@@ -16,6 +16,8 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using IdentityServer4.Validation;
 using IdentityServer4.Quickstart.UI;
+using System;
+using Serilog.Events;
 
 namespace Host
 {
@@ -46,17 +48,27 @@ namespace Host
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
-            Log.Logger = new LoggerConfiguration()
+            // serilog filter
+            Func<LogEvent, bool> serilogFilter = (e) =>
+            {
+                var context = e.Properties["SourceContext"].ToString();
+
+                return (context.StartsWith("\"IdentityServer") ||
+                        context.StartsWith("\"IdentityModel") ||
+                        e.Level == LogEventLevel.Error ||
+                        e.Level == LogEventLevel.Fatal);
+            };
+
+            var serilog = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
+                .Enrich.FromLogContext()
+                .Filter.ByIncludingOnly(serilogFilter)
+                .WriteTo.LiterateConsole(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message}{NewLine}{Exception}{NewLine}")
                 .WriteTo.File(@"c:\logs\IdentityServer4.EntityFramework.Host.txt")
                 .CreateLogger();
 
-            loggerFactory.AddConsole();
-            loggerFactory.AddDebug();
-            loggerFactory.AddSerilog();
-
-            //app.UseDeveloperExceptionPage();
-
+            loggerFactory.AddSerilog(serilog);
+            
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
