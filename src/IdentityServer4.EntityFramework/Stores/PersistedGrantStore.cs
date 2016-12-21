@@ -11,6 +11,7 @@ using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer4.EntityFramework.Stores
 {
@@ -45,6 +46,10 @@ namespace IdentityServer4.EntityFramework.Stores
             try
             {
                 _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning("exception updating {persistedGrantKey} persisted grant in database: {error}", token.Key, ex.Message);
             }
             catch (Exception ex)
             {
@@ -82,7 +87,14 @@ namespace IdentityServer4.EntityFramework.Stores
                 _logger.LogDebug("removing {persistedGrantKey} persisted grant from database", key);
 
                 _context.PersistedGrants.Remove(persistedGrant);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                }
+                catch(DbUpdateConcurrencyException ex)
+                {
+                    _logger.LogWarning("exception removing {persistedGrantKey} persisted grant from database: {error}", key, ex.Message);
+                }
             }
             else
             {
@@ -99,7 +111,14 @@ namespace IdentityServer4.EntityFramework.Stores
             _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}", persistedGrants.Count, subjectId, clientId);
 
             _context.PersistedGrants.RemoveRange(persistedGrants);
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}: {error}", persistedGrants.Count, subjectId, clientId, ex.Message);
+            }
 
             return Task.FromResult(0);
         }
@@ -114,8 +133,14 @@ namespace IdentityServer4.EntityFramework.Stores
             _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}, grantType {persistedGrantType}", persistedGrants.Count, subjectId, clientId, type);
 
             _context.PersistedGrants.RemoveRange(persistedGrants);
-            _context.SaveChanges();
-
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning("exception removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}, grantType {persistedGrantType}: {error}", persistedGrants.Count, subjectId, clientId, type, ex.Message);
+            }
             return Task.FromResult(0);
         }
     }
