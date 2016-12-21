@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using IdentityServer4.Validation;
+using IdentityServer4.Quickstart.UI;
 
 namespace Host
 {
@@ -32,7 +33,7 @@ namespace Host
                 .AddTemporarySigningCredential()
                 .AddSecretParser<ClientAssertionSecretParser>()
                 .AddSecretValidator<PrivateKeyJwtSecretValidator>()
-                .AddTestUsers()
+                .AddTestUsers(TestUsers.Users)
 
                 .AddConfigurationStore(builder =>
                     builder.UseSqlServer(connectionString,

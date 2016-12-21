@@ -3,10 +3,11 @@
 
 
 using IdentityModel;
+using IdentityServer4.Test;
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace IdentityServer4.Quickstart.UI.Users
+namespace IdentityServer4.Quickstart.UI
 {
     public class TestUsers
     {
