@@ -1,24 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.EntityFramework", "src\IdentityServer4.EntityFramework\IdentityServer4.EntityFramework.xproj", "{AB83F911-8B78-4973-A3A9-2A2D85581F25}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8BFDA83B-FD73-4776-9C2C-5F7FFE440C1F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9FB2E7A3-FFC7-4687-850B-66763A889A78}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.EntityFramework.UnitTests", "test\IdentityServer4.EntityFramework.UnitTests\IdentityServer4.EntityFramework.UnitTests.xproj", "{94CC4E7E-DE3A-4775-B704-AA489216B937}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{211A5E6F-1713-40FF-A29B-A991C9CBA3EC}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityServer4.EntityFramework.IntegrationTests", "test\IdentityServer4.EntityFramework.IntegrationTests\IdentityServer4.EntityFramework.IntegrationTests.xproj", "{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.EntityFramework", "src\IdentityServer4.EntityFramework\IdentityServer4.EntityFramework.csproj", "{AB83F911-8B78-4973-A3A9-2A2D85581F25}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Host", "src\Host\Host.xproj", "{58853B9A-715B-417A-B8CE-76A54B4337B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.EntityFramework.UnitTests", "test\IdentityServer4.EntityFramework.UnitTests\IdentityServer4.EntityFramework.UnitTests.csproj", "{94CC4E7E-DE3A-4775-B704-AA489216B937}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.EntityFramework.IntegrationTests", "test\IdentityServer4.EntityFramework.IntegrationTests\IdentityServer4.EntityFramework.IntegrationTests.csproj", "{73CCE3C6-5431-4B76-ACBE-EF4EE76D6B81}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "src\Host\Host.csproj", "{58853B9A-715B-417A-B8CE-76A54B4337B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
