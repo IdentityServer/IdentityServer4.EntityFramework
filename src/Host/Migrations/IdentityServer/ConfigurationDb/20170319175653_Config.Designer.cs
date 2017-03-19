@@ -8,7 +8,7 @@ using IdentityServer4.EntityFramework.DbContexts;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20170319172928_Config")]
+    [Migration("20170319175653_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

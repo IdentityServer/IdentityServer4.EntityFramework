@@ -21,9 +21,6 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     b.Property<string>("Key")
                         .HasMaxLength(200);
 
-                    b.Property<string>("Type")
-                        .HasMaxLength(50);
-
                     b.Property<string>("ClientId")
                         .IsRequired()
                         .HasMaxLength(200);
@@ -38,7 +35,11 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     b.Property<string>("SubjectId")
                         .HasMaxLength(200);
 
-                    b.HasKey("Key", "Type");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Key");
 
                     b.HasIndex("SubjectId", "ClientId", "Type");
 
