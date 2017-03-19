@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using System.Linq;
 using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using IdentityServer4.EntityFramework.Interfaces;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Services
 {
@@ -56,7 +59,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             bool result;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var service = new CorsPolicyService(context, FakeLogger<CorsPolicyService>.Create());
+                var ctx = new DefaultHttpContext();
+                var svcs = new ServiceCollection();
+                svcs.AddSingleton<IConfigurationDbContext>(context);
+                ctx.RequestServices = svcs.BuildServiceProvider();
+                var ctxAccessor = new HttpContextAccessor();
+                ctxAccessor.HttpContext = ctx;
+
+                var service = new CorsPolicyService(ctxAccessor, FakeLogger<CorsPolicyService>.Create());
                 result = service.IsOriginAllowedAsync(testCorsOrigin).Result;
             }
 
@@ -80,7 +90,14 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
             bool result;
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
-                var service = new CorsPolicyService(context, FakeLogger<CorsPolicyService>.Create());
+                var ctx = new DefaultHttpContext();
+                var svcs = new ServiceCollection();
+                svcs.AddSingleton<IConfigurationDbContext>(context);
+                ctx.RequestServices = svcs.BuildServiceProvider();
+                var ctxAccessor = new HttpContextAccessor();
+                ctxAccessor.HttpContext = ctx;
+
+                var service = new CorsPolicyService(ctxAccessor, FakeLogger<CorsPolicyService>.Create());
                 result = service.IsOriginAllowedAsync("InvalidOrigin").Result;
             }
 

@@ -8,15 +8,17 @@ using IdentityServer4.Services;
 using System.Linq;
 using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServer4.EntityFramework.Services
 {
     public class CorsPolicyService : ICorsPolicyService
     {
-        private readonly IConfigurationDbContext _context;
+        private readonly IHttpContextAccessor _context;
         private readonly ILogger<CorsPolicyService> _logger;
 
-        public CorsPolicyService(IConfigurationDbContext context, ILogger<CorsPolicyService> logger)
+        public CorsPolicyService(IHttpContextAccessor context, ILogger<CorsPolicyService> logger)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
@@ -26,7 +28,10 @@ namespace IdentityServer4.EntityFramework.Services
 
         public Task<bool> IsOriginAllowedAsync(string origin)
         {
-            var origins = _context.Clients.SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToList();
+            // doing this here and not in the ctor because: https://github.com/aspnet/CORS/issues/105
+            var dbContext = _context.HttpContext.RequestServices.GetRequiredService<IConfigurationDbContext>();
+
+            var origins = dbContext.Clients.SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToList();
 
             var distinctOrigins = origins.Where(x => x != null).Distinct();
 

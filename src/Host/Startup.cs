@@ -23,7 +23,7 @@ namespace Host
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework;trusted_connection=yes;";
             
@@ -44,6 +44,8 @@ namespace Host
                 .AddOperationalStore(builder =>
                     builder.UseSqlServer(connectionString,
                         options => options.MigrationsAssembly(migrationsAssembly)));
+
+            return services.BuildServiceProvider(validateScopes: true);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
