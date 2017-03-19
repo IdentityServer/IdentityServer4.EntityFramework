@@ -114,8 +114,6 @@ namespace IdentityServer4.EntityFramework.Extensions
 
                 grant.HasKey(x => new {x.Key, x.Type});
 
-                grant.HasIndex(x => x.SubjectId);
-                grant.HasIndex(x => new { x.SubjectId, x.ClientId });
                 grant.HasIndex(x => new { x.SubjectId, x.ClientId, x.Type });
             });
         }

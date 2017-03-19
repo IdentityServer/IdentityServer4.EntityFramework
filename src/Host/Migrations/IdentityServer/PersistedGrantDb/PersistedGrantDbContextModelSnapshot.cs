@@ -40,10 +40,6 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
 
                     b.HasKey("Key", "Type");
 
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("SubjectId", "ClientId");
-
                     b.HasIndex("SubjectId", "ClientId", "Type");
 
                     b.ToTable("PersistedGrants");
