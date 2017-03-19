@@ -28,7 +28,8 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     b.Property<DateTime>("CreationTime");
 
                     b.Property<string>("Data")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(50000);
 
                     b.Property<DateTime?>("Expiration");
 

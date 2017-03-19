@@ -110,7 +110,9 @@ namespace IdentityServer4.EntityFramework.Extensions
                 grant.Property(x => x.SubjectId).HasMaxLength(200);
                 grant.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
                 grant.Property(x => x.CreationTime).IsRequired();
-                grant.Property(x => x.Data).IsRequired();
+                // 50000 chosen to be explicit to allow enough size to avoid truncation, yet stay beneath the MySql row size limit of ~65K
+                // apparently anything over 4K converts to nvarchar(max) on SqlServer
+                grant.Property(x => x.Data).HasMaxLength(50000).IsRequired();
 
                 grant.HasKey(x => x.Key);
 
