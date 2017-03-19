@@ -12,7 +12,7 @@ namespace Host
     {
         public static void Main(string[] args)
         {
-            Console.Title = "IdentityServer4";
+            Console.Title = "IdentityServer4 - EntityFramework";
 
             var host = new WebHostBuilder()
                 .UseKestrel()
