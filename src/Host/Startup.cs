@@ -43,7 +43,12 @@ namespace Host
 
                 .AddOperationalStore(builder =>
                     builder.UseSqlServer(connectionString,
-                        options => options.MigrationsAssembly(migrationsAssembly)));
+                        options => options.MigrationsAssembly(migrationsAssembly)),
+                        tokenCleanUpOptions: tokenCleanUpOptions=>
+                        {
+                            tokenCleanUpOptions.Interval = 3600;
+                        });
+
 
             return services.BuildServiceProvider(validateScopes: true);
         }

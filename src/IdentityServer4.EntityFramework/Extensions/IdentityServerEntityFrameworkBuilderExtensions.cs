@@ -78,8 +78,9 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IApplicationBuilder UseIdentityServerEfTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
+        public static IApplicationBuilder UseIdentityServerEfTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime = null)
         {
+            applicationLifetime = applicationLifetime ?? app.ApplicationServices.GetRequiredService<IApplicationLifetime>();
             var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
             if(tokenCleanup == null)
             {
