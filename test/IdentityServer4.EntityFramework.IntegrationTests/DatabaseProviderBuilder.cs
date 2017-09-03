@@ -29,7 +29,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
         public static DbContextOptions<T> BuildSqlite<T>(string name, object tableOptions) where T : DbContext
         {
             var builder = new DbContextOptionsBuilder<T>();
-            builder.UseSqlite($"Filename=./Test.IdentityServer4.EntityFramework.{name}.db");
+            builder.UseSqlite($"Filename=./Test.IdentityServer4.EntityFramework.{name}-2.0.0.db");
             var options = builder.Options;
 
             using (var context = (T)Activator.CreateInstance(typeof(T), options, tableOptions))
@@ -45,7 +45,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
         {
             var builder = new DbContextOptionsBuilder<T>();
             builder.UseSqlServer(
-                $@"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework.{name};trusted_connection=yes;");
+                $@"Data Source=(LocalDb)\MSSQLLocalDB;database=Test.IdentityServer4.EntityFramework-2.0.0.{name};trusted_connection=yes;");
             var options = builder.Options;
 
             using (var context = (T)Activator.CreateInstance(typeof(T), options, tableOptions))
