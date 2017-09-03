@@ -14,6 +14,7 @@ using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Builder;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -72,30 +73,32 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddSingleton(storeOptions);
 
             builder.Services.AddSingleton<TokenCleanup>();
-            
+            builder.Services.AddSingleton<IStartupFilter, TokenCleanupConfig>();
             return builder;
         }
 
-        class TokenCleanupConfig : IConfigureOptions<OperationalStoreOptions>
+        class TokenCleanupConfig : IStartupFilter
         {
             private readonly IApplicationLifetime _applicationLifetime;
             private readonly TokenCleanup _tokenCleanup;
+            private readonly OperationalStoreOptions _options;
 
-            public TokenCleanupConfig(IApplicationLifetime applicationLifetime, TokenCleanup tokenCleanup)
+            public TokenCleanupConfig(IApplicationLifetime applicationLifetime, TokenCleanup tokenCleanup, OperationalStoreOptions options)
             {
                 _applicationLifetime = applicationLifetime;
                 _tokenCleanup = tokenCleanup;
+                _options = options;
             }
 
-            public TokenCleanup TokenCleanup { get; }
-
-            public void Configure(OperationalStoreOptions options)
+            public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
             {
-                if (options.EnableTokenCleanup)
+                if (_options.EnableTokenCleanup)
                 {
                     _applicationLifetime.ApplicationStarted.Register(_tokenCleanup.Start);
                     _applicationLifetime.ApplicationStopping.Register(_tokenCleanup.Stop);
                 }
+
+                return next;
             }
         }
     }
