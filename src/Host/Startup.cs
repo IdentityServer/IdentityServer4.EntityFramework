@@ -2,91 +2,71 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Linq;
-using System.Reflection;
-using Host.Configuration;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using IdentityServer4.Validation;
-using IdentityServer4.Quickstart.UI;
 using System;
-using Serilog.Events;
+using IdentityServer4.Quickstart.UI;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using IdentityServer4.EntityFramework.DbContexts;
+using Host.Configuration;
+using System.Linq;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace Host
 {
     public class Startup
     {
+        private readonly IConfiguration _config;
+
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework;trusted_connection=yes;";
-            
-            services.AddMvc();
-
+            const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework-2.0.0;trusted_connection=yes;";
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
-                .AddTemporarySigningCredential()
-                .AddSecretParser<ClientAssertionSecretParser>()
-                .AddSecretValidator<PrivateKeyJwtSecretValidator>()
+                .AddDeveloperSigningCredential()
                 .AddTestUsers(TestUsers.Users)
-
+                // this adds the config data from DB (clients & resources)
                 .AddConfigurationStore(builder =>
                     builder.UseSqlServer(connectionString,
                         options => options.MigrationsAssembly(migrationsAssembly)))
-
-                .AddOperationalStore(builder =>
-                    builder.UseSqlServer(connectionString,
+                // this adds the operational data from DB (codes, tokens, consents)
+                .AddOperationalStore(
+                    builder => builder.UseSqlServer(connectionString,
                         options => options.MigrationsAssembly(migrationsAssembly)),
-                        tokenCleanUpOptions: tokenCleanUpOptions=>
-                        {
-                            tokenCleanUpOptions.Interval = 3600;
-                        });
+                    options =>
+                    {
+                        // this enables automatic token cleanup. this is optional.
+                        options.EnableTokenCleanup = true;
+                        options.TokenCleanupInterval = 60;
+                    });
 
+            services.AddMvc();
 
             return services.BuildServiceProvider(validateScopes: true);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
-            // serilog filter
-            Func<LogEvent, bool> serilogFilter = (e) =>
-            {
-                var context = e.Properties["SourceContext"].ToString();
-
-                return (context.StartsWith("\"IdentityServer") ||
-                        context.StartsWith("\"IdentityModel") ||
-                        e.Level == LogEventLevel.Error ||
-                        e.Level == LogEventLevel.Fatal);
-            };
-
-            var serilog = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .Enrich.FromLogContext()
-                .Filter.ByIncludingOnly(serilogFilter)
-                .WriteTo.LiterateConsole(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message}{NewLine}{Exception}{NewLine}")
-                .WriteTo.File(@"c:\logs\IdentityServer4.EntityFramework.Host.txt")
-                .CreateLogger();
-
-            loggerFactory.AddSerilog(serilog);
-            
-            // Setup Databases
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetService<ConfigurationDbContext>().Database.Migrate();
-                serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
-                EnsureSeedData(serviceScope.ServiceProvider.GetService<ConfigurationDbContext>());
-            }
+            app.UseDeveloperExceptionPage();
 
             app.UseIdentityServer();
-            app.UseIdentityServerEfTokenCleanup(applicationLifetime);
-            
+
+            //app.Use(async (ctx, next) =>
+            //{
+            //    // we don't want this to run on every request, so this was 
+            //    // just a quick and dirty way to get the test database populated
+            //    EnsureSeedData(ctx.RequestServices.GetRequiredService<ConfigurationDbContext>());
+            //    await next();
+            //});
+
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }
@@ -120,5 +100,6 @@ namespace Host
                 context.SaveChanges();
             }
         }
+
     }
 }

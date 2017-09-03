@@ -21,9 +21,7 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public ClientStore(IConfigurationDbContext context, ILogger<ClientStore> logger)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
         }
 

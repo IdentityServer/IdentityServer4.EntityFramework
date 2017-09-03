@@ -20,9 +20,7 @@ namespace IdentityServer4.EntityFramework.Services
 
         public CorsPolicyService(IHttpContextAccessor context, ILogger<CorsPolicyService> logger)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
         }
 

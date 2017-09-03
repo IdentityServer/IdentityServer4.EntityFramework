@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -24,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
         {
+            // todo: merge the two options
             builder.Services.AddDbContext<ConfigurationDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
@@ -58,9 +59,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
             Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
-            Action<OperationalStoreOptions> storeOptionsAction = null,
-            Action<TokenCleanupOptions> tokenCleanUpOptions = null)
+            Action<OperationalStoreOptions> storeOptionsAction = null)
         {
+            // todo: merge the two options
             builder.Services.AddDbContext<PersistedGrantDbContext>(dbContextOptionsAction);
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
 
@@ -70,26 +71,32 @@ namespace Microsoft.Extensions.DependencyInjection
             storeOptionsAction?.Invoke(storeOptions);
             builder.Services.AddSingleton(storeOptions);
 
-            var tokenCleanupOptions = new TokenCleanupOptions();
-            tokenCleanUpOptions?.Invoke(tokenCleanupOptions);
-            builder.Services.AddSingleton(tokenCleanupOptions);
             builder.Services.AddSingleton<TokenCleanup>();
             
             return builder;
         }
 
-        public static IApplicationBuilder UseIdentityServerEfTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime = null)
+        class TokenCleanupConfig : IConfigureOptions<OperationalStoreOptions>
         {
-            applicationLifetime = applicationLifetime ?? app.ApplicationServices.GetRequiredService<IApplicationLifetime>();
-            var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
-            if(tokenCleanup == null)
-            {
-                throw new InvalidOperationException("AddOperationalStore must be called on the service collection.");
-            }
-            applicationLifetime.ApplicationStarted.Register(tokenCleanup.Start);
-            applicationLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
+            private readonly IApplicationLifetime _applicationLifetime;
+            private readonly TokenCleanup _tokenCleanup;
 
-            return app;
+            public TokenCleanupConfig(IApplicationLifetime applicationLifetime, TokenCleanup tokenCleanup)
+            {
+                _applicationLifetime = applicationLifetime;
+                _tokenCleanup = tokenCleanup;
+            }
+
+            public TokenCleanup TokenCleanup { get; }
+
+            public void Configure(OperationalStoreOptions options)
+            {
+                if (options.EnableTokenCleanup)
+                {
+                    _applicationLifetime.ApplicationStarted.Register(_tokenCleanup.Start);
+                    _applicationLifetime.ApplicationStopping.Register(_tokenCleanup.Stop);
+                }
+            }
         }
     }
 }

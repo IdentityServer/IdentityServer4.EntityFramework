@@ -1,0 +1,340 @@
+2017-09-03 17:50:14.500 -04:00 [Warning] Heartbeat took longer than "00:00:01" at "09/03/2017 21:50:14 +00:00".
+2017-09-03 17:58:19.476 -04:00 [Debug] Request path "/.well-known/openid-configuration" matched to endpoint type "Discovery"
+2017-09-03 17:58:19.511 -04:00 [Debug] Endpoint enabled: "Discovery", successfully created handler: "IdentityServer4.Endpoints.DiscoveryEndpoint"
+2017-09-03 17:58:19.511 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.DiscoveryEndpoint" for "/.well-known/openid-configuration"
+2017-09-03 17:58:19.516 -04:00 [Debug] Start discovery request
+2017-09-03 17:58:20.435 -04:00 [Debug] Found ["openid", "profile", "email", "custom.profile", "api1", "api2.full_access", "api2.read_only"] as all scopes in database
+2017-09-03 17:58:20.610 -04:00 [Debug] Request path "/.well-known/openid-configuration/jwks" matched to endpoint type "Discovery"
+2017-09-03 17:58:20.611 -04:00 [Debug] Endpoint enabled: "Discovery", successfully created handler: "IdentityServer4.Endpoints.DiscoveryEndpoint"
+2017-09-03 17:58:20.611 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.DiscoveryEndpoint" for "/.well-known/openid-configuration/jwks"
+2017-09-03 17:58:20.614 -04:00 [Debug] Start key discovery request
+2017-09-03 17:58:21.057 -04:00 [Debug] Request path "/connect/token" matched to endpoint type "Token"
+2017-09-03 17:58:21.060 -04:00 [Debug] Endpoint enabled: "Token", successfully created handler: "IdentityServer4.Endpoints.TokenEndpoint"
+2017-09-03 17:58:21.060 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.TokenEndpoint" for "/connect/token"
+2017-09-03 17:58:21.071 -04:00 [Debug] Start token request.
+2017-09-03 17:58:21.077 -04:00 [Debug] Start client validation
+2017-09-03 17:58:21.082 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:21.082 -04:00 [Debug] Parser found secret: "BasicAuthenticationSecretParser"
+2017-09-03 17:58:21.082 -04:00 [Debug] Secret id found: "roclient.reference"
+2017-09-03 17:58:21.390 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:21.401 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:21.401 -04:00 [Debug] Client validation success
+2017-09-03 17:58:21.419 -04:00 [Debug] Start token request validation
+2017-09-03 17:58:21.431 -04:00 [Debug] Start resource owner password token request validation
+2017-09-03 17:58:21.462 -04:00 [Debug] Found [] identity scopes in database
+2017-09-03 17:58:21.543 -04:00 [Debug] Found ["api1"] API scopes in database
+2017-09-03 17:58:21.556 -04:00 [Debug] Found [] identity scopes in database
+2017-09-03 17:58:21.561 -04:00 [Debug] Found ["api1"] API scopes in database
+2017-09-03 17:58:21.570 -04:00 [Debug] Resource owner password token request validation success.
+2017-09-03 17:58:21.578 -04:00 [Information] Token request validation success
+"{
+  \"ClientId\": \"roclient.reference\",
+  \"GrantType\": \"password\",
+  \"Scopes\": \"api1\",
+  \"UserName\": \"bob\",
+  \"Raw\": {
+    \"grant_type\": \"password\",
+    \"username\": \"bob\",
+    \"password\": \"***REDACTED***\",
+    \"scope\": \"api1\"
+  }
+}"
+2017-09-03 17:58:21.603 -04:00 [Debug] Getting claims for access token for client: "roclient.reference"
+2017-09-03 17:58:21.604 -04:00 [Debug] Getting claims for access token for subject: "88421113"
+2017-09-03 17:58:21.608 -04:00 [Debug] Get profile called for subject "88421113" from client "roclient.reference" with claim types [] via "ClaimsProviderAccessToken"
+2017-09-03 17:58:21.609 -04:00 [Debug] Issued claims: []
+2017-09-03 17:58:21.659 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" not found in database
+2017-09-03 17:58:21.713 -04:00 [Debug] Token request success.
+2017-09-03 17:58:22.295 -04:00 [Debug] Request path "/.well-known/openid-configuration" matched to endpoint type "Discovery"
+2017-09-03 17:58:22.295 -04:00 [Debug] Endpoint enabled: "Discovery", successfully created handler: "IdentityServer4.Endpoints.DiscoveryEndpoint"
+2017-09-03 17:58:22.295 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.DiscoveryEndpoint" for "/.well-known/openid-configuration"
+2017-09-03 17:58:22.295 -04:00 [Debug] Start discovery request
+2017-09-03 17:58:22.303 -04:00 [Debug] Found ["openid", "profile", "email", "custom.profile", "api1", "api2.full_access", "api2.read_only"] as all scopes in database
+2017-09-03 17:58:22.340 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:22.342 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:22.342 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:22.349 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:22.356 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:22.360 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:22.360 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:22.360 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:22.405 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:22.405 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:22.405 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:22.409 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:22.438 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:22.458 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:22.474 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:22.478 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:22.479 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:22.487 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:23.150 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:23.150 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:23.150 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:23.150 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:23.150 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:23.151 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:23.151 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:23.151 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:23.157 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:23.158 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:23.158 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:23.158 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:23.160 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:23.178 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.184 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.184 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:23.185 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:23.185 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:23.423 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:23.423 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:23.423 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:23.423 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:23.423 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:23.423 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:23.423 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:23.423 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:23.428 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:23.428 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:23.428 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:23.428 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:23.430 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:23.448 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.456 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.456 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:23.456 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:23.456 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:23.598 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:23.599 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:23.599 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:23.599 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:23.599 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:23.599 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:23.599 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:23.599 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:23.605 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:23.605 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:23.605 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:23.605 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:23.607 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:23.625 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.630 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.630 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:23.631 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:23.631 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:23.758 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:23.759 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:23.759 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:23.759 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:23.759 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:23.759 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:23.759 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:23.759 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:23.763 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:23.763 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:23.763 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:23.763 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:23.764 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:23.782 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.790 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.790 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:23.790 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:23.790 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:23.902 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:23.902 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:23.902 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:23.902 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:23.903 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:23.903 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:23.903 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:23.903 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:23.908 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:23.908 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:23.908 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:23.908 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:23.910 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:23.928 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.933 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:23.934 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:23.934 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:23.934 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:24.030 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:24.030 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:24.030 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:24.031 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:24.031 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:24.031 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:24.031 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:24.031 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:24.037 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:24.037 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:24.037 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:24.037 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:24.038 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: True
+2017-09-03 17:58:24.054 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:24.061 -04:00 [Debug] "roclient.reference" found in database: True
+2017-09-03 17:58:24.061 -04:00 [Debug] Token validation success
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\",
+  \"Claims\": {
+    \"iss\": \"http://localhost:5000\",
+    \"nbf\": 1504475901,
+    \"exp\": 1504479501,
+    \"aud\": [
+      \"http://localhost:5000/resources\",
+      \"api1\"
+    ],
+    \"client_id\": \"roclient.reference\",
+    \"scope\": \"api1\",
+    \"sub\": \"88421113\",
+    \"auth_time\": 1504475901,
+    \"idp\": \"local\",
+    \"amr\": \"pwd\"
+  }
+}"
+2017-09-03 17:58:24.061 -04:00 [Debug] Introspection request validation successful.
+2017-09-03 17:58:24.061 -04:00 [Debug] Creating introspection response for active token.
+2017-09-03 17:58:40.510 -04:00 [Debug] Request path "/connect/introspect" matched to endpoint type "Introspection"
+2017-09-03 17:58:40.511 -04:00 [Debug] Endpoint enabled: "Introspection", successfully created handler: "IdentityServer4.Endpoints.IntrospectionEndpoint"
+2017-09-03 17:58:40.511 -04:00 [Information] Invoking IdentityServer endpoint: "IdentityServer4.Endpoints.IntrospectionEndpoint" for "/connect/introspect"
+2017-09-03 17:58:40.511 -04:00 [Debug] Starting introspection request.
+2017-09-03 17:58:40.511 -04:00 [Debug] Start parsing Basic Authentication secret
+2017-09-03 17:58:40.511 -04:00 [Debug] Start parsing for secret in post body
+2017-09-03 17:58:40.511 -04:00 [Debug] Parser found secret: "PostBodySecretParser"
+2017-09-03 17:58:40.511 -04:00 [Debug] Secret id found: "api1"
+2017-09-03 17:58:40.517 -04:00 [Debug] Found "api1" API resource in database
+2017-09-03 17:58:40.517 -04:00 [Debug] Secret validator success: "HashedSharedSecretValidator"
+2017-09-03 17:58:40.517 -04:00 [Debug] API resource validation success
+2017-09-03 17:58:40.517 -04:00 [Debug] Introspection request validation started.
+2017-09-03 17:58:40.520 -04:00 [Debug] "xBCTYRrzEH/73FSc8xCBd6LeF8puQjmjcKkxFIBggi4=" found in database: False
+2017-09-03 17:58:40.520 -04:00 [Debug] "reference_token" grant with value: "86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec" not found in store.
+2017-09-03 17:58:40.521 -04:00 [Error] Invalid reference token.
+"{
+  \"ValidateLifetime\": true,
+  \"AccessTokenType\": \"Reference\",
+  \"TokenHandle\": \"86f7f169ef40a0574077be1a02f33466d915ae11080b493a2aa732ee485aa0ec\"
+}"
+2017-09-03 17:58:40.521 -04:00 [Debug] Token is invalid.
+2017-09-03 17:58:40.521 -04:00 [Debug] Creating introspection response for inactive token.

@@ -22,9 +22,7 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public ResourceStore(IConfigurationDbContext context, ILogger<ResourceStore> logger)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
         }
 

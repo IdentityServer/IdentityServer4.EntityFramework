@@ -9,5 +9,8 @@ namespace IdentityServer4.EntityFramework.Options
         public string DefaultSchema { get; set; } = null;
 
         public TableConfiguration PersistedGrants { get; set; } = new TableConfiguration("PersistedGrants");
+
+        public bool EnableTokenCleanup { get; set; } = false;
+        public int TokenCleanupInterval { get; set; } = 3600;
     }
 }

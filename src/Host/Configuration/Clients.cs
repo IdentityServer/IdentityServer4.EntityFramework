@@ -26,7 +26,7 @@ namespace Host.Configuration
                     },
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    AllowedScopes = { "api1", "api2.read_only" },
+                    AllowedScopes = { "api1", "api2.read_only" }
                 },
 
                 ///////////////////////////////////////////
@@ -59,7 +59,7 @@ namespace Host.Configuration
                         new Secret("secret".Sha256())
                     },
 
-                    AllowedGrantTypes = GrantTypes.List("custom"),
+                    AllowedGrantTypes = { "custom", "custom.nosubject" },
                     AllowedScopes = { "api1", "api2.read_only" }
                 },
 
@@ -116,7 +116,7 @@ namespace Host.Configuration
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     RequirePkce = true,
 
-                    RedirectUris = { "http://127.0.0.1:7890/" },
+                    RedirectUris = { "http://127.0.0.1" },
 
                     AllowOfflineAccess = true,
 
@@ -125,8 +125,8 @@ namespace Host.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "api1", "api2.read_only",
-                    },
+                        "api1", "api2.read_only"
+                    }
                 },
 
                 ///////////////////////////////////////////
@@ -159,7 +159,7 @@ namespace Host.Configuration
                     AllowAccessTokensViaBrowser = true,
 
                     RedirectUris =  { "http://localhost:44077/signin-oidc" },
-                    LogoutUri = "http://localhost:44077/signout-oidc",
+                    FrontChannelLogoutUri = "http://localhost:44077/signout-oidc",
                     PostLogoutRedirectUris = { "http://localhost:44077/signout-callback-oidc" },
 
                     AllowedScopes =
@@ -168,7 +168,7 @@ namespace Host.Configuration
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         "api1", "api2.read_only"
-                    },
+                    }
                 },
 
                 ///////////////////////////////////////////
@@ -182,11 +182,11 @@ namespace Host.Configuration
 
                     AllowedGrantTypes = GrantTypes.Implicit,
 
-                    RedirectUris = { "http://localhost:44077/home/callback" },
-                    LogoutUri = "http://localhost:44077/signout-oidc",
-                    PostLogoutRedirectUris = { "http://localhost:44077/" },
+                    RedirectUris = { "http://localhost:44078/home/callback" },
+                    FrontChannelLogoutUri = "http://localhost:44078/signout-oidc",
+                    PostLogoutRedirectUris = { "http://localhost:44078/" },
 
-                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId },
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId }
                 },
 
                 ///////////////////////////////////////////
@@ -197,6 +197,7 @@ namespace Host.Configuration
                     ClientId = "mvc.hybrid",
                     ClientName = "MVC Hybrid",
                     ClientUri = "http://identityserver.io",
+                    //LogoUri = "https://pbs.twimg.com/profile_images/1612989113/Ki-hanja_400x400.png",
 
                     ClientSecrets = 
                     {
@@ -207,7 +208,7 @@ namespace Host.Configuration
                     AllowAccessTokensViaBrowser = false,
 
                     RedirectUris = { "http://localhost:21402/signin-oidc" },
-                    LogoutUri = "http://localhost:21402/signout-oidc",
+                    FrontChannelLogoutUri = "http://localhost:21402/signout-oidc",
                     PostLogoutRedirectUris = { "http://localhost:21402/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
@@ -217,8 +218,8 @@ namespace Host.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "api1", "api2.read_only",
-                    },
+                        "api1", "api2.read_only"
+                    }
                 },
 
                 ///////////////////////////////////////////
@@ -229,12 +230,13 @@ namespace Host.Configuration
                     ClientId = "js_oauth",
                     ClientName = "JavaScript OAuth 2.0 Client",
                     ClientUri = "http://identityserver.io",
+                    //LogoUri = "https://pbs.twimg.com/profile_images/1612989113/Ki-hanja_400x400.png",
 
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
 
                     RedirectUris = { "http://localhost:28895/index.html" },
-                    AllowedScopes = { "api1", "api2.read_only" },
+                    AllowedScopes = { "api1", "api2.read_only" }
                 },
                 
                 ///////////////////////////////////////////
@@ -245,18 +247,19 @@ namespace Host.Configuration
                     ClientId = "js_oidc",
                     ClientName = "JavaScript OIDC Client",
                     ClientUri = "http://identityserver.io",
+                    //LogoUri = "https://pbs.twimg.com/profile_images/1612989113/Ki-hanja_400x400.png",
 
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
                     RequireClientSecret = false,
-                    AccessTokenType = AccessTokenType.Reference,
+                    AccessTokenType = AccessTokenType.Jwt,
 
                     RedirectUris = 
                     {
                         "http://localhost:7017/index.html",
                         "http://localhost:7017/callback.html",
                         "http://localhost:7017/silent.html",
-                        "http://localhost:7017/popup.html",
+                        "http://localhost:7017/popup.html"
                     },
 
                     PostLogoutRedirectUris = { "http://localhost:7017/index.html" },
@@ -267,9 +270,9 @@ namespace Host.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "api1", "api2.read_only"
-                    },
-                },
+                        "api1", "api2.read_only", "api2.full_access"
+                    }
+                }
             };
         }
     }
