@@ -13,16 +13,20 @@ using IdentityServer4.EntityFramework.DbContexts;
 using Host.Configuration;
 using System.Linq;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.EntityFramework.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Host
 {
     public class Startup
     {
         private readonly IConfiguration _config;
+        private readonly IHostingEnvironment _env;
 
-        public Startup(IConfiguration config)
+        public Startup(IConfiguration config, IHostingEnvironment env)
         {
             _config = config;
+            _env = env;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -54,6 +58,12 @@ namespace Host
 
             services.AddMvc();
 
+            // only want this during testing
+            if (_env.IsDevelopment())
+            {
+                EnsureSeedData(services);
+            }
+
             return services.BuildServiceProvider(validateScopes: true);
         }
 
@@ -63,19 +73,23 @@ namespace Host
 
             app.UseIdentityServer();
 
-            //app.Use(async (ctx, next) =>
-            //{
-            //    // we don't want this to run on every request, so this was 
-            //    // just a quick and dirty way to get the test database populated
-            //    EnsureSeedData(ctx.RequestServices.GetRequiredService<ConfigurationDbContext>());
-            //    await next();
-            //});
-
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }
 
-        private static void EnsureSeedData(ConfigurationDbContext context)
+        private static void EnsureSeedData(IServiceCollection services)
+        {
+            var sp = services.BuildServiceProvider();
+            using (var scope = sp.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = scope.ServiceProvider.GetService<IConfigurationDbContext>())
+                {
+                    EnsureSeedData(context);
+                }
+            }
+        }
+
+        private static void EnsureSeedData(IConfigurationDbContext context)
         {
             if (!context.Clients.Any())
             {
