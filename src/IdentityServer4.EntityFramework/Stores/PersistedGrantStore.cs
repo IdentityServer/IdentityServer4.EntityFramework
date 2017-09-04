@@ -66,9 +66,7 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
-            subjectId = subjectId.Normalize();
-
-            var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
+            var persistedGrants = _context.PersistedGrants.Where(x => x.NormalizedSubjectId == subjectId.Normalize().ToUpperInvariant()).ToList();
             var model = persistedGrants.Select(x => x.ToModel());
 
             _logger.LogDebug("{persistedGrantCount} persisted grants found for {subjectId}", persistedGrants.Count, subjectId);
@@ -79,7 +77,7 @@ namespace IdentityServer4.EntityFramework.Stores
         public Task RemoveAsync(string key)
         {
             var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
-            if (persistedGrant!= null)
+            if (persistedGrant != null)
             {
                 _logger.LogDebug("removing {persistedGrantKey} persisted grant from database", key);
 
@@ -89,7 +87,7 @@ namespace IdentityServer4.EntityFramework.Stores
                 {
                     _context.SaveChanges();
                 }
-                catch(DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     _logger.LogInformation("exception removing {persistedGrantKey} persisted grant from database: {error}", key, ex.Message);
                 }
@@ -104,10 +102,10 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task RemoveAllAsync(string subjectId, string clientId)
         {
-            subjectId = subjectId.Normalize();
-            clientId = clientId.Normalize();
-
-            var persistedGrants = _context.PersistedGrants.Where(x => x.NormalizedSubjectId == subjectId && x.NormalizedClientId == clientId).ToList();
+            var persistedGrants = _context.PersistedGrants.Where(
+                x => x.NormalizedSubjectId == subjectId.Normalize().ToUpperInvariant() &&
+                     x.NormalizedClientId == clientId.Normalize().ToUpperInvariant())
+                .ToList();
 
             _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}", persistedGrants.Count, subjectId, clientId);
 
@@ -127,12 +125,9 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
-            subjectId = subjectId.Normalize();
-            clientId = clientId.Normalize();
-
             var persistedGrants = _context.PersistedGrants.Where(x =>
-                x.NormalizedSubjectId == subjectId &&
-                x.NormalizedClientId == clientId &&
+                x.NormalizedSubjectId == subjectId.Normalize().ToUpperInvariant() &&
+                x.NormalizedClientId == clientId.Normalize().ToUpperInvariant() &&
                 x.Type == type).ToList();
 
             _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}, grantType {persistedGrantType}", persistedGrants.Count, subjectId, clientId, type);

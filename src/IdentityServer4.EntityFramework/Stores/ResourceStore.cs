@@ -30,7 +30,7 @@ namespace IdentityServer4.EntityFramework.Stores
         {
             var query =
                 from apiResource in _context.ApiResources
-                where apiResource.NormalizedName == name.Normalize()
+                where apiResource.NormalizedName == name.Normalize().ToUpperInvariant()
                 select apiResource;
 
             var apis = query
@@ -55,11 +55,11 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var names = scopeNames.Select(x=>x.Normalize()).ToArray();
+            var names = scopeNames.Select(x => x.Normalize().ToUpperInvariant()).ToArray();
 
             var query =
                 from api in _context.ApiResources
-                where api.Scopes.Where(x=>names.Contains(x.NormalizedName)).Any()
+                where api.Scopes.Where(x => names.Contains(x.NormalizedName)).Any()
                 select api;
 
             var apis = query
@@ -78,7 +78,7 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var scopes = scopeNames.Select(x=>x.Normalize()).ToArray();
+            var scopes = scopeNames.Select(x => x.Normalize().ToUpperInvariant()).ToArray();
 
             var query =
                 from identityResource in _context.IdentityResources
@@ -110,7 +110,7 @@ namespace IdentityServer4.EntityFramework.Stores
                 identity.ToArray().Select(x => x.ToModel()).AsEnumerable(),
                 apis.ToArray().Select(x => x.ToModel()).AsEnumerable());
 
-            _logger.LogDebug("Found {scopes} as all scopes in database", result.IdentityResources.Select(x=>x.Name).Union(result.ApiResources.SelectMany(x=>x.Scopes).Select(x=>x.Name)));
+            _logger.LogDebug("Found {scopes} as all scopes in database", result.IdentityResources.Select(x => x.Name).Union(result.ApiResources.SelectMany(x => x.Scopes).Select(x => x.Name)));
 
             return Task.FromResult(result);
         }

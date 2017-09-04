@@ -36,7 +36,7 @@ namespace IdentityServer4.EntityFramework.Stores
                 .Include(x => x.Claims)
                 .Include(x => x.IdentityProviderRestrictions)
                 .Include(x => x.AllowedCorsOrigins)
-                .FirstOrDefault(x => x.NormalizedClientId == clientId.Normalize());
+                .FirstOrDefault(x => x.NormalizedClientId == clientId.Normalize().ToUpperInvariant());
             var model = client?.ToModel();
 
             _logger.LogDebug("{clientId} found in database: {clientIdFound}", clientId, model != null);

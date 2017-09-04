@@ -19,7 +19,7 @@ namespace IdentityServer4.EntityFramework.Entities
             get => _clientId;
             set
             {
-                NormalizedClientId = (_clientId = value)?.Normalize();
+                NormalizedClientId = (_clientId = value)?.Normalize().ToUpperInvariant();
             }
         }
 

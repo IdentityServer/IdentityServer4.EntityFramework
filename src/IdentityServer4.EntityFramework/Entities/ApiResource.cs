@@ -17,7 +17,7 @@ namespace IdentityServer4.EntityFramework.Entities
             get => _name;
             set
             {
-                NormalizedName = (_name = value)?.Normalize();
+                NormalizedName = (_name = value)?.Normalize().ToUpperInvariant();
             }
         }
 

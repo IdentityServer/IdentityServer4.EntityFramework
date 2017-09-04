@@ -17,7 +17,7 @@ namespace IdentityServer4.EntityFramework.Entities
             get => _subjectId;
             set
             {
-                NormalizedSubjectId = (_subjectId = value)?.Normalize();
+                NormalizedSubjectId = (_subjectId = value)?.Normalize().ToUpperInvariant();
             }
         }
         public string NormalizedSubjectId { get; set; }
@@ -28,7 +28,7 @@ namespace IdentityServer4.EntityFramework.Entities
             get => _clientId;
             set
             {
-                NormalizedClientId = (_clientId = value)?.Normalize();
+                NormalizedClientId = (_clientId = value)?.Normalize().ToUpperInvariant();
             }
         }
         public string NormalizedClientId { get; set; }
