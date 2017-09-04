@@ -11,7 +11,7 @@ using System;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20170903214619_Config")]
+    [Migration("20170904004156_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,6 +184,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .HasMaxLength(2000);
 
                     b.Property<int?>("ConsentLifetime");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000);
 
                     b.Property<bool>("EnableLocalLogin");
 

@@ -184,6 +184,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<int?>("ConsentLifetime");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000);
+
                     b.Property<bool>("EnableLocalLogin");
 
                     b.Property<bool>("Enabled");
