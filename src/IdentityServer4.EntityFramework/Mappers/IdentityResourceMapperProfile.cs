@@ -21,6 +21,7 @@ namespace IdentityServer4.EntityFramework.Mappers
         {
             // entity to model
             CreateMap<IdentityResource, Models.IdentityResource>(MemberList.Destination)
+                .ConstructUsing(src => new Models.IdentityResource())
                 .ForMember(x => x.UserClaims, opt => opt.MapFrom(src => src.UserClaims.Select(x => x.Type)));
 
             // model to entity

@@ -21,6 +21,7 @@ namespace IdentityServer4.EntityFramework.Mappers
         {
             // entity to model
             CreateMap<ApiResource, Models.ApiResource>(MemberList.Destination)
+                .ConstructUsing(src => new Models.ApiResource())
                 .ForMember(x => x.ApiSecrets, opt => opt.MapFrom(src => src.Secrets.Select(x => x)))
                 .ForMember(x => x.Scopes, opt => opt.MapFrom(src => src.Scopes.Select(x => x)))
                 .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => x.Type)));
