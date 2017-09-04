@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using System.Collections.Generic;
 
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
@@ -17,7 +18,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     DisplayName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Enabled = table.Column<bool>(type: "bit", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -54,6 +56,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     IdentityTokenLifetime = table.Column<int>(type: "int", nullable: false),
                     IncludeJwtId = table.Column<bool>(type: "bit", nullable: false),
                     LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrefixClientClaims = table.Column<bool>(type: "bit", nullable: false),
                     ProtocolType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     RefreshTokenExpiration = table.Column<int>(type: "int", nullable: false),
@@ -80,6 +83,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     Emphasize = table.Column<bool>(type: "bit", nullable: false),
                     Enabled = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Required = table.Column<bool>(type: "bit", nullable: false),
                     ShowInDiscoveryDocument = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -119,6 +123,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     DisplayName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Emphasize = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Required = table.Column<bool>(type: "bit", nullable: false),
                     ShowInDiscoveryDocument = table.Column<bool>(type: "bit", nullable: false)
                 },

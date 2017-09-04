@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using System.Collections.Generic;
 
 namespace Host.Migrations.IdentityServer.PersistedGrantDb
 {
@@ -16,6 +17,8 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NormalizedClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedSubjectId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubjectId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },

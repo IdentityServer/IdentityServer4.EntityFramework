@@ -9,7 +9,18 @@ namespace IdentityServer4.EntityFramework.Entities
     public class ApiScope
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+
+        string _name;
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                NormalizedName = (_name = value)?.Normalize();
+            }
+        }
+
+        public string NormalizedName { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public bool Required { get; set; }

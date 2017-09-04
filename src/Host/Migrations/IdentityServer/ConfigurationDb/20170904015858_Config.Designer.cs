@@ -11,7 +11,7 @@ using System;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20170904004156_Config")]
+    [Migration("20170904015858_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200);
+
+                    b.Property<string>("NormalizedName");
 
                     b.HasKey("Id");
 
@@ -84,6 +86,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200);
+
+                    b.Property<string>("NormalizedName");
 
                     b.Property<bool>("Required");
 
@@ -201,6 +205,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<bool>("IncludeJwtId");
 
                     b.Property<string>("LogoUri");
+
+                    b.Property<string>("NormalizedClientId");
 
                     b.Property<bool>("PrefixClientClaims");
 
@@ -431,6 +437,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200);
+
+                    b.Property<string>("NormalizedName");
 
                     b.Property<bool>("Required");
 

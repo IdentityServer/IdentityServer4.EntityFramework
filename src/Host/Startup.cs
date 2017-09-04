@@ -57,10 +57,10 @@ namespace Host
 
             services.AddMvc();
 
-            // only want this during testing
+            // only want this during testing, and not when running ef migrations
             if (_env.IsDevelopment())
             {
-                EnsureSeedData(services);
+                // EnsureSeedData(services);
             }
 
             return services.BuildServiceProvider(validateScopes: true);
@@ -96,6 +96,12 @@ namespace Host
                 {
                     context.Clients.Add(client.ToEntity());
                 }
+                context.SaveChanges();
+            }
+            else
+            {
+                var client = context.Clients.First();
+                client.Description += "xoxo";
                 context.SaveChanges();
             }
 

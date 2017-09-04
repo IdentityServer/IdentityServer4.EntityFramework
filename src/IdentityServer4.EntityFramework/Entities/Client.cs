@@ -12,7 +12,17 @@ namespace IdentityServer4.EntityFramework.Entities
     {
         public int Id { get; set; }
         public bool Enabled { get; set; } = true;
-        public string ClientId { get; set; }
+
+        string _clientId;
+        public string ClientId
+        {
+            get => _clientId;
+            set
+            {
+                NormalizedClientId = (_clientId = value)?.Normalize();
+            }
+        }
+
         public string NormalizedClientId { get; set; }
         public string ProtocolType { get; set; } = ProtocolTypes.OpenIdConnect;
         public List<ClientSecret> ClientSecrets { get; set; }

@@ -30,7 +30,7 @@ namespace IdentityServer4.EntityFramework.Stores
         {
             var query =
                 from apiResource in _context.ApiResources
-                where apiResource.Name == name
+                where apiResource.NormalizedName == name.Normalize()
                 select apiResource;
 
             var apis = query
@@ -55,11 +55,11 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var names = scopeNames.ToArray();
+            var names = scopeNames.Select(x=>x.Normalize()).ToArray();
 
             var query =
                 from api in _context.ApiResources
-                where api.Scopes.Where(x=>names.Contains(x.Name)).Any()
+                where api.Scopes.Where(x=>names.Contains(x.NormalizedName)).Any()
                 select api;
 
             var apis = query
@@ -78,11 +78,11 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var scopes = scopeNames.ToArray();
+            var scopes = scopeNames.Select(x=>x.Normalize()).ToArray();
 
             var query =
                 from identityResource in _context.IdentityResources
-                where scopes.Contains(identityResource.Name)
+                where scopes.Contains(identityResource.NormalizedName)
                 select identityResource;
 
             var resources = query

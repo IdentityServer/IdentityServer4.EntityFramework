@@ -37,6 +37,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .IsRequired()
                         .HasMaxLength(200);
 
+                    b.Property<string>("NormalizedName");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
@@ -83,6 +85,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200);
+
+                    b.Property<string>("NormalizedName");
 
                     b.Property<bool>("Required");
 
@@ -200,6 +204,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<bool>("IncludeJwtId");
 
                     b.Property<string>("LogoUri");
+
+                    b.Property<string>("NormalizedClientId");
 
                     b.Property<bool>("PrefixClientClaims");
 
@@ -430,6 +436,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200);
+
+                    b.Property<string>("NormalizedName");
 
                     b.Property<bool>("Required");
 

@@ -66,6 +66,8 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
+            subjectId = subjectId.Normalize();
+
             var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
             var model = persistedGrants.Select(x => x.ToModel());
 
@@ -102,7 +104,10 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task RemoveAllAsync(string subjectId, string clientId)
         {
-            var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToList();
+            subjectId = subjectId.Normalize();
+            clientId = clientId.Normalize();
+
+            var persistedGrants = _context.PersistedGrants.Where(x => x.NormalizedSubjectId == subjectId && x.NormalizedClientId == clientId).ToList();
 
             _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}", persistedGrants.Count, subjectId, clientId);
 
@@ -122,9 +127,12 @@ namespace IdentityServer4.EntityFramework.Stores
 
         public Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
+            subjectId = subjectId.Normalize();
+            clientId = clientId.Normalize();
+
             var persistedGrants = _context.PersistedGrants.Where(x =>
-                x.SubjectId == subjectId &&
-                x.ClientId == clientId &&
+                x.NormalizedSubjectId == subjectId &&
+                x.NormalizedClientId == clientId &&
                 x.Type == type).ToList();
 
             _logger.LogDebug("removing {persistedGrantCount} persisted grants from database for subject {subjectId}, clientId {clientId}, grantType {persistedGrantType}", persistedGrants.Count, subjectId, clientId, type);

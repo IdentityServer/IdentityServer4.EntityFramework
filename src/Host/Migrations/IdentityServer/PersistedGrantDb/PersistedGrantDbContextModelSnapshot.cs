@@ -36,6 +36,10 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
 
                     b.Property<DateTime?>("Expiration");
 
+                    b.Property<string>("NormalizedClientId");
+
+                    b.Property<string>("NormalizedSubjectId");
+
                     b.Property<string>("SubjectId")
                         .HasMaxLength(200);
 
