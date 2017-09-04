@@ -8,12 +8,10 @@ using IdentityServer4.EntityFramework.Services;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using Microsoft.EntityFrameworkCore;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Builder;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -22,20 +20,21 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder, 
-            Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
         {
-            // todo: merge the two options
-            builder.Services.AddDbContext<ConfigurationDbContext>(dbContextOptionsAction);
+            var options = new ConfigurationStoreOptions();
+            builder.Services.AddSingleton(options);
+            storeOptionsAction?.Invoke(options);
+
+            builder.Services.AddDbContext<ConfigurationDbContext>(dbCtxBuilder =>
+            {
+                options.ConfigureDbContext?.Invoke(dbCtxBuilder);
+            });
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IResourceStore, ResourceStore>();
             builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
-
-            var options = new ConfigurationStoreOptions();
-            storeOptionsAction?.Invoke(options);
-            builder.Services.AddSingleton(options);
 
             return builder;
         }
@@ -59,21 +58,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
-            Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
             Action<OperationalStoreOptions> storeOptionsAction = null)
         {
-            // todo: merge the two options
-            builder.Services.AddDbContext<PersistedGrantDbContext>(dbContextOptionsAction);
-            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
-
-            builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
-
-            var storeOptions = new OperationalStoreOptions();
-            storeOptionsAction?.Invoke(storeOptions);
-            builder.Services.AddSingleton(storeOptions);
-
             builder.Services.AddSingleton<TokenCleanup>();
             builder.Services.AddSingleton<IStartupFilter, TokenCleanupConfig>();
+
+            var storeOptions = new OperationalStoreOptions();
+            builder.Services.AddSingleton(storeOptions);
+            storeOptionsAction?.Invoke(storeOptions);
+
+            builder.Services.AddDbContext<PersistedGrantDbContext>(dbCtxBuilder =>
+            {
+                storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
+            });
+
+            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
+            builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+
             return builder;
         }
 

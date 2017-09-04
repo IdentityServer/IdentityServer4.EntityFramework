@@ -2,10 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
+using Microsoft.EntityFrameworkCore;
+
 namespace IdentityServer4.EntityFramework.Options
 {
     public class ConfigurationStoreOptions
     {
+        public Action<DbContextOptionsBuilder> ConfigureDbContext { get; set; }
+
         public string DefaultSchema { get; set; } = null;
 
         public TableConfiguration IdentityResource { get; set; } = new TableConfiguration("IdentityResources");

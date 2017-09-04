@@ -34,19 +34,23 @@ namespace Host
                 .AddDeveloperSigningCredential()
                 .AddTestUsers(TestUsers.Users)
                 // this adds the config data from DB (clients & resources)
-                .AddConfigurationStore(builder =>
-                    builder.UseSqlServer(connectionString,
-                        options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                })
                 // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(
-                    builder => builder.UseSqlServer(connectionString,
-                        options => options.MigrationsAssembly(migrationsAssembly)),
-                    options =>
-                    {
-                        // this enables automatic token cleanup. this is optional.
-                        options.EnableTokenCleanup = true;
-                        options.TokenCleanupInterval = 60;
-                    });
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
+                });
 
             services.AddMvc();
 
