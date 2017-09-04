@@ -102,8 +102,6 @@ namespace IdentityServer4.EntityFramework.Extensions
                 property.ToTable(storeOptions.ClientProperty);
                 property.Property(x => x.Key).HasMaxLength(250).IsRequired();
                 property.Property(x => x.Value).HasMaxLength(2000).IsRequired();
-
-                property.HasIndex(x => new { x.Client, x.Key }).IsUnique();
             });
         }
 

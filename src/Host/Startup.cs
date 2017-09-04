@@ -60,7 +60,7 @@ namespace Host
             // only want this during testing
             if (_env.IsDevelopment())
             {
-                EnsureSeedData(services);
+                //EnsureSeedData(services);
             }
 
             return services.BuildServiceProvider(validateScopes: true);
