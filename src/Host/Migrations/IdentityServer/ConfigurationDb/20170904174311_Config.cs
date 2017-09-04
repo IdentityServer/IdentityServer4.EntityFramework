@@ -54,6 +54,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     IdentityTokenLifetime = table.Column<int>(type: "int", nullable: false),
                     IncludeJwtId = table.Column<bool>(type: "bit", nullable: false),
                     LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrefixClientClaims = table.Column<bool>(type: "bit", nullable: false),
                     ProtocolType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     RefreshTokenExpiration = table.Column<int>(type: "int", nullable: false),
@@ -258,6 +259,27 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClientProperties",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientProperties", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClientProperties_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ClientRedirectUris",
                 columns: table => new
                 {
@@ -418,6 +440,11 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClientProperties_ClientId",
+                table: "ClientProperties",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClientRedirectUris_ClientId",
                 table: "ClientRedirectUris",
                 column: "ClientId");
@@ -475,6 +502,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
             migrationBuilder.DropTable(
                 name: "ClientPostLogoutRedirectUris");
+
+            migrationBuilder.DropTable(
+                name: "ClientProperties");
 
             migrationBuilder.DropTable(
                 name: "ClientRedirectUris");

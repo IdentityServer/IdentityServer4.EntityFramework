@@ -201,6 +201,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<string>("LogoUri");
 
+                    b.Property<string>("NormalizedClientId");
+
                     b.Property<bool>("PrefixClientClaims");
 
                     b.Property<string>("ProtocolType")
@@ -326,6 +328,29 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.HasIndex("ClientId");
 
                     b.ToTable("ClientPostLogoutRedirectUris");
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ClientProperty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("ClientId")
+                        .IsRequired();
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(250);
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(2000);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("ClientProperties");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ClientRedirectUri", b =>
@@ -511,6 +536,14 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 {
                     b.HasOne("IdentityServer4.EntityFramework.Entities.Client", "Client")
                         .WithMany("PostLogoutRedirectUris")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ClientProperty", b =>
+                {
+                    b.HasOne("IdentityServer4.EntityFramework.Entities.Client", "Client")
+                        .WithMany("Properties")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -53,5 +53,6 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool AlwaysSendClientClaims { get; set; }
         public bool PrefixClientClaims { get; set; } = true;
         public List<ClientCorsOrigin> AllowedCorsOrigins { get; set; }
+        public List<ClientProperty> Properties { get; set; }
     }
 }

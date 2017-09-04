@@ -83,7 +83,7 @@ namespace Host
             {
                 using (var context = scope.ServiceProvider.GetService<IConfigurationDbContext>())
                 {
-                    EnsureSeedData(context);
+                    // EnsureSeedData(context);
                 }
             }
         }

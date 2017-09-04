@@ -43,6 +43,7 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.HasMany(x => x.Claims).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.IdentityProviderRestrictions).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.AllowedCorsOrigins).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
+                client.HasMany(x => x.Properties).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ClientGrantType>(grantType =>
@@ -94,6 +95,15 @@ namespace IdentityServer4.EntityFramework.Extensions
             {
                 corsOrigin.ToTable(storeOptions.ClientCorsOrigin);
                 corsOrigin.Property(x => x.Origin).HasMaxLength(150).IsRequired();
+            });
+
+            modelBuilder.Entity<ClientProperty>(property =>
+            {
+                property.ToTable(storeOptions.ClientProperty);
+                property.Property(x => x.Key).HasMaxLength(250).IsRequired();
+                property.Property(x => x.Value).HasMaxLength(2000).IsRequired();
+
+                property.HasIndex(x => new { x.Client, x.Key }).IsUnique();
             });
         }
 

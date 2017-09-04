@@ -26,7 +26,11 @@ namespace Host.Configuration
                     },
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    AllowedScopes = { "api1", "api2.read_only" }
+                    AllowedScopes = { "api1", "api2.read_only" },
+                    Properties =
+                    {
+                        { "foo", "bar" }
+                    }
                 },
 
                 ///////////////////////////////////////////

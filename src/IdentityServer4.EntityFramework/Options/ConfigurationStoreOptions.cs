@@ -31,5 +31,6 @@ namespace IdentityServer4.EntityFramework.Options
         public TableConfiguration ClientClaim { get; set; } = new TableConfiguration("ClientClaims");
         public TableConfiguration ClientIdPRestriction { get; set; } = new TableConfiguration("ClientIdPRestrictions");
         public TableConfiguration ClientCorsOrigin { get; set; } = new TableConfiguration("ClientCorsOrigins");
+        public TableConfiguration ClientProperty { get; set; } = new TableConfiguration("ClientProperties");
     }
 }
