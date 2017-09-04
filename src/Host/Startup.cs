@@ -9,7 +9,6 @@ using IdentityServer4.Quickstart.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using IdentityServer4.EntityFramework.DbContexts;
 using Host.Configuration;
 using System.Linq;
 using IdentityServer4.EntityFramework.Mappers;

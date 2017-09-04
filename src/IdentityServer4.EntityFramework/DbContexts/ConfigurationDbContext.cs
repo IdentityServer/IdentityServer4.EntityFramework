@@ -9,6 +9,7 @@ using IdentityServer4.EntityFramework.Extensions;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IdentityServer4.EntityFramework.DbContexts
 {
@@ -19,8 +20,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
         public ConfigurationDbContext(DbContextOptions<ConfigurationDbContext> options, ConfigurationStoreOptions storeOptions)
             : base(options)
         {
-            if (storeOptions == null) throw new ArgumentNullException(nameof(storeOptions));
-            this.storeOptions = storeOptions;
+            this.storeOptions = storeOptions ?? throw new ArgumentNullException(nameof(storeOptions));
         }
 
         public DbSet<Client> Clients { get; set; }

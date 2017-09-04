@@ -13,6 +13,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public int Id { get; set; }
         public bool Enabled { get; set; } = true;
         public string ClientId { get; set; }
+        public string NormalizedClientId { get; set; }
         public string ProtocolType { get; set; } = ProtocolTypes.OpenIdConnect;
         public List<ClientSecret> ClientSecrets { get; set; }
         public bool RequireClientSecret { get; set; } = true;
