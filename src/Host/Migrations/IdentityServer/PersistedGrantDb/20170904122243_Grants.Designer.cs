@@ -10,7 +10,7 @@ using System;
 namespace Host.Migrations.IdentityServer.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20170904015846_Grants")]
+    [Migration("20170904122243_Grants")]
     partial class Grants
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,9 +37,12 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
 
                     b.Property<DateTime?>("Expiration");
 
-                    b.Property<string>("NormalizedClientId");
+                    b.Property<string>("NormalizedClientId")
+                        .HasMaxLength(200);
 
-                    b.Property<string>("NormalizedSubjectId");
+                    b.Property<string>("NormalizedSubjectId")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.Property<string>("SubjectId")
                         .HasMaxLength(200);
@@ -50,7 +53,7 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
 
                     b.HasKey("Key");
 
-                    b.HasIndex("SubjectId", "ClientId", "Type");
+                    b.HasIndex("NormalizedSubjectId", "NormalizedClientId", "Type");
 
                     b.ToTable("PersistedGrants");
                 });

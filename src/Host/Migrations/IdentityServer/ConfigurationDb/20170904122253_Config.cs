@@ -19,7 +19,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     DisplayName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Enabled = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    NormalizedName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     IdentityTokenLifetime = table.Column<int>(type: "int", nullable: false),
                     IncludeJwtId = table.Column<bool>(type: "bit", nullable: false),
                     LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedClientId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PrefixClientClaims = table.Column<bool>(type: "bit", nullable: false),
                     ProtocolType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     RefreshTokenExpiration = table.Column<int>(type: "int", nullable: false),
@@ -83,7 +83,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     Emphasize = table.Column<bool>(type: "bit", nullable: false),
                     Enabled = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Required = table.Column<bool>(type: "bit", nullable: false),
                     ShowInDiscoveryDocument = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -123,7 +123,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     DisplayName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Emphasize = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Required = table.Column<bool>(type: "bit", nullable: false),
                     ShowInDiscoveryDocument = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -371,9 +371,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 column: "ApiResourceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApiResources_Name",
+                name: "IX_ApiResources_NormalizedName",
                 table: "ApiResources",
-                column: "Name",
+                column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -387,9 +387,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 column: "ApiResourceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApiScopes_Name",
+                name: "IX_ApiScopes_NormalizedName",
                 table: "ApiScopes",
-                column: "Name",
+                column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -428,9 +428,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_ClientId",
+                name: "IX_Clients_NormalizedClientId",
                 table: "Clients",
-                column: "ClientId",
+                column: "NormalizedClientId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -449,9 +449,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 column: "IdentityResourceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IdentityResources_Name",
+                name: "IX_IdentityResources_NormalizedName",
                 table: "IdentityResources",
-                column: "Name",
+                column: "NormalizedName",
                 unique: true);
         }
 

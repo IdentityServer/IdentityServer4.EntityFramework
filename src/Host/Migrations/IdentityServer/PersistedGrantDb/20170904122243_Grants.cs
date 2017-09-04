@@ -17,8 +17,8 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NormalizedClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedSubjectId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedClientId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    NormalizedSubjectId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     SubjectId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
@@ -28,9 +28,9 @@ namespace Host.Migrations.IdentityServer.PersistedGrantDb
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PersistedGrants_SubjectId_ClientId_Type",
+                name: "IX_PersistedGrants_NormalizedSubjectId_NormalizedClientId_Type",
                 table: "PersistedGrants",
-                columns: new[] { "SubjectId", "ClientId", "Type" });
+                columns: new[] { "NormalizedSubjectId", "NormalizedClientId", "Type" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

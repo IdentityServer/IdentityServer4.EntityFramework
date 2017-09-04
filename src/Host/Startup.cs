@@ -57,7 +57,8 @@ namespace Host
 
             services.AddMvc();
 
-            // only want this during testing, and not when running ef migrations
+            // this is just a quick and dirty hack to get some data into the DB.
+            // we only want this once, and not when running ef migrations
             if (_env.IsDevelopment())
             {
                 // EnsureSeedData(services);

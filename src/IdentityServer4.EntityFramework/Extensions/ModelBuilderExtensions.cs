@@ -28,12 +28,13 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.HasKey(x => x.Id);
 
                 client.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
+                client.Property(x => x.NormalizedClientId).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ProtocolType).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientName).HasMaxLength(200);
                 client.Property(x => x.ClientUri).HasMaxLength(2000);
                 client.Property(x => x.Description).HasMaxLength(1000);
 
-                client.HasIndex(x => x.ClientId).IsUnique();
+                client.HasIndex(x => x.NormalizedClientId).IsUnique();
 
                 client.HasMany(x => x.AllowedGrantTypes).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.RedirectUris).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
@@ -108,7 +109,9 @@ namespace IdentityServer4.EntityFramework.Extensions
                 grant.Property(x => x.Key).HasMaxLength(200).ValueGeneratedNever();
                 grant.Property(x => x.Type).HasMaxLength(50).IsRequired();
                 grant.Property(x => x.SubjectId).HasMaxLength(200);
+                grant.Property(x => x.NormalizedSubjectId).HasMaxLength(200).IsRequired();
                 grant.Property(x => x.ClientId).HasMaxLength(200).IsRequired();
+                grant.Property(x => x.NormalizedClientId).HasMaxLength(200);
                 grant.Property(x => x.CreationTime).IsRequired();
                 // 50000 chosen to be explicit to allow enough size to avoid truncation, yet stay beneath the MySql row size limit of ~65K
                 // apparently anything over 4K converts to nvarchar(max) on SqlServer
@@ -116,7 +119,7 @@ namespace IdentityServer4.EntityFramework.Extensions
 
                 grant.HasKey(x => x.Key);
 
-                grant.HasIndex(x => new { x.SubjectId, x.ClientId, x.Type });
+                grant.HasIndex(x => new { x.NormalizedSubjectId, x.NormalizedClientId, x.Type });
             });
         }
 
@@ -129,10 +132,11 @@ namespace IdentityServer4.EntityFramework.Extensions
                 identityResource.ToTable(storeOptions.IdentityResource).HasKey(x => x.Id);
 
                 identityResource.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                identityResource.Property(x => x.NormalizedName).HasMaxLength(200).IsRequired();
                 identityResource.Property(x => x.DisplayName).HasMaxLength(200);
                 identityResource.Property(x => x.Description).HasMaxLength(1000);
 
-                identityResource.HasIndex(x => x.Name).IsUnique();
+                identityResource.HasIndex(x => x.NormalizedName).IsUnique();
 
                 identityResource.HasMany(x => x.UserClaims).WithOne(x => x.IdentityResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });
@@ -150,10 +154,11 @@ namespace IdentityServer4.EntityFramework.Extensions
                 apiResource.ToTable(storeOptions.ApiResource).HasKey(x => x.Id);
 
                 apiResource.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                apiResource.Property(x => x.NormalizedName).HasMaxLength(200).IsRequired();
                 apiResource.Property(x => x.DisplayName).HasMaxLength(200);
                 apiResource.Property(x => x.Description).HasMaxLength(1000);
 
-                apiResource.HasIndex(x => x.Name).IsUnique();
+                apiResource.HasIndex(x => x.NormalizedName).IsUnique();
 
                 apiResource.HasMany(x => x.Secrets).WithOne(x => x.ApiResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 apiResource.HasMany(x => x.Scopes).WithOne(x => x.ApiResource).IsRequired().OnDelete(DeleteBehavior.Cascade);
@@ -181,10 +186,11 @@ namespace IdentityServer4.EntityFramework.Extensions
                 apiScope.ToTable(storeOptions.ApiScope).HasKey(x => x.Id);
 
                 apiScope.Property(x => x.Name).HasMaxLength(200).IsRequired();
+                apiScope.Property(x => x.NormalizedName).HasMaxLength(200).IsRequired();
                 apiScope.Property(x => x.DisplayName).HasMaxLength(200);
                 apiScope.Property(x => x.Description).HasMaxLength(1000);
 
-                apiScope.HasIndex(x => x.Name).IsUnique();
+                apiScope.HasIndex(x => x.NormalizedName).IsUnique();
 
                 apiScope.HasMany(x => x.UserClaims).WithOne(x => x.ApiScope).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });

@@ -37,11 +37,13 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .IsRequired()
                         .HasMaxLength(200);
 
-                    b.Property<string>("NormalizedName");
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("NormalizedName")
                         .IsUnique();
 
                     b.ToTable("ApiResources");
@@ -86,7 +88,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .IsRequired()
                         .HasMaxLength(200);
 
-                    b.Property<string>("NormalizedName");
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.Property<bool>("Required");
 
@@ -96,7 +100,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.HasIndex("ApiResourceId");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("NormalizedName")
                         .IsUnique();
 
                     b.ToTable("ApiScopes");
@@ -205,7 +209,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<string>("LogoUri");
 
-                    b.Property<string>("NormalizedClientId");
+                    b.Property<string>("NormalizedClientId")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.Property<bool>("PrefixClientClaims");
 
@@ -229,7 +235,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId")
+                    b.HasIndex("NormalizedClientId")
                         .IsUnique();
 
                     b.ToTable("Clients");
@@ -437,7 +443,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .IsRequired()
                         .HasMaxLength(200);
 
-                    b.Property<string>("NormalizedName");
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.Property<bool>("Required");
 
@@ -445,7 +453,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("NormalizedName")
                         .IsUnique();
 
                     b.ToTable("IdentityResources");
