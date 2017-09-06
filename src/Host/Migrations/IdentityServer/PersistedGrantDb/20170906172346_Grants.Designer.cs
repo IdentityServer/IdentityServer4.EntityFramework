@@ -10,7 +10,7 @@ using System;
 namespace Host.Migrations.IdentityServer.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20170904174258_Grants")]
+    [Migration("20170906172346_Grants")]
     partial class Grants
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

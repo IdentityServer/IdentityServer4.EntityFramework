@@ -11,7 +11,7 @@ using System;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20170904174311_Config")]
+    [Migration("20170906172356_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,8 +201,6 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<bool>("IncludeJwtId");
 
                     b.Property<string>("LogoUri");
-
-                    b.Property<string>("NormalizedClientId");
 
                     b.Property<bool>("PrefixClientClaims");
 

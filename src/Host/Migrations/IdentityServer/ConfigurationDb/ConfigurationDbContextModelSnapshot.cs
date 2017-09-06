@@ -201,8 +201,6 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<string>("LogoUri");
 
-                    b.Property<string>("NormalizedClientId");
-
                     b.Property<bool>("PrefixClientClaims");
 
                     b.Property<string>("ProtocolType")

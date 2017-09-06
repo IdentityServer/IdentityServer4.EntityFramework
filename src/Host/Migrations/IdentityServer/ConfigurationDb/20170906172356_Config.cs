@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using System.Collections.Generic;
 
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
@@ -54,7 +55,6 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     IdentityTokenLifetime = table.Column<int>(type: "int", nullable: false),
                     IncludeJwtId = table.Column<bool>(type: "bit", nullable: false),
                     LogoUri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrefixClientClaims = table.Column<bool>(type: "bit", nullable: false),
                     ProtocolType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     RefreshTokenExpiration = table.Column<int>(type: "int", nullable: false),
