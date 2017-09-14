@@ -11,8 +11,8 @@ GO
 
 CREATE TABLE [ApiResources] (
     [Id] int NOT NULL IDENTITY,
-    [Description] nvarchar(1000) NULL,
-    [DisplayName] nvarchar(200) NULL,
+    [Description] nvarchar(1000),
+    [DisplayName] nvarchar(200),
     [Enabled] bit NOT NULL,
     [Name] nvarchar(200) NOT NULL,
     CONSTRAINT [PK_ApiResources] PRIMARY KEY ([Id])
@@ -32,20 +32,16 @@ CREATE TABLE [Clients] (
     [AlwaysIncludeUserClaimsInIdToken] bit NOT NULL,
     [AlwaysSendClientClaims] bit NOT NULL,
     [AuthorizationCodeLifetime] int NOT NULL,
-    [BackChannelLogoutSessionRequired] bit NOT NULL,
-    [BackChannelLogoutUri] nvarchar(max) NULL,
     [ClientId] nvarchar(200) NOT NULL,
-    [ClientName] nvarchar(200) NULL,
-    [ClientUri] nvarchar(2000) NULL,
-    [ConsentLifetime] int NULL,
-    [Description] nvarchar(1000) NULL,
+    [ClientName] nvarchar(200),
+    [ClientUri] nvarchar(2000),
     [EnableLocalLogin] bit NOT NULL,
     [Enabled] bit NOT NULL,
-    [FrontChannelLogoutSessionRequired] bit NOT NULL,
-    [FrontChannelLogoutUri] nvarchar(max) NULL,
     [IdentityTokenLifetime] int NOT NULL,
     [IncludeJwtId] bit NOT NULL,
-    [LogoUri] nvarchar(max) NULL,
+    [LogoUri] nvarchar(max),
+    [LogoutSessionRequired] bit NOT NULL,
+    [LogoutUri] nvarchar(max),
     [PrefixClientClaims] bit NOT NULL,
     [ProtocolType] nvarchar(200) NOT NULL,
     [RefreshTokenExpiration] int NOT NULL,
@@ -62,8 +58,8 @@ GO
 
 CREATE TABLE [IdentityResources] (
     [Id] int NOT NULL IDENTITY,
-    [Description] nvarchar(1000) NULL,
-    [DisplayName] nvarchar(200) NULL,
+    [Description] nvarchar(1000),
+    [DisplayName] nvarchar(200),
     [Emphasize] bit NOT NULL,
     [Enabled] bit NOT NULL,
     [Name] nvarchar(200) NOT NULL,
@@ -87,8 +83,8 @@ GO
 CREATE TABLE [ApiScopes] (
     [Id] int NOT NULL IDENTITY,
     [ApiResourceId] int NOT NULL,
-    [Description] nvarchar(1000) NULL,
-    [DisplayName] nvarchar(200) NULL,
+    [Description] nvarchar(1000),
+    [DisplayName] nvarchar(200),
     [Emphasize] bit NOT NULL,
     [Name] nvarchar(200) NOT NULL,
     [Required] bit NOT NULL,
@@ -102,10 +98,10 @@ GO
 CREATE TABLE [ApiSecrets] (
     [Id] int NOT NULL IDENTITY,
     [ApiResourceId] int NOT NULL,
-    [Description] nvarchar(1000) NULL,
-    [Expiration] datetime2 NULL,
-    [Type] nvarchar(250) NULL,
-    [Value] nvarchar(2000) NULL,
+    [Description] nvarchar(1000),
+    [Expiration] datetime2,
+    [Type] nvarchar(250),
+    [Value] nvarchar(2000),
     CONSTRAINT [PK_ApiSecrets] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_ApiSecrets_ApiResources_ApiResourceId] FOREIGN KEY ([ApiResourceId]) REFERENCES [ApiResources] ([Id]) ON DELETE CASCADE
 );
@@ -163,17 +159,6 @@ CREATE TABLE [ClientPostLogoutRedirectUris] (
 
 GO
 
-CREATE TABLE [ClientProperties] (
-    [Id] int NOT NULL IDENTITY,
-    [ClientId] int NOT NULL,
-    [Key] nvarchar(250) NOT NULL,
-    [Value] nvarchar(2000) NOT NULL,
-    CONSTRAINT [PK_ClientProperties] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_ClientProperties_Clients_ClientId] FOREIGN KEY ([ClientId]) REFERENCES [Clients] ([Id]) ON DELETE CASCADE
-);
-
-GO
-
 CREATE TABLE [ClientRedirectUris] (
     [Id] int NOT NULL IDENTITY,
     [ClientId] int NOT NULL,
@@ -197,9 +182,9 @@ GO
 CREATE TABLE [ClientSecrets] (
     [Id] int NOT NULL IDENTITY,
     [ClientId] int NOT NULL,
-    [Description] nvarchar(2000) NULL,
-    [Expiration] datetime2 NULL,
-    [Type] nvarchar(250) NULL,
+    [Description] nvarchar(2000),
+    [Expiration] datetime2,
+    [Type] nvarchar(250),
     [Value] nvarchar(2000) NOT NULL,
     CONSTRAINT [PK_ClientSecrets] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_ClientSecrets_Clients_ClientId] FOREIGN KEY ([ClientId]) REFERENCES [Clients] ([Id]) ON DELETE CASCADE
@@ -227,15 +212,11 @@ CREATE TABLE [ApiScopeClaims] (
 
 GO
 
-CREATE INDEX [IX_ApiClaims_ApiResourceId] ON [ApiClaims] ([ApiResourceId]);
-
-GO
-
 CREATE UNIQUE INDEX [IX_ApiResources_Name] ON [ApiResources] ([Name]);
 
 GO
 
-CREATE INDEX [IX_ApiScopeClaims_ApiScopeId] ON [ApiScopeClaims] ([ApiScopeId]);
+CREATE INDEX [IX_ApiClaims_ApiResourceId] ON [ApiClaims] ([ApiResourceId]);
 
 GO
 
@@ -247,7 +228,15 @@ CREATE UNIQUE INDEX [IX_ApiScopes_Name] ON [ApiScopes] ([Name]);
 
 GO
 
+CREATE INDEX [IX_ApiScopeClaims_ApiScopeId] ON [ApiScopeClaims] ([ApiScopeId]);
+
+GO
+
 CREATE INDEX [IX_ApiSecrets_ApiResourceId] ON [ApiSecrets] ([ApiResourceId]);
+
+GO
+
+CREATE UNIQUE INDEX [IX_Clients_ClientId] ON [Clients] ([ClientId]);
 
 GO
 
@@ -271,15 +260,7 @@ CREATE INDEX [IX_ClientPostLogoutRedirectUris_ClientId] ON [ClientPostLogoutRedi
 
 GO
 
-CREATE INDEX [IX_ClientProperties_ClientId] ON [ClientProperties] ([ClientId]);
-
-GO
-
 CREATE INDEX [IX_ClientRedirectUris_ClientId] ON [ClientRedirectUris] ([ClientId]);
-
-GO
-
-CREATE UNIQUE INDEX [IX_Clients_ClientId] ON [Clients] ([ClientId]);
 
 GO
 
@@ -300,7 +281,7 @@ CREATE UNIQUE INDEX [IX_IdentityResources_Name] ON [IdentityResources] ([Name]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20170906172356_Config', N'2.0.0-rtm-26452');
+VALUES (N'20170319181717_Config', N'1.1.1');
 
 GO
 
