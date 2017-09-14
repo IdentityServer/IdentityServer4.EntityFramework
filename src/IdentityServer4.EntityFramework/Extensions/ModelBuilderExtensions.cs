@@ -31,7 +31,10 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.Property(x => x.ProtocolType).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientName).HasMaxLength(200);
                 client.Property(x => x.ClientUri).HasMaxLength(2000);
+                client.Property(x => x.LogoUri).HasMaxLength(2000);
                 client.Property(x => x.Description).HasMaxLength(1000);
+                client.Property(x => x.FrontChannelLogoutUri).HasMaxLength(2000);
+                client.Property(x => x.BackChannelLogoutUri).HasMaxLength(2000);
 
                 client.HasIndex(x => x.ClientId).IsUnique();
 
