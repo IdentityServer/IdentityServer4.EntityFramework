@@ -170,7 +170,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<bool>("BackChannelLogoutSessionRequired");
 
-                    b.Property<string>("BackChannelLogoutUri");
+                    b.Property<string>("BackChannelLogoutUri")
+                        .HasMaxLength(2000);
 
                     b.Property<string>("ClientId")
                         .IsRequired()
@@ -193,13 +194,15 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<bool>("FrontChannelLogoutSessionRequired");
 
-                    b.Property<string>("FrontChannelLogoutUri");
+                    b.Property<string>("FrontChannelLogoutUri")
+                        .HasMaxLength(2000);
 
                     b.Property<int>("IdentityTokenLifetime");
 
                     b.Property<bool>("IncludeJwtId");
 
-                    b.Property<string>("LogoUri");
+                    b.Property<string>("LogoUri")
+                        .HasMaxLength(2000);
 
                     b.Property<bool>("PrefixClientClaims");
 
