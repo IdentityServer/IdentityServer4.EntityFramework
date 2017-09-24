@@ -32,11 +32,11 @@ namespace Host
         {
             const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework-2.0.0;trusted_connection=yes;";
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
+            
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddTestUsers(TestUsers.Users)
-                // this adds the config data from DB (clients & resources)
+                // this adds the config data from DB (clients, resources)
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
@@ -53,7 +53,8 @@ namespace Host
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
-                });
+                })
+                .AddConfigurationStoreCache();
 
             services.AddMvc();
 
@@ -83,7 +84,7 @@ namespace Host
             {
                 using (var context = scope.ServiceProvider.GetService<IConfigurationDbContext>())
                 {
-                    // EnsureSeedData(context);
+                    EnsureSeedData(context);
                 }
             }
         }

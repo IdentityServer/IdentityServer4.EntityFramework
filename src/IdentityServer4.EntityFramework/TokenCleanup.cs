@@ -57,7 +57,7 @@ namespace IdentityServer4.EntityFramework
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    _logger.LogDebug("CancellationRequested");
+                    _logger.LogDebug("CancellationRequested. Exiting.");
                     break;
                 }
 
@@ -65,15 +65,20 @@ namespace IdentityServer4.EntityFramework
                 {
                     await Task.Delay(_interval, cancellationToken);
                 }
-                catch
+                catch (TaskCanceledException)
                 {
-                    _logger.LogDebug("Task.Delay exception. exiting.");
+                    _logger.LogDebug("TaskCanceledException. Exiting.");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Task.Delay exception: {0}. Exiting.", ex.Message);
                     break;
                 }
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    _logger.LogDebug("CancellationRequested");
+                    _logger.LogDebug("CancellationRequested. Exiting.");
                     break;
                 }
 
@@ -93,7 +98,7 @@ namespace IdentityServer4.EntityFramework
                     {
                         var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
 
-                        _logger.LogDebug("Clearing {tokenCount} tokens", expired.Length);
+                        _logger.LogInformation("Clearing {tokenCount} tokens", expired.Length);
 
                         if (expired.Length > 0)
                         {
@@ -105,7 +110,7 @@ namespace IdentityServer4.EntityFramework
             }
             catch (Exception ex)
             {
-                _logger.LogError("Exception cleaning tokens {exception}", ex.Message);
+                _logger.LogError("Exception clearing tokens: {exception}", ex.Message);
             }
         }
     }
