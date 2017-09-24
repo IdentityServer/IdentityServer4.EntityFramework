@@ -10,6 +10,7 @@ using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer4.EntityFramework.Services
 {
@@ -24,12 +25,12 @@ namespace IdentityServer4.EntityFramework.Services
             _logger = logger;
         }
 
-        public Task<bool> IsOriginAllowedAsync(string origin)
+        public async Task<bool> IsOriginAllowedAsync(string origin)
         {
             // doing this here and not in the ctor because: https://github.com/aspnet/CORS/issues/105
             var dbContext = _context.HttpContext.RequestServices.GetRequiredService<IConfigurationDbContext>();
 
-            var origins = dbContext.Clients.SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToList();
+            var origins = await dbContext.Clients.SelectMany(x => x.AllowedCorsOrigins.Select(y => y.Origin)).ToListAsync();
 
             var distinctOrigins = origins.Where(x => x != null).Distinct();
 
@@ -37,7 +38,7 @@ namespace IdentityServer4.EntityFramework.Services
 
             _logger.LogDebug("Origin {origin} is allowed: {originAllowed}", origin, isAllowed);
 
-            return Task.FromResult(isAllowed);
+            return isAllowed;
         }
     }
 }

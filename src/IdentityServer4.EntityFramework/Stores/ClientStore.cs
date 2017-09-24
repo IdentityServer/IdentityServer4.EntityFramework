@@ -25,9 +25,9 @@ namespace IdentityServer4.EntityFramework.Stores
             _logger = logger;
         }
 
-        public Task<Client> FindClientByIdAsync(string clientId)
+        public async Task<Client> FindClientByIdAsync(string clientId)
         {
-            var client = _context.Clients
+            var client = await _context.Clients
                 .Include(x => x.AllowedGrantTypes)
                 .Include(x => x.RedirectUris)
                 .Include(x => x.PostLogoutRedirectUris)
@@ -37,12 +37,12 @@ namespace IdentityServer4.EntityFramework.Stores
                 .Include(x => x.IdentityProviderRestrictions)
                 .Include(x => x.AllowedCorsOrigins)
                 .Include(x => x.Properties)
-                .FirstOrDefault(x => x.ClientId == clientId);
+                .FirstOrDefaultAsync(x => x.ClientId == clientId);
             var model = client?.ToModel();
 
             _logger.LogDebug("{clientId} found in database: {clientIdFound}", clientId, model != null);
 
-            return Task.FromResult(model);
+            return model;
         }
     }
 }

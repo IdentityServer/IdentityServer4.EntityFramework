@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -82,11 +83,11 @@ namespace IdentityServer4.EntityFramework
                     break;
                 }
 
-                ClearTokens();
+                await ClearTokensAsync();
             }
         }
 
-        public void ClearTokens()
+        public async Task ClearTokensAsync()
         {
             try
             {
@@ -96,14 +97,15 @@ namespace IdentityServer4.EntityFramework
                 {
                     using (var context = serviceScope.ServiceProvider.GetService<IPersistedGrantDbContext>())
                     {
-                        var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
+                        var expired = await context.PersistedGrants
+                            .Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArrayAsync();
 
                         _logger.LogInformation("Clearing {tokenCount} tokens", expired.Length);
 
                         if (expired.Length > 0)
                         {
                             context.PersistedGrants.RemoveRange(expired);
-                            context.SaveChanges();
+                            await context.SaveChangesAsync();
                         }
                     }
                 }
