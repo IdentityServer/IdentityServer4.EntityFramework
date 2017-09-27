@@ -50,7 +50,8 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool IncludeJwtId { get; set; }
         public List<ClientClaim> Claims { get; set; }
         public bool AlwaysSendClientClaims { get; set; }
-        public bool PrefixClientClaims { get; set; } = true;
+        public string ClientClaimsPrefix { get; set; } = "client_";
+        public string PairWiseSubjectSalt { get; set; }
         public List<ClientCorsOrigin> AllowedCorsOrigins { get; set; }
         public List<ClientProperty> Properties { get; set; }
     }

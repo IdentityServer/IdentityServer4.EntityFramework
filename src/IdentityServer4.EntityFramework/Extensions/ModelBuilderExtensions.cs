@@ -35,6 +35,8 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.Property(x => x.Description).HasMaxLength(1000);
                 client.Property(x => x.FrontChannelLogoutUri).HasMaxLength(2000);
                 client.Property(x => x.BackChannelLogoutUri).HasMaxLength(2000);
+                client.Property(x => x.ClientClaimsPrefix).HasMaxLength(200);
+                client.Property(x => x.PairWiseSubjectSalt).HasMaxLength(200);
 
                 client.HasIndex(x => x.ClientId).IsUnique();
 

@@ -34,6 +34,7 @@ CREATE TABLE [Clients] (
     [AuthorizationCodeLifetime] int NOT NULL,
     [BackChannelLogoutSessionRequired] bit NOT NULL,
     [BackChannelLogoutUri] nvarchar(2000) NULL,
+    [ClientClaimsPrefix] nvarchar(200) NULL,
     [ClientId] nvarchar(200) NOT NULL,
     [ClientName] nvarchar(200) NULL,
     [ClientUri] nvarchar(2000) NULL,
@@ -46,7 +47,7 @@ CREATE TABLE [Clients] (
     [IdentityTokenLifetime] int NOT NULL,
     [IncludeJwtId] bit NOT NULL,
     [LogoUri] nvarchar(2000) NULL,
-    [PrefixClientClaims] bit NOT NULL,
+    [PairWiseSubjectSalt] nvarchar(200) NULL,
     [ProtocolType] nvarchar(200) NOT NULL,
     [RefreshTokenExpiration] int NOT NULL,
     [RefreshTokenUsage] int NOT NULL,
@@ -300,7 +301,7 @@ CREATE UNIQUE INDEX [IX_IdentityResources_Name] ON [IdentityResources] ([Name]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20170914200802_Config', N'2.0.0-rtm-26452');
+VALUES (N'20170927170433_Config', N'2.0.0-rtm-26452');
 
 GO
 

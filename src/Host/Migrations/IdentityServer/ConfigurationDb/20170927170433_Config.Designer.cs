@@ -11,7 +11,7 @@ using System;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20170914200802_Config")]
+    [Migration("20170927170433_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -174,6 +174,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("BackChannelLogoutUri")
                         .HasMaxLength(2000);
 
+                    b.Property<string>("ClientClaimsPrefix")
+                        .HasMaxLength(200);
+
                     b.Property<string>("ClientId")
                         .IsRequired()
                         .HasMaxLength(200);
@@ -205,7 +208,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("LogoUri")
                         .HasMaxLength(2000);
 
-                    b.Property<bool>("PrefixClientClaims");
+                    b.Property<string>("PairWiseSubjectSalt")
+                        .HasMaxLength(200);
 
                     b.Property<string>("ProtocolType")
                         .IsRequired()

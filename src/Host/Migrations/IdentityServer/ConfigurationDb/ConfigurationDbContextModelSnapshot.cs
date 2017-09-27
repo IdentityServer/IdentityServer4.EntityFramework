@@ -173,6 +173,9 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("BackChannelLogoutUri")
                         .HasMaxLength(2000);
 
+                    b.Property<string>("ClientClaimsPrefix")
+                        .HasMaxLength(200);
+
                     b.Property<string>("ClientId")
                         .IsRequired()
                         .HasMaxLength(200);
@@ -204,7 +207,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                     b.Property<string>("LogoUri")
                         .HasMaxLength(2000);
 
-                    b.Property<bool>("PrefixClientClaims");
+                    b.Property<string>("PairWiseSubjectSalt")
+                        .HasMaxLength(200);
 
                     b.Property<string>("ProtocolType")
                         .IsRequired()
