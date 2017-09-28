@@ -13,6 +13,9 @@ using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -57,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<OperationalStoreOptions> storeOptionsAction = null)
         {
             builder.Services.AddSingleton<TokenCleanup>();
-            builder.Services.AddSingleton<IStartupFilter, TokenCleanupConfig>();
+            builder.Services.AddSingleton<IHostedService, TokenCleanupHost>();
 
             var storeOptions = new OperationalStoreOptions();
             builder.Services.AddSingleton(storeOptions);
@@ -74,28 +77,33 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        class TokenCleanupConfig : IStartupFilter
+        class TokenCleanupHost : IHostedService
         {
-            private readonly IApplicationLifetime _applicationLifetime;
             private readonly TokenCleanup _tokenCleanup;
             private readonly OperationalStoreOptions _options;
 
-            public TokenCleanupConfig(IApplicationLifetime applicationLifetime, TokenCleanup tokenCleanup, OperationalStoreOptions options)
+            public TokenCleanupHost(TokenCleanup tokenCleanup, OperationalStoreOptions options)
             {
-                _applicationLifetime = applicationLifetime;
                 _tokenCleanup = tokenCleanup;
                 _options = options;
             }
 
-            public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
+            public Task StartAsync(CancellationToken cancellationToken)
             {
                 if (_options.EnableTokenCleanup)
                 {
-                    _applicationLifetime.ApplicationStarted.Register(_tokenCleanup.Start);
-                    _applicationLifetime.ApplicationStopping.Register(_tokenCleanup.Stop);
+                    _tokenCleanup.Start(cancellationToken);
                 }
+                return Task.CompletedTask;
+            }
 
-                return next;
+            public Task StopAsync(CancellationToken cancellationToken)
+            {
+                if (_options.EnableTokenCleanup)
+                {
+                    _tokenCleanup.Stop();
+                }
+                return Task.CompletedTask;
             }
         }
     }

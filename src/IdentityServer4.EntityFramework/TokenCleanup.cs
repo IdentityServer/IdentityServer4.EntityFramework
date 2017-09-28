@@ -33,12 +33,18 @@ namespace IdentityServer4.EntityFramework
 
         public void Start()
         {
+            Start(CancellationToken.None);
+        }
+
+        public void Start(CancellationToken cancellationToken)
+        {
             if (_source != null) throw new InvalidOperationException("Already started. Call Stop first.");
 
             _logger.LogDebug("Starting token cleanup");
 
-            _source = new CancellationTokenSource();
-            Task.Factory.StartNew(() => Start(_source.Token));
+            _source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            Task.Factory.StartNew(() => StartInternal(_source.Token));
         }
 
         public void Stop()
@@ -51,7 +57,7 @@ namespace IdentityServer4.EntityFramework
             _source = null;
         }
 
-        private async Task Start(CancellationToken cancellationToken)
+        private async Task StartInternal(CancellationToken cancellationToken)
         {
             while (true)
             {

@@ -52,7 +52,7 @@ namespace Host
 
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30;
+                    options.TokenCleanupInterval = 30; // interval in seconds
                 })
                 .AddConfigurationStoreCache();
 
