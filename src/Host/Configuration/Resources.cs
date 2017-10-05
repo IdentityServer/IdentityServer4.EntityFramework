@@ -56,7 +56,7 @@ namespace Host.Configuration
                         new Scope()
                         {
                             Name = "api2.full_access",
-                            DisplayName = "Full access to API 2",
+                            DisplayName = "Full access to API 2"
                         },
                         new Scope
                         {

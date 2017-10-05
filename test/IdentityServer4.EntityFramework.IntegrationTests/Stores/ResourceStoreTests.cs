@@ -164,7 +164,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             using (var context = new ConfigurationDbContext(options, StoreOptions))
             {
                 var store = new ResourceStore(context, FakeLogger<ResourceStore>.Create());
-                resources = store.GetAllResources().Result;
+                resources = store.GetAllResourcesAsync().Result;
             }
 
             Assert.NotNull(resources);

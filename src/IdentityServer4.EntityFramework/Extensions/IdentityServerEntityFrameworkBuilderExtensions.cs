@@ -8,87 +8,121 @@ using IdentityServer4.EntityFramework.Services;
 using IdentityServer4.EntityFramework.Stores;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using Microsoft.EntityFrameworkCore;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extension methods to add EF database support to IdentityServer.
+    /// </summary>
     public static class IdentityServerEntityFrameworkBuilderExtensions
     {
+        /// <summary>
+        /// Configures EF implementation of IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="storeOptionsAction">The store options action.</param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder, 
-            Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
         {
-            builder.Services.AddDbContext<ConfigurationDbContext>(dbContextOptionsAction);
+            var options = new ConfigurationStoreOptions();
+            builder.Services.AddSingleton(options);
+            storeOptionsAction?.Invoke(options);
+
+            builder.Services.AddDbContext<ConfigurationDbContext>(dbCtxBuilder =>
+            {
+                options.ConfigureDbContext?.Invoke(dbCtxBuilder);
+            });
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IResourceStore, ResourceStore>();
             builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
 
-            var options = new ConfigurationStoreOptions();
-            storeOptionsAction?.Invoke(options);
-            builder.Services.AddSingleton(options);
-
             return builder;
         }
 
+        /// <summary>
+        /// Configures caching for IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddConfigurationStoreCache(
             this IIdentityServerBuilder builder)
         {
             builder.AddInMemoryCaching();
 
-            // these need to be registered as concrete classes in DI for
-            // the caching decorators to work
-            builder.Services.AddTransient<ClientStore>();
-            builder.Services.AddTransient<ResourceStore>();
-
             // add the caching decorators
             builder.AddClientStoreCache<ClientStore>();
             builder.AddResourceStoreCache<ResourceStore>();
+            builder.AddCorsPolicyCache<CorsPolicyService>();
 
             return builder;
         }
 
+        /// <summary>
+        /// Configures EF implementation of IPersistedGrantStore with IdentityServer.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="storeOptionsAction">The store options action.</param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
-            Action<DbContextOptionsBuilder> dbContextOptionsAction = null,
-            Action<OperationalStoreOptions> storeOptionsAction = null,
-            Action<TokenCleanupOptions> tokenCleanUpOptions = null)
+            Action<OperationalStoreOptions> storeOptionsAction = null)
         {
-            builder.Services.AddDbContext<PersistedGrantDbContext>(dbContextOptionsAction);
-            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
-
-            builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+            builder.Services.AddSingleton<TokenCleanup>();
+            builder.Services.AddSingleton<IHostedService, TokenCleanupHost>();
 
             var storeOptions = new OperationalStoreOptions();
-            storeOptionsAction?.Invoke(storeOptions);
             builder.Services.AddSingleton(storeOptions);
+            storeOptionsAction?.Invoke(storeOptions);
 
-            var tokenCleanupOptions = new TokenCleanupOptions();
-            tokenCleanUpOptions?.Invoke(tokenCleanupOptions);
-            builder.Services.AddSingleton(tokenCleanupOptions);
-            builder.Services.AddSingleton<TokenCleanup>();
-            
+            builder.Services.AddDbContext<PersistedGrantDbContext>(dbCtxBuilder =>
+            {
+                storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
+            });
+
+            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
+            builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+
             return builder;
         }
 
-        public static IApplicationBuilder UseIdentityServerEfTokenCleanup(this IApplicationBuilder app, IApplicationLifetime applicationLifetime)
+        class TokenCleanupHost : IHostedService
         {
-            var tokenCleanup = app.ApplicationServices.GetService<TokenCleanup>();
-            if(tokenCleanup == null)
-            {
-                throw new InvalidOperationException("AddOperationalStore must be called on the service collection.");
-            }
-            applicationLifetime.ApplicationStarted.Register(tokenCleanup.Start);
-            applicationLifetime.ApplicationStopping.Register(tokenCleanup.Stop);
+            private readonly TokenCleanup _tokenCleanup;
+            private readonly OperationalStoreOptions _options;
 
-            return app;
+            public TokenCleanupHost(TokenCleanup tokenCleanup, OperationalStoreOptions options)
+            {
+                _tokenCleanup = tokenCleanup;
+                _options = options;
+            }
+
+            public Task StartAsync(CancellationToken cancellationToken)
+            {
+                if (_options.EnableTokenCleanup)
+                {
+                    _tokenCleanup.Start(cancellationToken);
+                }
+                return Task.CompletedTask;
+            }
+
+            public Task StopAsync(CancellationToken cancellationToken)
+            {
+                if (_options.EnableTokenCleanup)
+                {
+                    _tokenCleanup.Stop();
+                }
+                return Task.CompletedTask;
+            }
         }
     }
 }

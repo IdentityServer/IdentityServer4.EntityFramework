@@ -14,8 +14,8 @@ CREATE TABLE [PersistedGrants] (
     [ClientId] nvarchar(200) NOT NULL,
     [CreationTime] datetime2 NOT NULL,
     [Data] nvarchar(max) NOT NULL,
-    [Expiration] datetime2,
-    [SubjectId] nvarchar(200),
+    [Expiration] datetime2 NULL,
+    [SubjectId] nvarchar(200) NULL,
     [Type] nvarchar(50) NOT NULL,
     CONSTRAINT [PK_PersistedGrants] PRIMARY KEY ([Key])
 );
@@ -27,7 +27,7 @@ CREATE INDEX [IX_PersistedGrants_SubjectId_ClientId_Type] ON [PersistedGrants] (
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20170319181710_Grants', N'1.1.1');
+VALUES (N'20170927170423_Grants', N'2.0.0-rtm-26452');
 
 GO
 

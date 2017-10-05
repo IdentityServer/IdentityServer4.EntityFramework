@@ -5,12 +5,13 @@
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IdentityServer4.EntityFramework.Extensions
 {
-
+    /// <summary>
+    /// Extension methods to define the database schema for the configuration and operational data stores.
+    /// </summary>
     public static class ModelBuilderExtensions
     {
         private static EntityTypeBuilder<TEntity> ToTable<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, TableConfiguration configuration)
@@ -19,6 +20,11 @@ namespace IdentityServer4.EntityFramework.Extensions
             return string.IsNullOrWhiteSpace(configuration.Schema) ? entityTypeBuilder.ToTable(configuration.Name) : entityTypeBuilder.ToTable(configuration.Name, configuration.Schema);
         }
 
+        /// <summary>
+        /// Configures the client context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="storeOptions">The store options.</param>
         public static void ConfigureClientContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);
@@ -32,6 +38,12 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.Property(x => x.ProtocolType).HasMaxLength(200).IsRequired();
                 client.Property(x => x.ClientName).HasMaxLength(200);
                 client.Property(x => x.ClientUri).HasMaxLength(2000);
+                client.Property(x => x.LogoUri).HasMaxLength(2000);
+                client.Property(x => x.Description).HasMaxLength(1000);
+                client.Property(x => x.FrontChannelLogoutUri).HasMaxLength(2000);
+                client.Property(x => x.BackChannelLogoutUri).HasMaxLength(2000);
+                client.Property(x => x.ClientClaimsPrefix).HasMaxLength(200);
+                client.Property(x => x.PairWiseSubjectSalt).HasMaxLength(200);
 
                 client.HasIndex(x => x.ClientId).IsUnique();
 
@@ -43,6 +55,7 @@ namespace IdentityServer4.EntityFramework.Extensions
                 client.HasMany(x => x.Claims).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.IdentityProviderRestrictions).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
                 client.HasMany(x => x.AllowedCorsOrigins).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
+                client.HasMany(x => x.Properties).WithOne(x => x.Client).IsRequired().OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ClientGrantType>(grantType =>
@@ -95,8 +108,20 @@ namespace IdentityServer4.EntityFramework.Extensions
                 corsOrigin.ToTable(storeOptions.ClientCorsOrigin);
                 corsOrigin.Property(x => x.Origin).HasMaxLength(150).IsRequired();
             });
+
+            modelBuilder.Entity<ClientProperty>(property =>
+            {
+                property.ToTable(storeOptions.ClientProperty);
+                property.Property(x => x.Key).HasMaxLength(250).IsRequired();
+                property.Property(x => x.Value).HasMaxLength(2000).IsRequired();
+            });
         }
 
+        /// <summary>
+        /// Configures the persisted grant context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="storeOptions">The store options.</param>
         public static void ConfigurePersistedGrantContext(this ModelBuilder modelBuilder, OperationalStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);
@@ -120,6 +145,11 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
+        /// <summary>
+        /// Configures the resources context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="storeOptions">The store options.</param>
         public static void ConfigureResourcesContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);

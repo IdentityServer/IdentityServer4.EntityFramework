@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+#pragma warning disable 1591
+
 using IdentityServer4.Models;
 using System.Collections.Generic;
 using static IdentityServer4.IdentityServerConstants;
@@ -17,6 +19,7 @@ namespace IdentityServer4.EntityFramework.Entities
         public List<ClientSecret> ClientSecrets { get; set; }
         public bool RequireClientSecret { get; set; } = true;
         public string ClientName { get; set; }
+        public string Description { get; set; }
         public string ClientUri { get; set; }
         public string LogoUri { get; set; }
         public bool RequireConsent { get; set; } = true;
@@ -28,13 +31,16 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool AllowAccessTokensViaBrowser { get; set; }
         public List<ClientRedirectUri> RedirectUris { get; set; }
         public List<ClientPostLogoutRedirectUri> PostLogoutRedirectUris { get; set; }
-        public string LogoutUri { get; set; }
-        public bool LogoutSessionRequired { get; set; } = true;
+        public string FrontChannelLogoutUri { get; set; }
+        public bool FrontChannelLogoutSessionRequired { get; set; } = true;
+        public string BackChannelLogoutUri { get; set; }
+        public bool BackChannelLogoutSessionRequired { get; set; } = true;
         public bool AllowOfflineAccess { get; set; }
         public List<ClientScope> AllowedScopes { get; set; }
         public int IdentityTokenLifetime { get; set; } = 300;
         public int AccessTokenLifetime { get; set; } = 3600;
         public int AuthorizationCodeLifetime { get; set; } = 300;
+        public int? ConsentLifetime { get; set; } = null;
         public int AbsoluteRefreshTokenLifetime { get; set; } = 2592000;
         public int SlidingRefreshTokenLifetime { get; set; } = 1296000;
         public int RefreshTokenUsage { get; set; } = (int)TokenUsage.OneTimeOnly;
@@ -46,7 +52,9 @@ namespace IdentityServer4.EntityFramework.Entities
         public bool IncludeJwtId { get; set; }
         public List<ClientClaim> Claims { get; set; }
         public bool AlwaysSendClientClaims { get; set; }
-        public bool PrefixClientClaims { get; set; } = true;
+        public string ClientClaimsPrefix { get; set; } = "client_";
+        public string PairWiseSubjectSalt { get; set; }
         public List<ClientCorsOrigin> AllowedCorsOrigins { get; set; }
+        public List<ClientProperty> Properties { get; set; }
     }
 }

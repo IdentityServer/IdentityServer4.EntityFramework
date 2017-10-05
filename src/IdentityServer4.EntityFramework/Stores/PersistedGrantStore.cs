@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,17 +14,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer4.EntityFramework.Stores
 {
+    /// <summary>
+    /// Implementation of IPersistedGrantStore thats uses EF.
+    /// </summary>
+    /// <seealso cref="IdentityServer4.Stores.IPersistedGrantStore" />
     public class PersistedGrantStore : IPersistedGrantStore
     {
         private readonly IPersistedGrantDbContext _context;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersistedGrantStore"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="logger">The logger.</param>
         public PersistedGrantStore(IPersistedGrantDbContext context, ILogger<PersistedGrantStore> logger)
         {
             _context = context;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Stores the asynchronous.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <returns></returns>
         public Task StoreAsync(PersistedGrant token)
         {
             var existing = _context.PersistedGrants.SingleOrDefault(x => x.Key == token.Key);
@@ -55,6 +68,11 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(0);
         }
 
+        /// <summary>
+        /// Gets the grant.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public Task<PersistedGrant> GetAsync(string key)
         {
             var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
@@ -65,6 +83,11 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(model);
         }
 
+        /// <summary>
+        /// Gets all grants for a given subject id.
+        /// </summary>
+        /// <param name="subjectId">The subject identifier.</param>
+        /// <returns></returns>
         public Task<IEnumerable<PersistedGrant>> GetAllAsync(string subjectId)
         {
             var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId).ToList();
@@ -75,6 +98,11 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(model);
         }
 
+        /// <summary>
+        /// Removes the grant by key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public Task RemoveAsync(string key)
         {
             var persistedGrant = _context.PersistedGrants.FirstOrDefault(x => x.Key == key);
@@ -101,6 +129,12 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(0);
         }
 
+        /// <summary>
+        /// Removes all grants for a given subject id and client id combination.
+        /// </summary>
+        /// <param name="subjectId">The subject identifier.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <returns></returns>
         public Task RemoveAllAsync(string subjectId, string clientId)
         {
             var persistedGrants = _context.PersistedGrants.Where(x => x.SubjectId == subjectId && x.ClientId == clientId).ToList();
@@ -121,6 +155,13 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(0);
         }
 
+        /// <summary>
+        /// Removes all grants of a give type for a given subject id and client id combination.
+        /// </summary>
+        /// <param name="subjectId">The subject identifier.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         public Task RemoveAllAsync(string subjectId, string clientId, string type)
         {
             var persistedGrants = _context.PersistedGrants.Where(x =>

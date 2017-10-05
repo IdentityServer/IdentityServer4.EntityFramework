@@ -15,19 +15,32 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityServer4.EntityFramework.Stores
 {
+    /// <summary>
+    /// Implementation of IResourceStore thats uses EF.
+    /// </summary>
+    /// <seealso cref="IdentityServer4.Stores.IResourceStore" />
     public class ResourceStore : IResourceStore
     {
         private readonly IConfigurationDbContext _context;
         private readonly ILogger<ResourceStore> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResourceStore"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">context</exception>
         public ResourceStore(IConfigurationDbContext context, ILogger<ResourceStore> logger)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
         }
 
+        /// <summary>
+        /// Finds the API resource by name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public Task<ApiResource> FindApiResourceAsync(string name)
         {
             var query =
@@ -55,6 +68,11 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(api.ToModel());
         }
 
+        /// <summary>
+        /// Gets API resources by scope name.
+        /// </summary>
+        /// <param name="scopeNames"></param>
+        /// <returns></returns>
         public Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
             var names = scopeNames.ToArray();
@@ -78,6 +96,11 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(models.AsEnumerable());
         }
 
+        /// <summary>
+        /// Gets identity resources by scope name.
+        /// </summary>
+        /// <param name="scopeNames"></param>
+        /// <returns></returns>
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
             var scopes = scopeNames.ToArray();
@@ -97,7 +120,11 @@ namespace IdentityServer4.EntityFramework.Stores
             return Task.FromResult(results.Select(x => x.ToModel()).ToArray().AsEnumerable());
         }
 
-        public Task<Resources> GetAllResources()
+        /// <summary>
+        /// Gets all resources.
+        /// </summary>
+        /// <returns></returns>
+        public Task<Resources> GetAllResourcesAsync()
         {
             var identity = _context.IdentityResources
               .Include(x => x.UserClaims);

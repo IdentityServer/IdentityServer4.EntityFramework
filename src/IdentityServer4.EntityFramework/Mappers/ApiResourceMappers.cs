@@ -7,6 +7,9 @@ using IdentityServer4.EntityFramework.Entities;
 
 namespace IdentityServer4.EntityFramework.Mappers
 {
+    /// <summary>
+    /// Extension methods to map to/from entity/model for API resources.
+    /// </summary>
     public static class ApiResourceMappers
     {
         static ApiResourceMappers()
@@ -17,14 +20,24 @@ namespace IdentityServer4.EntityFramework.Mappers
 
         internal static IMapper Mapper { get; }
 
-        public static Models.ApiResource ToModel(this ApiResource resource)
+        /// <summary>
+        /// Maps an entity to a model.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns></returns>
+        public static Models.ApiResource ToModel(this ApiResource entity)
         {
-            return resource == null ? null : Mapper.Map<Models.ApiResource>(resource);
+            return entity == null ? null : Mapper.Map<Models.ApiResource>(entity);
         }
 
-        public static ApiResource ToEntity(this Models.ApiResource resource)
+        /// <summary>
+        /// Maps a model to an entity.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        public static ApiResource ToEntity(this Models.ApiResource model)
         {
-            return resource == null ? null : Mapper.Map<ApiResource>(resource);
+            return model == null ? null : Mapper.Map<ApiResource>(model);
         }
     }
 }

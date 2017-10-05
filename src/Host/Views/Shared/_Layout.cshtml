@@ -3,8 +3,7 @@
     string name = null;
     if (!true.Equals(ViewData["signed-out"]))
     {
-        var user = await Context.GetIdentityServerUserAsync();
-        name = user?.FindFirst("name")?.Value;
+        name = Context.User?.FindFirst("name")?.Value;
     }
 }
 <!DOCTYPE html>
@@ -32,7 +31,7 @@
                 <a href="~/">
                     <span class="navbar-brand">
                         <img src="~/icon.png" class="icon-banner">
-                        IdentityServer4 -- EntityFramework
+                        IdentityServer4
                     </span>
                 </a>
             </div>
