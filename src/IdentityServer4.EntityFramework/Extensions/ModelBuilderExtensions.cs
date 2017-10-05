@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IdentityServer4.EntityFramework.Extensions
 {
-
+    /// <summary>
+    /// Extension methods to define the database schema for the configuration and operational data stores.
+    /// </summary>
     public static class ModelBuilderExtensions
     {
         private static EntityTypeBuilder<TEntity> ToTable<TEntity>(this EntityTypeBuilder<TEntity> entityTypeBuilder, TableConfiguration configuration)
@@ -18,6 +20,11 @@ namespace IdentityServer4.EntityFramework.Extensions
             return string.IsNullOrWhiteSpace(configuration.Schema) ? entityTypeBuilder.ToTable(configuration.Name) : entityTypeBuilder.ToTable(configuration.Name, configuration.Schema);
         }
 
+        /// <summary>
+        /// Configures the client context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="storeOptions">The store options.</param>
         public static void ConfigureClientContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);
@@ -110,6 +117,11 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
+        /// <summary>
+        /// Configures the persisted grant context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="storeOptions">The store options.</param>
         public static void ConfigurePersistedGrantContext(this ModelBuilder modelBuilder, OperationalStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);
@@ -133,6 +145,11 @@ namespace IdentityServer4.EntityFramework.Extensions
             });
         }
 
+        /// <summary>
+        /// Configures the resources context.
+        /// </summary>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="storeOptions">The store options.</param>
         public static void ConfigureResourcesContext(this ModelBuilder modelBuilder, ConfigurationStoreOptions storeOptions)
         {
             if (!string.IsNullOrWhiteSpace(storeOptions.DefaultSchema)) modelBuilder.HasDefaultSchema(storeOptions.DefaultSchema);

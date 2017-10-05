@@ -13,17 +13,32 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServer4.EntityFramework.Services
 {
+    /// <summary>
+    /// Implementation of ICorsPolicyService that consults the client configuration in the database for allowed CORS origins.
+    /// </summary>
+    /// <seealso cref="IdentityServer4.Services.ICorsPolicyService" />
     public class CorsPolicyService : ICorsPolicyService
     {
         private readonly IHttpContextAccessor _context;
         private readonly ILogger<CorsPolicyService> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CorsPolicyService"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException">context</exception>
         public CorsPolicyService(IHttpContextAccessor context, ILogger<CorsPolicyService> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger;
         }
 
+        /// <summary>
+        /// Determines whether origin is allowed.
+        /// </summary>
+        /// <param name="origin">The origin.</param>
+        /// <returns></returns>
         public Task<bool> IsOriginAllowedAsync(string origin)
         {
             // doing this here and not in the ctor because: https://github.com/aspnet/CORS/issues/105

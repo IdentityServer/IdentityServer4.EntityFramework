@@ -9,9 +9,9 @@ using IdentityServer4.EntityFramework.Entities;
 namespace IdentityServer4.EntityFramework.Mappers
 {
     /// <summary>
-    /// AutoMapper configuration for identity resource
-    /// Between model and entity
+    /// Defines entity/model mapping for identity resources.
     /// </summary>
+    /// <seealso cref="AutoMapper.Profile" />
     public class IdentityResourceMapperProfile : Profile
     {
         /// <summary>

@@ -7,11 +7,9 @@ using AutoMapper;
 namespace IdentityServer4.EntityFramework.Mappers
 {
     /// <summary>
-    /// AutoMapper Config for PersistedGrant
-    /// Between Model and Entity
-    /// <seealso cref="https://github.com/AutoMapper/AutoMapper/wiki/Configuration">
-    /// </seealso>
+    /// Defines entity/model mapping for persisted grants.
     /// </summary>
+    /// <seealso cref="AutoMapper.Profile" />
     public class PersistedGrantMapperProfile:Profile
     {
         /// <summary>

@@ -11,16 +11,23 @@ using IdentityServer4.Stores;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extension methods to add EF database support to IdentityServer.
+    /// </summary>
     public static class IdentityServerEntityFrameworkBuilderExtensions
     {
+        /// <summary>
+        /// Configures EF implementation of IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="storeOptionsAction">The store options action.</param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder, 
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
@@ -42,6 +49,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Configures caching for IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddConfigurationStoreCache(
             this IIdentityServerBuilder builder)
         {
@@ -55,6 +67,12 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Configures EF implementation of IPersistedGrantStore with IdentityServer.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <param name="storeOptionsAction">The store options action.</param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder,
             Action<OperationalStoreOptions> storeOptionsAction = null)
