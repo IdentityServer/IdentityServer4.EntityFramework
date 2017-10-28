@@ -17,7 +17,27 @@ namespace IdentityServer4.EntityFramework.DbContexts
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
     /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IPersistedGrantDbContext" />
-    public class PersistedGrantDbContext : DbContext, IPersistedGrantDbContext
+    public class PersistedGrantDbContext : PersistedGrantDbContext<PersistedGrantDbContext>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersistedGrantDbContext"/> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="storeOptions">The store options.</param>
+        /// <exception cref="ArgumentNullException">storeOptions</exception>
+        public PersistedGrantDbContext(DbContextOptions<PersistedGrantDbContext> options, OperationalStoreOptions storeOptions)
+            : base(options, storeOptions)
+        {
+        }
+    }
+
+    /// <summary>
+    /// DbContext for the IdentityServer operational data.
+    /// </summary>
+    /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
+    /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IPersistedGrantDbContext" />
+    public class PersistedGrantDbContext<TContext> : DbContext, IPersistedGrantDbContext
+        where TContext : DbContext, IPersistedGrantDbContext
     {
         private readonly OperationalStoreOptions storeOptions;
 
@@ -27,7 +47,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
         /// <param name="options">The options.</param>
         /// <param name="storeOptions">The store options.</param>
         /// <exception cref="ArgumentNullException">storeOptions</exception>
-        public PersistedGrantDbContext(DbContextOptions<PersistedGrantDbContext> options, OperationalStoreOptions storeOptions)
+        public PersistedGrantDbContext(DbContextOptions options, OperationalStoreOptions storeOptions)
             : base(options)
         {
             if (storeOptions == null) throw new ArgumentNullException(nameof(storeOptions));
