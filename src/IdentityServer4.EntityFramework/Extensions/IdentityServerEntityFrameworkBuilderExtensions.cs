@@ -93,7 +93,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (storeOptions.ResolveDbContextOptions != null)
             {
-                builder.Services.AddDbContext<ConfigurationDbContext>(storeOptions.ResolveDbContextOptions);
+                builder.Services.AddDbContext<PersistedGrantDbContext>(storeOptions.ResolveDbContextOptions);
             }
             else
             {
