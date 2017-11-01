@@ -39,9 +39,14 @@ namespace Host
                 // this adds the config data from DB (clients, resources, CORS)
                 .AddConfigurationStore(options =>
                 {
-                    options.ConfigureDbContext = builder =>
+                    options.ResolveDbContextOptions = (provider, builder) =>
+                    {
                         builder.UseSqlServer(connectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
+                    };
+                    //options.ConfigureDbContext = builder =>
+                    //    builder.UseSqlServer(connectionString,
+                    //        sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 // this adds the operational data from DB (codes, tokens, consents)
                 .AddOperationalStore(options =>

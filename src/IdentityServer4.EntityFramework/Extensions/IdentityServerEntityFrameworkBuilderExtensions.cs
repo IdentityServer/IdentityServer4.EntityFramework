@@ -29,17 +29,24 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="storeOptionsAction">The store options action.</param>
         /// <returns></returns>
         public static IIdentityServerBuilder AddConfigurationStore(
-            this IIdentityServerBuilder builder, 
+            this IIdentityServerBuilder builder,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
         {
             var options = new ConfigurationStoreOptions();
             builder.Services.AddSingleton(options);
             storeOptionsAction?.Invoke(options);
 
-            builder.Services.AddDbContext<ConfigurationDbContext>(dbCtxBuilder =>
+            if (options.ResolveDbContextOptions != null)
             {
-                options.ConfigureDbContext?.Invoke(dbCtxBuilder);
-            });
+                builder.Services.AddDbContext<ConfigurationDbContext>(options.ResolveDbContextOptions);
+            }
+            else
+            {
+                builder.Services.AddDbContext<ConfigurationDbContext>(dbCtxBuilder =>
+                {
+                    options.ConfigureDbContext?.Invoke(dbCtxBuilder);
+                });
+            }
             builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
@@ -84,10 +91,17 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddSingleton(storeOptions);
             storeOptionsAction?.Invoke(storeOptions);
 
-            builder.Services.AddDbContext<PersistedGrantDbContext>(dbCtxBuilder =>
+            if (storeOptions.ResolveDbContextOptions != null)
             {
-                storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
-            });
+                builder.Services.AddDbContext<ConfigurationDbContext>(storeOptions.ResolveDbContextOptions);
+            }
+            else
+            {
+                builder.Services.AddDbContext<PersistedGrantDbContext>(dbCtxBuilder =>
+                {
+                    storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
+                });
+            }
 
             builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
