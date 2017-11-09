@@ -110,7 +110,7 @@ namespace IdentityServer4.EntityFramework
                         while (found >= _options.TokenCleanupBatchSize)
                         {
                             var expired = context.PersistedGrants
-                                .Where(x => x.Expiration < DateTimeOffset.UtcNow)
+                                .Where(x => x.Expiration < DateTime.UtcNow)
                                 .Take(_options.TokenCleanupBatchSize)
                                 .ToArray();
 
