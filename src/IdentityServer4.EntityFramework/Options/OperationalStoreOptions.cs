@@ -61,5 +61,13 @@ namespace IdentityServer4.EntityFramework.Options
         /// The token cleanup interval.
         /// </value>
         public int TokenCleanupInterval { get; set; } = 3600;
+
+        /// <summary>
+        /// Gets or sets the number of records to remove at a time. Defaults to 100.
+        /// </summary>
+        /// <value>
+        /// The size of the token cleanup batch.
+        /// </value>
+        public int TokenCleanupBatchSize { get; set; } = 100;
     }
 }
