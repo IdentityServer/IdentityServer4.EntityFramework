@@ -21,6 +21,14 @@ namespace IdentityServer4.EntityFramework.Options
         public Action<DbContextOptionsBuilder> ConfigureDbContext { get; set; }
 
         /// <summary>
+        /// Callback in DI resolve the EF DbContextOptions. If set, ConfigureDbContext will not be used.
+        /// </summary>
+        /// <value>
+        /// The configure database context.
+        /// </value>
+        public Action<IServiceProvider, DbContextOptionsBuilder> ResolveDbContextOptions { get; set; }
+
+        /// <summary>
         /// Gets or sets the default schema.
         /// </summary>
         /// <value>

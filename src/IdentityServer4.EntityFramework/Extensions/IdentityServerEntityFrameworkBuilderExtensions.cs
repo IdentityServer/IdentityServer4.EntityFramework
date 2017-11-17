@@ -11,6 +11,7 @@ using IdentityServer4.Stores;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,18 +30,40 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="storeOptionsAction">The store options action.</param>
         /// <returns></returns>
         public static IIdentityServerBuilder AddConfigurationStore(
-            this IIdentityServerBuilder builder, 
+            this IIdentityServerBuilder builder,
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
+        {
+            return builder.AddConfigurationStore<ConfigurationDbContext>(storeOptionsAction);
+        }
+
+        /// <summary>
+        /// Configures EF implementation of IClientStore, IResourceStore, and ICorsPolicyService with IdentityServer.
+        /// </summary>
+        /// <typeparam name="TContext">The IConfigurationDbContext to use.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="storeOptionsAction">The store options action.</param>
+        /// <returns></returns>
+        public static IIdentityServerBuilder AddConfigurationStore<TContext>(
+            this IIdentityServerBuilder builder,
+            Action<ConfigurationStoreOptions> storeOptionsAction = null)
+            where TContext : DbContext, IConfigurationDbContext
         {
             var options = new ConfigurationStoreOptions();
             builder.Services.AddSingleton(options);
             storeOptionsAction?.Invoke(options);
 
-            builder.Services.AddDbContext<ConfigurationDbContext>(dbCtxBuilder =>
+            if (options.ResolveDbContextOptions != null)
             {
-                options.ConfigureDbContext?.Invoke(dbCtxBuilder);
-            });
-            builder.Services.AddScoped<IConfigurationDbContext, ConfigurationDbContext>();
+                builder.Services.AddDbContext<TContext>(options.ResolveDbContextOptions);
+            }
+            else
+            {
+                builder.Services.AddDbContext<TContext>(dbCtxBuilder =>
+                {
+                    options.ConfigureDbContext?.Invoke(dbCtxBuilder);
+                });
+            }
+            builder.Services.AddScoped<IConfigurationDbContext, TContext>();
 
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IResourceStore, ResourceStore>();
@@ -77,6 +100,21 @@ namespace Microsoft.Extensions.DependencyInjection
             this IIdentityServerBuilder builder,
             Action<OperationalStoreOptions> storeOptionsAction = null)
         {
+            return builder.AddOperationalStore<PersistedGrantDbContext>(storeOptionsAction);
+        }
+
+        /// <summary>
+        /// Configures EF implementation of IPersistedGrantStore with IdentityServer.
+        /// </summary>
+        /// <typeparam name="TContext">The IPersistedGrantDbContext to use.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="storeOptionsAction">The store options action.</param>
+        /// <returns></returns>
+        public static IIdentityServerBuilder AddOperationalStore<TContext>(
+            this IIdentityServerBuilder builder,
+            Action<OperationalStoreOptions> storeOptionsAction = null)
+            where TContext : DbContext, IPersistedGrantDbContext
+        {
             builder.Services.AddSingleton<TokenCleanup>();
             builder.Services.AddSingleton<IHostedService, TokenCleanupHost>();
 
@@ -84,12 +122,19 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddSingleton(storeOptions);
             storeOptionsAction?.Invoke(storeOptions);
 
-            builder.Services.AddDbContext<PersistedGrantDbContext>(dbCtxBuilder =>
+            if (storeOptions.ResolveDbContextOptions != null)
             {
-                storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
-            });
+                builder.Services.AddDbContext<TContext>(storeOptions.ResolveDbContextOptions);
+            }
+            else
+            {
+                builder.Services.AddDbContext<TContext>(dbCtxBuilder =>
+                {
+                    storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
+                });
+            }
 
-            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
+            builder.Services.AddScoped<IPersistedGrantDbContext, TContext>();
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
 
             return builder;

@@ -21,6 +21,14 @@ namespace IdentityServer4.EntityFramework.Options
         public Action<DbContextOptionsBuilder> ConfigureDbContext { get; set; }
 
         /// <summary>
+        /// Callback in DI resolve the EF DbContextOptions. If set, ConfigureDbContext will not be used.
+        /// </summary>
+        /// <value>
+        /// The configure database context.
+        /// </value>
+        public Action<IServiceProvider, DbContextOptionsBuilder> ResolveDbContextOptions { get; set; }
+
+        /// <summary>
         /// Gets or sets the default schema.
         /// </summary>
         /// <value>
@@ -53,5 +61,13 @@ namespace IdentityServer4.EntityFramework.Options
         /// The token cleanup interval.
         /// </value>
         public int TokenCleanupInterval { get; set; } = 3600;
+
+        /// <summary>
+        /// Gets or sets the number of records to remove at a time. Defaults to 100.
+        /// </summary>
+        /// <value>
+        /// The size of the token cleanup batch.
+        /// </value>
+        public int TokenCleanupBatchSize { get; set; } = 100;
     }
 }

@@ -9,10 +9,6 @@ using IdentityServer4.Quickstart.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Host.Configuration;
-using System.Linq;
-using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.EntityFramework.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Host
@@ -32,16 +28,21 @@ namespace Host
         {
             const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework-2.0.0;trusted_connection=yes;";
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            
+
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddTestUsers(TestUsers.Users)
-                // this adds the config data from DB (clients, resources)
+                // this adds the config data from DB (clients, resources, CORS)
                 .AddConfigurationStore(options =>
                 {
-                    options.ConfigureDbContext = builder =>
+                    options.ResolveDbContextOptions = (provider, builder) =>
+                    {
                         builder.UseSqlServer(connectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
+                    };
+                    //options.ConfigureDbContext = builder =>
+                    //    builder.UseSqlServer(connectionString,
+                    //        sql => sql.MigrationsAssembly(migrationsAssembly));
                 })
                 // this adds the operational data from DB (codes, tokens, consents)
                 .AddOperationalStore(options =>
@@ -52,17 +53,11 @@ namespace Host
 
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30; // interval in seconds
-                })
-                .AddConfigurationStoreCache();
+                    options.TokenCleanupInterval = 10; // interval in seconds, short for testing
+                });
+                //.AddConfigurationStoreCache();
 
             services.AddMvc();
-
-            // only want this during testing
-            if (_env.IsDevelopment())
-            {
-                //EnsureSeedData(services);
-            }
 
             return services.BuildServiceProvider(validateScopes: true);
         }
@@ -76,48 +71,5 @@ namespace Host
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
         }
-
-        private static void EnsureSeedData(IServiceCollection services)
-        {
-            var sp = services.BuildServiceProvider();
-            using (var scope = sp.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                using (var context = scope.ServiceProvider.GetService<IConfigurationDbContext>())
-                {
-                    EnsureSeedData(context);
-                }
-            }
-        }
-
-        private static void EnsureSeedData(IConfigurationDbContext context)
-        {
-            if (!context.Clients.Any())
-            {
-                foreach (var client in Clients.Get().ToList())
-                {
-                    context.Clients.Add(client.ToEntity());
-                }
-                context.SaveChanges();
-            }
-
-            if (!context.IdentityResources.Any())
-            {
-                foreach (var resource in Resources.GetIdentityResources().ToList())
-                {
-                    context.IdentityResources.Add(resource.ToEntity());
-                }
-                context.SaveChanges();
-            }
-
-            if (!context.ApiResources.Any())
-            {
-                foreach (var resource in Resources.GetApiResources().ToList())
-                {
-                    context.ApiResources.Add(resource.ToEntity());
-                }
-                context.SaveChanges();
-            }
-        }
-
     }
 }

@@ -7,6 +7,9 @@ using IdentityServer4.Models;
 
 namespace IdentityServer4.EntityFramework.Mappers
 {
+    /// <summary>
+    /// Extension methods to map to/from entity/model for persisted grants.
+    /// </summary>
     public static class PersistedGrantMappers
     {
         static PersistedGrantMappers()

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Options;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -17,18 +18,20 @@ namespace IdentityServer4.EntityFramework
     {
         private readonly ILogger<TokenCleanup> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _interval;
+        private readonly OperationalStoreOptions _options;
+
         private CancellationTokenSource _source;
+
+        public TimeSpan CleanupInterval => TimeSpan.FromSeconds(_options.TokenCleanupInterval);
 
         public TokenCleanup(IServiceProvider serviceProvider, ILogger<TokenCleanup> logger, OperationalStoreOptions options)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (options.TokenCleanupInterval < 1) throw new ArgumentException("interval must be more than 1 second");
-            
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            if (_options.TokenCleanupInterval < 1) throw new ArgumentException("Token cleanup interval must be at least 1 second");
+            if (_options.TokenCleanupBatchSize < 1) throw new ArgumentException("Token cleanup batch size interval must be at least 1");
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-
-            _interval = TimeSpan.FromSeconds(options.TokenCleanupInterval);
         }
 
         public void Start()
@@ -69,7 +72,7 @@ namespace IdentityServer4.EntityFramework
 
                 try
                 {
-                    await Task.Delay(_interval, cancellationToken);
+                    await Task.Delay(CleanupInterval, cancellationToken);
                 }
                 catch (TaskCanceledException)
                 {
@@ -97,19 +100,38 @@ namespace IdentityServer4.EntityFramework
             try
             {
                 _logger.LogTrace("Querying for tokens to clear");
-                
+
+                var found = Int32.MaxValue;
+
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     using (var context = serviceScope.ServiceProvider.GetService<IPersistedGrantDbContext>())
                     {
-                        var expired = context.PersistedGrants.Where(x => x.Expiration < DateTimeOffset.UtcNow).ToArray();
-
-                        _logger.LogInformation("Clearing {tokenCount} tokens", expired.Length);
-
-                        if (expired.Length > 0)
+                        while (found >= _options.TokenCleanupBatchSize)
                         {
-                            context.PersistedGrants.RemoveRange(expired);
-                            context.SaveChanges();
+                            var expired = context.PersistedGrants
+                                .Where(x => x.Expiration < DateTime.UtcNow)
+                                .OrderBy(x => x.Key)
+                                .Take(_options.TokenCleanupBatchSize)
+                                .ToArray();
+
+                            found = expired.Length;
+                            _logger.LogInformation("Clearing {tokenCount} tokens", found);
+
+                            if (found > 0)
+                            {
+                                context.PersistedGrants.RemoveRange(expired);
+                                try
+                                {
+                                    context.SaveChanges();
+                                }
+                                catch (DbUpdateConcurrencyException ex)
+                                {
+                                    // we get this if/when someone else already deleted the records
+                                    // we want to essentially ignore this, and keep working
+                                    _logger.LogDebug("Concurrency exception clearing tokens: {exception}", ex.Message);
+                                }
+                            }
                         }
                     }
                 }

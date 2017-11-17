@@ -17,7 +17,27 @@ namespace IdentityServer4.EntityFramework.DbContexts
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
     /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IConfigurationDbContext" />
-    public class ConfigurationDbContext : DbContext, IConfigurationDbContext
+    public class ConfigurationDbContext : ConfigurationDbContext<ConfigurationDbContext>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigurationDbContext"/> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="storeOptions">The store options.</param>
+        /// <exception cref="ArgumentNullException">storeOptions</exception>
+        public ConfigurationDbContext(DbContextOptions<ConfigurationDbContext> options, ConfigurationStoreOptions storeOptions)
+            : base(options, storeOptions)
+        {
+        }
+    }
+
+    /// <summary>
+    /// DbContext for the IdentityServer configuration data.
+    /// </summary>
+    /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
+    /// <seealso cref="IdentityServer4.EntityFramework.Interfaces.IConfigurationDbContext" />
+    public class ConfigurationDbContext<TContext> : DbContext, IConfigurationDbContext
+        where TContext : DbContext, IConfigurationDbContext
     {
         private readonly ConfigurationStoreOptions storeOptions;
 
@@ -27,7 +47,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
         /// <param name="options">The options.</param>
         /// <param name="storeOptions">The store options.</param>
         /// <exception cref="ArgumentNullException">storeOptions</exception>
-        public ConfigurationDbContext(DbContextOptions<ConfigurationDbContext> options, ConfigurationStoreOptions storeOptions)
+        public ConfigurationDbContext(DbContextOptions<TContext> options, ConfigurationStoreOptions storeOptions)
             : base(options)
         {
             this.storeOptions = storeOptions ?? throw new ArgumentNullException(nameof(storeOptions));

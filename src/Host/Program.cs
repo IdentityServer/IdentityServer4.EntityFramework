@@ -9,6 +9,7 @@ using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Microsoft.AspNetCore;
 using Serilog.Events;
+using System.Linq;
 
 namespace Host
 {
@@ -28,7 +29,20 @@ namespace Host
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();
 
-            BuildWebHost(args).Run();
+            var seed = args.Contains("/seed");
+            if (seed)
+            {
+                args = args.Except(new[] { "/seed" }).ToArray();
+            }
+
+            var host = BuildWebHost(args);
+
+            if (seed)
+            {
+                SeedData.EnsureSeedData(host.Services);
+            }
+
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args)
@@ -41,6 +55,6 @@ namespace Host
                         builder.AddSerilog();
                     })
                     .Build();
-        }            
+        }
     }
 }
