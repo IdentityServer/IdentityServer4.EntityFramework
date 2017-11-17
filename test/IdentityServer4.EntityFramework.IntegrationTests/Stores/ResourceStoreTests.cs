@@ -171,8 +171,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotEmpty(resources.IdentityResources);
             Assert.NotEmpty(resources.ApiResources);
 
-            Assert.True(resources.IdentityResources.Any(x => !x.ShowInDiscoveryDocument));
-            Assert.True(resources.ApiResources.Any(x => !x.Scopes.Any(y => y.ShowInDiscoveryDocument)));
+            Assert.Contains(resources.IdentityResources, x => !x.ShowInDiscoveryDocument);
+            Assert.Contains(resources.ApiResources, x => !x.Scopes.Any(y => y.ShowInDiscoveryDocument));
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
@@ -258,7 +258,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotEmpty(foundResource.ApiSecrets);
             Assert.NotNull(foundResource.Scopes);
             Assert.NotEmpty(foundResource.Scopes);
-            Assert.True(foundResource.Scopes.Any(x => x.UserClaims.Any()));
+            Assert.Contains(foundResource.Scopes, x => x.UserClaims.Any());
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
@@ -288,7 +288,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             Assert.NotEmpty(resources.First().ApiSecrets);
             Assert.NotNull(resources.First().Scopes);
             Assert.NotEmpty(resources.First().Scopes);
-            Assert.True(resources.First().Scopes.Any(x => x.UserClaims.Any()));
+            Assert.Contains(resources.First().Scopes, x => x.UserClaims.Any());
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]

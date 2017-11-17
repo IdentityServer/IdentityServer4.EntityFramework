@@ -112,7 +112,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
             {
                 var client = db.Clients.Include(x => x.RedirectUris).First();
 
-                Assert.Equal(0, client.RedirectUris.Count());
+                Assert.Empty(client.RedirectUris);
             }
         }
     }
