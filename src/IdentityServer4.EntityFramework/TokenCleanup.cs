@@ -102,7 +102,7 @@ namespace IdentityServer4.EntityFramework
                 _logger.LogTrace("Querying for tokens to clear");
 
                 var found = Int32.MaxValue;
-                
+
                 using (var serviceScope = _serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     using (var context = serviceScope.ServiceProvider.GetService<IPersistedGrantDbContext>())
@@ -111,6 +111,7 @@ namespace IdentityServer4.EntityFramework
                         {
                             var expired = context.PersistedGrants
                                 .Where(x => x.Expiration < DateTime.UtcNow)
+                                .OrderBy(x => x.Key)
                                 .Take(_options.TokenCleanupBatchSize)
                                 .ToArray();
 
