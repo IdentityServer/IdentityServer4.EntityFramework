@@ -13,17 +13,28 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
         [Fact]
         public void IdentityResourceAutomapperConfigurationIsValid()
         {
+            IdentityResourceMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid<IdentityResourceMapperProfile>();
+        }
+
+        [Fact]
+        public void CanMapIdentityResources()
+        {
             var model = new IdentityResource();
             var mappedEntity = model.ToEntity();
             var mappedModel = mappedEntity.ToModel();
 
             Assert.NotNull(mappedModel);
             Assert.NotNull(mappedEntity);
-            IdentityResourceMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
 
         [Fact]
         public void ApiResourceAutomapperConfigurationIsValid()
+        {
+            ApiResourceMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid<ApiResourceMapperProfile>();
+        }
+
+        [Fact]
+        public void CanMapApiResources()
         {
             var model = new ApiResource();
             var mappedEntity = model.ToEntity();
@@ -31,7 +42,6 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
 
             Assert.NotNull(mappedModel);
             Assert.NotNull(mappedEntity);
-            ApiResourceMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }

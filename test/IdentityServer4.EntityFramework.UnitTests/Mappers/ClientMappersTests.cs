@@ -14,10 +14,14 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
     public class ClientMappersTests
     {
         [Fact]
-        public void ClientAutomapperConfigurationIsValid()
+        public void AutomapperConfigurationIsValid()
         {
-            ClientMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            ClientMappers.Mapper.ConfigurationProvider.AssertConfigurationIsValid<ClientMapperProfile>();
+        }
 
+        [Fact]
+        public void Can_Map()
+        {
             var model = new Client();
             var mappedEntity = model.ToEntity();
             var mappedModel = mappedEntity.ToModel();
@@ -37,7 +41,6 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
                     {"foo2", "bar2"},
                 }
             };
-
 
 
             var mappedEntity = model.ToEntity();
