@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
@@ -22,7 +21,8 @@ namespace IdentityServer4.EntityFramework.Mappers
         /// </summary>
         public ClientMapperProfile()
         {
-            CreateMap<Entities.Client, Models.Client>()
+            CreateMap<Entities.Client, Models.Client>(MemberList.Destination)
+                .ForMember(dest => dest.ProtocolType, opt => opt.Condition(srs => srs != null))
                 .ForMember(x => x.Properties,
                     opt => opt.MapFrom(src => src.Properties.ToDictionary(item => item.Key, item => item.Value)))
                 .ReverseMap()

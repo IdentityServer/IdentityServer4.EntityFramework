@@ -79,5 +79,28 @@ namespace IdentityServer4.EntityFramework.UnitTests.Mappers
             Action modelAction = () => entity.ToModel();
             modelAction.ShouldThrow<Exception>();
         }
+
+        [Fact]
+        public void missing_values_should_use_defaults()
+        {
+            var entity = new IdentityServer4.EntityFramework.Entities.Client
+            {
+                ClientSecrets = new System.Collections.Generic.List<Entities.ClientSecret>
+                {
+                    new Entities.ClientSecret
+                    {
+                    }
+                }
+            };
+
+            var def = new Client
+            {
+                ClientSecrets = { new Models.Secret("foo") }
+            };
+
+            var model = entity.ToModel();
+            model.ProtocolType.Should().Be(def.ProtocolType);
+            model.ClientSecrets.First().Type.Should().Be(def.ClientSecrets.First().Type);
+        }
     }
 }
