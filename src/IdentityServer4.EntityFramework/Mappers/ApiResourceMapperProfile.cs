@@ -2,9 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Linq;
 using AutoMapper;
-using IdentityServer4.EntityFramework.Entities;
 
 namespace IdentityServer4.EntityFramework.Mappers
 {
@@ -19,24 +17,28 @@ namespace IdentityServer4.EntityFramework.Mappers
         /// </summary>
         public ApiResourceMapperProfile()
         {
-            // entity to model
-            CreateMap<ApiResource, Models.ApiResource>(MemberList.Destination)
+            CreateMap<Entities.ApiResource, Models.ApiResource>(MemberList.Destination)
                 .ConstructUsing(src => new Models.ApiResource())
-                .ForMember(x => x.ApiSecrets, opt => opt.MapFrom(src => src.Secrets.Select(x => x)))
-                .ForMember(x => x.Scopes, opt => opt.MapFrom(src => src.Scopes.Select(x => x)))
-                .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => x.Type)));
-            CreateMap<ApiSecret, Models.Secret>(MemberList.Destination);
-            CreateMap<ApiScope, Models.Scope>(MemberList.Destination)
-                .ForMember(x => x.UserClaims, opt => opt.MapFrom(src => src.UserClaims.Select(x => x.Type)));
+                .ForMember(x => x.ApiSecrets, opts => opts.MapFrom(x => x.Secrets))
+                .ReverseMap();
 
-            // model to entity
-            CreateMap<Models.ApiResource, ApiResource>(MemberList.Source)
-                .ForMember(x => x.Secrets, opts => opts.MapFrom(src => src.ApiSecrets.Select(x => x)))
-                .ForMember(x => x.Scopes, opts => opts.MapFrom(src => src.Scopes.Select(x => x)))
-                .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new ApiResourceClaim { Type = x })));
-            CreateMap<Models.Secret, ApiSecret>(MemberList.Source);
-            CreateMap<Models.Scope, ApiScope>(MemberList.Source)
-                .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new ApiScopeClaim { Type = x })));
+            CreateMap<Entities.ApiResourceClaim, string>()
+                .ConstructUsing(x => x.Type)
+                .ReverseMap()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src));
+
+            CreateMap<Entities.ApiSecret, Models.Secret>(MemberList.Destination)
+                .ForMember(dest => dest.Type, opt => opt.Condition(srs => srs != null))
+                .ReverseMap();
+
+            CreateMap<Entities.ApiScope, Models.Scope>(MemberList.Destination)
+                .ConstructUsing(src => new Models.Scope())
+                .ReverseMap();
+
+            CreateMap<Entities.ApiScopeClaim, string>()
+               .ConstructUsing(x => x.Type)
+               .ReverseMap()
+               .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src));
         }
     }
 }
