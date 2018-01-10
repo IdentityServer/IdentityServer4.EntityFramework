@@ -18,11 +18,8 @@ namespace IdentityServer4.EntityFramework.Mappers
         /// </summary>
         public PersistedGrantMapperProfile()
         {
-            // entity to model
-            CreateMap<Entities.PersistedGrant, Models.PersistedGrant>(MemberList.Destination);
-
-            // model to entity
-            CreateMap<Models.PersistedGrant, Entities.PersistedGrant>(MemberList.Source);
+            CreateMap<Entities.PersistedGrant, Models.PersistedGrant>(MemberList.Destination)
+                .ReverseMap();
         }
     }
 }

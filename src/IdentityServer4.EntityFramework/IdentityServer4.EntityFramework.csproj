@@ -10,7 +10,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/IdentityServer/Artwork/master/Logos/IDserver_icon128.jpg</PackageIconUrl>
     <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4.EntityFramework</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/IdentityServer/IdentityServer4.EntityFramework/blob/release/LICENSE</PackageLicenseUrl>
-    <VersionPrefix>2.1.0</VersionPrefix>
+    <VersionPrefix>2.1.1</VersionPrefix>
     <!--<VersionSuffix>rc1</VersionSuffix>-->
   </PropertyGroup>
 
@@ -23,11 +23,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.0.3" />
+    <PackageReference Include="IdentityServer4" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.1" />
-    <PackageReference Include="AutoMapper" Version="6.1.1" />
-    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.5.0" PrivateAssets="all" />
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.4" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

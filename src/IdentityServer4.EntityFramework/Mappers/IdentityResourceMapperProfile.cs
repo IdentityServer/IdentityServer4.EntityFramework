@@ -2,9 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System.Linq;
 using AutoMapper;
-using IdentityServer4.EntityFramework.Entities;
 
 namespace IdentityServer4.EntityFramework.Mappers
 {
@@ -19,14 +17,14 @@ namespace IdentityServer4.EntityFramework.Mappers
         /// </summary>
         public IdentityResourceMapperProfile()
         {
-            // entity to model
-            CreateMap<IdentityResource, Models.IdentityResource>(MemberList.Destination)
+            CreateMap<Entities.IdentityResource, Models.IdentityResource>(MemberList.Destination)
                 .ConstructUsing(src => new Models.IdentityResource())
-                .ForMember(x => x.UserClaims, opt => opt.MapFrom(src => src.UserClaims.Select(x => x.Type)));
+                .ReverseMap();
 
-            // model to entity
-            CreateMap<Models.IdentityResource, IdentityResource>(MemberList.Source)
-                .ForMember(x => x.UserClaims, opts => opts.MapFrom(src => src.UserClaims.Select(x => new IdentityClaim { Type = x })));
+            CreateMap<Entities.IdentityClaim, string>()
+               .ConstructUsing(x => x.Type)
+               .ReverseMap()
+               .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src));
         }
     }
 }
