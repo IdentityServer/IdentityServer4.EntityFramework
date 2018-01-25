@@ -22,7 +22,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             DatabaseProviderBuilder.BuildInMemory<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions),
             DatabaseProviderBuilder.BuildSqlite<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlServer<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions)
+            DatabaseProviderBuilder.BuildLocalDb<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions)
         };
 
         public PersistedGrantStoreTests(DatabaseProviderFixture<PersistedGrantDbContext> fixture)

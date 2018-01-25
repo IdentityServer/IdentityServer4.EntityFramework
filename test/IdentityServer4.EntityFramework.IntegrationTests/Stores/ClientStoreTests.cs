@@ -21,7 +21,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
         {
             DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions),
             DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions)
+            DatabaseProviderBuilder.BuildLocalDb<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions)
         };
 
         public ClientStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)

@@ -25,7 +25,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Services
         {
             DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions),
             DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions)
+            DatabaseProviderBuilder.BuildLocalDb<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions)
         };
 
         public CorsPolicyServiceTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
