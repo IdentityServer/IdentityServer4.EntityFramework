@@ -2,13 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System;
 using System.Linq;
 using FluentAssertions;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using Xunit;
-using Client = IdentityServer4.Models.Client;
 using ApiResource = IdentityServer4.Models.ApiResource;
 
 namespace IdentityServer4.EntityFramework.UnitTests.Mappers
