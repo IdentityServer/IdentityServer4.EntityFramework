@@ -17,20 +17,15 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class ScopeStoreTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
+    public class ScopeStoreTests : IntegrationTest<ScopeStoreTests, ConfigurationDbContext, ConfigurationStoreOptions>
     {
-        private static readonly ConfigurationStoreOptions StoreOptions = new ConfigurationStoreOptions();
-        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
+        public ScopeStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture) : base(fixture)
         {
-            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ScopeStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ScopeStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ScopeStoreTests), StoreOptions)
-        };
-
-        public ScopeStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
-        {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
-            fixture.StoreOptions = StoreOptions;
+            foreach (var options in TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList())
+            {
+                using (var context = new ConfigurationDbContext(options, StoreOptions))
+                    context.Database.EnsureCreated();
+            }
         }
 
         private static IdentityResource CreateIdentityTestResource()

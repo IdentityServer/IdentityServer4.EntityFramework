@@ -18,20 +18,15 @@ using IdentityServer4.EntityFramework.Interfaces;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Services
 {
-    public class CorsPolicyServiceTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
+    public class CorsPolicyServiceTests : IntegrationTest<CorsPolicyServiceTests, ConfigurationDbContext, ConfigurationStoreOptions>
     {
-        private static readonly ConfigurationStoreOptions StoreOptions = new ConfigurationStoreOptions();
-        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
+        public CorsPolicyServiceTests(DatabaseProviderFixture<ConfigurationDbContext> fixture) : base(fixture)
         {
-            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(CorsPolicyServiceTests), StoreOptions)
-        };
-
-        public CorsPolicyServiceTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
-        {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
-            fixture.StoreOptions = StoreOptions;
+            foreach (var options in TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList())
+            {
+                using (var context = new ConfigurationDbContext(options, StoreOptions))
+                    context.Database.EnsureCreated();
+            }
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]

@@ -11,20 +11,15 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.DbContexts
 {
-    public class ClientDbContextTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
+    public class ClientDbContextTests : IntegrationTest<ClientDbContextTests, ConfigurationDbContext, ConfigurationStoreOptions>
     {
-        private static readonly ConfigurationStoreOptions StoreOptions = new ConfigurationStoreOptions();
-        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
+        public ClientDbContextTests(DatabaseProviderFixture<ConfigurationDbContext> fixture) : base(fixture)
         {
-            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientDbContextTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientDbContextTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlServer<ConfigurationDbContext>(nameof(ClientDbContextTests), StoreOptions)
-        };
-
-        public ClientDbContextTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
-        {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
-            fixture.StoreOptions = StoreOptions;
+            foreach (var options in TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList())
+            {
+                using (var context = new ConfigurationDbContext(options, StoreOptions))
+                    context.Database.EnsureCreated();
+            }
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]
