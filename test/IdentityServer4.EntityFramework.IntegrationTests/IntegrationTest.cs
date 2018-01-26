@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests
@@ -11,7 +12,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
     /// <typeparam name="TClass">The type of the class.</typeparam>
     /// <typeparam name="TDbContext">The type of the database context.</typeparam>
     /// <typeparam name="TStoreOption">The type of the store option.</typeparam>
-    /// <seealso cref="Xunit.IClassFixture{IdentityServer4.EntityFramework.IntegrationTests.DatabaseProviderFixture{TDbContext}}" />
+    /// <seealso cref="DatabaseProviderFixture{T}" />
     public class IntegrationTest<TClass, TDbContext, TStoreOption> : IClassFixture<DatabaseProviderFixture<TDbContext>>
         where TDbContext : DbContext
     {
@@ -20,12 +21,34 @@ namespace IdentityServer4.EntityFramework.IntegrationTests
 
         static IntegrationTest()
         {
-            TestDatabaseProviders = new TheoryData<DbContextOptions<TDbContext>>
+            var config = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            if (config.GetValue("APPVEYOR", false))
             {
-                DatabaseProviderBuilder.BuildInMemory<TDbContext>(typeof(TClass).Name),
-                DatabaseProviderBuilder.BuildSqlite<TDbContext>(typeof(TClass).Name),
-                DatabaseProviderBuilder.BuildLocalDb<TDbContext>(typeof(TClass).Name)
-            };
+                Console.WriteLine($"Running AppVeyor Tests for {typeof(TClass).Name}");
+
+                TestDatabaseProviders = new TheoryData<DbContextOptions<TDbContext>>
+                {
+                    DatabaseProviderBuilder.BuildInMemory<TDbContext>(typeof(TClass).Name),
+                    DatabaseProviderBuilder.BuildSqlite<TDbContext>(typeof(TClass).Name),
+                    DatabaseProviderBuilder.BuildAppVeyorSqlServer2016<TDbContext>(typeof(TClass).Name),
+                    DatabaseProviderBuilder.BuildAppVeyorMySql<TDbContext>(typeof(TClass).Name),
+                    DatabaseProviderBuilder.BuildAppVeyorPostgreSql<TDbContext>(typeof(TClass).Name)
+                };
+            }
+            else
+            {
+                Console.WriteLine($"Running Local Tests for {typeof(TClass).Name}");
+
+                TestDatabaseProviders = new TheoryData<DbContextOptions<TDbContext>>
+                {
+                    DatabaseProviderBuilder.BuildInMemory<TDbContext>(typeof(TClass).Name),
+                    DatabaseProviderBuilder.BuildSqlite<TDbContext>(typeof(TClass).Name),
+                    DatabaseProviderBuilder.BuildLocalDb<TDbContext>(typeof(TClass).Name)
+                };
+            }
         }
 
         protected IntegrationTest(DatabaseProviderFixture<TDbContext> fixture)
