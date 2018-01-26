@@ -14,20 +14,15 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class ClientStoreTests : IClassFixture<DatabaseProviderFixture<ConfigurationDbContext>>
+    public class ClientStoreTests : IntegrationTest<ClientStoreTests, ConfigurationDbContext, ConfigurationStoreOptions>
     {
-        private static readonly ConfigurationStoreOptions StoreOptions = new ConfigurationStoreOptions();
-        public static readonly TheoryData<DbContextOptions<ConfigurationDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<ConfigurationDbContext>>
+        public ClientStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture) : base(fixture)
         {
-            DatabaseProviderBuilder.BuildInMemory<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlite<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildLocalDb<ConfigurationDbContext>(nameof(ClientStoreTests), StoreOptions)
-        };
-
-        public ClientStoreTests(DatabaseProviderFixture<ConfigurationDbContext> fixture)
-        {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>)y)).ToList();
-            fixture.StoreOptions = StoreOptions;
+            foreach (var options in TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<ConfigurationDbContext>) y)).ToList())
+            {
+                using (var context = new ConfigurationDbContext(options, StoreOptions))
+                    context.Database.EnsureCreated();
+            }
         }
 
         [Theory, MemberData(nameof(TestDatabaseProviders))]

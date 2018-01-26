@@ -15,20 +15,15 @@ using Xunit;
 
 namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
 {
-    public class PersistedGrantStoreTests : IClassFixture<DatabaseProviderFixture<PersistedGrantDbContext>>
+    public class PersistedGrantStoreTests : IntegrationTest<PersistedGrantStoreTests, PersistedGrantDbContext, OperationalStoreOptions>
     {
-        private static readonly OperationalStoreOptions StoreOptions = new OperationalStoreOptions();
-        public static readonly TheoryData<DbContextOptions<PersistedGrantDbContext>> TestDatabaseProviders = new TheoryData<DbContextOptions<PersistedGrantDbContext>>
+        public PersistedGrantStoreTests(DatabaseProviderFixture<PersistedGrantDbContext> fixture) : base(fixture)
         {
-            DatabaseProviderBuilder.BuildInMemory<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildSqlite<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions),
-            DatabaseProviderBuilder.BuildLocalDb<PersistedGrantDbContext>(nameof(PersistedGrantStoreTests), StoreOptions)
-        };
-
-        public PersistedGrantStoreTests(DatabaseProviderFixture<PersistedGrantDbContext> fixture)
-        {
-            fixture.Options = TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<PersistedGrantDbContext>)y)).ToList();
-            fixture.StoreOptions = StoreOptions;
+            foreach (var options in TestDatabaseProviders.SelectMany(x => x.Select(y => (DbContextOptions<PersistedGrantDbContext>)y)).ToList())
+            {
+                using (var context = new PersistedGrantDbContext(options, StoreOptions))
+                    context.Database.EnsureCreated();
+            }
         }
 
         private static PersistedGrant CreateTestObject()
