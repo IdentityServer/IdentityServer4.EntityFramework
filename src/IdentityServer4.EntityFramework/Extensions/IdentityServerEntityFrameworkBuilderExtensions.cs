@@ -65,9 +65,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             builder.Services.AddScoped<IConfigurationDbContext, TContext>();
 
-            builder.Services.AddTransient<IClientStore, ClientStore>();
-            builder.Services.AddTransient<IResourceStore, ResourceStore>();
-            builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
+            builder.AddClientStore<ClientStore>();
+            builder.AddResourceStore<ResourceStore>();
+            builder.AddCorsPolicyService<CorsPolicyService>();
 
             return builder;
         }
