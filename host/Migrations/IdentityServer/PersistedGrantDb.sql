@@ -1,4 +1,4 @@
-﻿IF OBJECT_ID(N'__EFMigrationsHistory') IS NULL
+﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
 BEGIN
     CREATE TABLE [__EFMigrationsHistory] (
         [MigrationId] nvarchar(150) NOT NULL,
@@ -11,12 +11,12 @@ GO
 
 CREATE TABLE [PersistedGrants] (
     [Key] nvarchar(200) NOT NULL,
+    [Type] nvarchar(50) NOT NULL,
+    [SubjectId] nvarchar(200) NULL,
     [ClientId] nvarchar(200) NOT NULL,
     [CreationTime] datetime2 NOT NULL,
-    [Data] nvarchar(max) NOT NULL,
     [Expiration] datetime2 NULL,
-    [SubjectId] nvarchar(200) NULL,
-    [Type] nvarchar(50) NOT NULL,
+    [Data] nvarchar(max) NOT NULL,
     CONSTRAINT [PK_PersistedGrants] PRIMARY KEY ([Key])
 );
 
@@ -27,7 +27,7 @@ CREATE INDEX [IX_PersistedGrants_SubjectId_ClientId_Type] ON [PersistedGrants] (
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20170927170423_Grants', N'2.0.0-rtm-26452');
+VALUES (N'20180803223542_Grants', N'2.1.1-rtm-30846');
 
 GO
 
