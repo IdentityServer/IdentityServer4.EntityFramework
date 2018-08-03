@@ -54,7 +54,9 @@ namespace Host
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 10; // interval in seconds, short for testing
-                });
+                })
+                //.AddOperationalStoreNotification<TestOperationalStoreNotification>()
+                ;
                 //.AddConfigurationStoreCache();
 
             services.AddMvc();

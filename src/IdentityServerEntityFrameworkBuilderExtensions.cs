@@ -6,7 +6,6 @@ using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Services;
 using IdentityServer4.EntityFramework.Stores;
-using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using System;
 using IdentityServer4.EntityFramework.Options;
@@ -140,34 +139,12 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        class TokenCleanupHost : IHostedService
+        public static IIdentityServerBuilder AddOperationalStoreNotification<T>(
+           this IIdentityServerBuilder builder)
+           where T : class, IOperationalStoreNotification
         {
-            private readonly TokenCleanup _tokenCleanup;
-            private readonly OperationalStoreOptions _options;
-
-            public TokenCleanupHost(TokenCleanup tokenCleanup, OperationalStoreOptions options)
-            {
-                _tokenCleanup = tokenCleanup;
-                _options = options;
-            }
-
-            public Task StartAsync(CancellationToken cancellationToken)
-            {
-                if (_options.EnableTokenCleanup)
-                {
-                    _tokenCleanup.Start(cancellationToken);
-                }
-                return Task.CompletedTask;
-            }
-
-            public Task StopAsync(CancellationToken cancellationToken)
-            {
-                if (_options.EnableTokenCleanup)
-                {
-                    _tokenCleanup.Stop();
-                }
-                return Task.CompletedTask;
-            }
+            builder.Services.AddTransient<IOperationalStoreNotification, T>();
+            return builder;
         }
     }
 }
