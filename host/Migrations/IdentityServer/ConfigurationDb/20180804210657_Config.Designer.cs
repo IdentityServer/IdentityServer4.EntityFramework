@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Host.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20180803223548_Config")]
+    [Migration("20180804210657_Config")]
     partial class Config
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,8 +59,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApiResourceId")
-                        .IsRequired();
+                    b.Property<int>("ApiResourceId");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -79,7 +78,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApiResourceId");
+                    b.Property<int>("ApiResourceId");
 
                     b.Property<string>("Key");
 
@@ -98,8 +97,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApiResourceId")
-                        .IsRequired();
+                    b.Property<int>("ApiResourceId");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000);
@@ -133,8 +131,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApiScopeId")
-                        .IsRequired();
+                    b.Property<int>("ApiScopeId");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -153,8 +150,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApiResourceId")
-                        .IsRequired();
+                    b.Property<int>("ApiResourceId");
 
                     b.Property<DateTime>("Created");
 
@@ -284,8 +280,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -308,8 +303,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("Origin")
                         .IsRequired()
@@ -328,8 +322,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("GrantType")
                         .IsRequired()
@@ -348,8 +341,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("Provider")
                         .IsRequired()
@@ -368,8 +360,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("PostLogoutRedirectUri")
                         .IsRequired()
@@ -388,8 +379,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("Key")
                         .IsRequired()
@@ -412,8 +402,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("RedirectUri")
                         .IsRequired()
@@ -432,8 +421,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<string>("Scope")
                         .IsRequired()
@@ -452,8 +440,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .IsRequired();
+                    b.Property<int>("ClientId");
 
                     b.Property<DateTime>("Created");
 
@@ -483,8 +470,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("IdentityResourceId")
-                        .IsRequired();
+                    b.Property<int>("IdentityResourceId");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -539,7 +525,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("IdentityResourceId");
+                    b.Property<int>("IdentityResourceId");
 
                     b.Property<string>("Key");
 
@@ -564,7 +550,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 {
                     b.HasOne("IdentityServer4.EntityFramework.Entities.ApiResource", "ApiResource")
                         .WithMany("Properties")
-                        .HasForeignKey("ApiResourceId");
+                        .HasForeignKey("ApiResourceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiScope", b =>
@@ -675,7 +662,8 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                 {
                     b.HasOne("IdentityServer4.EntityFramework.Entities.IdentityResource", "IdentityResource")
                         .WithMany("Properties")
-                        .HasForeignKey("IdentityResourceId");
+                        .HasForeignKey("IdentityResourceId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

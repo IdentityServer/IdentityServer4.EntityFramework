@@ -97,9 +97,9 @@ CREATE TABLE [ApiResourceProperty] (
     [Id] int NOT NULL IDENTITY,
     [Key] nvarchar(max) NULL,
     [Value] nvarchar(max) NULL,
-    [ApiResourceId] int NULL,
+    [ApiResourceId] int NOT NULL,
     CONSTRAINT [PK_ApiResourceProperty] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_ApiResourceProperty_ApiResources_ApiResourceId] FOREIGN KEY ([ApiResourceId]) REFERENCES [ApiResources] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_ApiResourceProperty_ApiResources_ApiResourceId] FOREIGN KEY ([ApiResourceId]) REFERENCES [ApiResources] ([Id]) ON DELETE CASCADE
 );
 
 GO
@@ -243,9 +243,9 @@ CREATE TABLE [IdentityResourceProperty] (
     [Id] int NOT NULL IDENTITY,
     [Key] nvarchar(max) NULL,
     [Value] nvarchar(max) NULL,
-    [IdentityResourceId] int NULL,
+    [IdentityResourceId] int NOT NULL,
     CONSTRAINT [PK_IdentityResourceProperty] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_IdentityResourceProperty_IdentityResources_IdentityResourceId] FOREIGN KEY ([IdentityResourceId]) REFERENCES [IdentityResources] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_IdentityResourceProperty_IdentityResources_IdentityResourceId] FOREIGN KEY ([IdentityResourceId]) REFERENCES [IdentityResources] ([Id]) ON DELETE CASCADE
 );
 
 GO
@@ -341,7 +341,7 @@ CREATE UNIQUE INDEX [IX_IdentityResources_Name] ON [IdentityResources] ([Name]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20180803223548_Config', N'2.1.1-rtm-30846');
+VALUES (N'20180804210657_Config', N'2.1.1-rtm-30846');
 
 GO
 

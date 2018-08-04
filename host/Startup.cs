@@ -26,7 +26,7 @@ namespace Host
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework-2.0.0;trusted_connection=yes;";
+            const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework-2.3.0;trusted_connection=yes;";
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
@@ -52,12 +52,12 @@ namespace Host
                             sql => sql.MigrationsAssembly(migrationsAssembly));
 
                     // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 10; // interval in seconds, short for testing
+                    options.EnableTokenCleanup = false;
+                    options.TokenCleanupInterval = 60; // interval in seconds, short for testing
                 })
                 //.AddOperationalStoreNotification<TestOperationalStoreNotification>()
+                .AddConfigurationStoreCache()
                 ;
-                //.AddConfigurationStoreCache();
 
             services.AddMvc();
 

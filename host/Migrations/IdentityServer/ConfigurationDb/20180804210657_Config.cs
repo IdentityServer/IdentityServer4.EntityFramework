@@ -125,7 +125,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Key = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
-                    ApiResourceId = table.Column<int>(nullable: true)
+                    ApiResourceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -135,7 +135,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         column: x => x.ApiResourceId,
                         principalTable: "ApiResources",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -401,7 +401,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Key = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
-                    IdentityResourceId = table.Column<int>(nullable: true)
+                    IdentityResourceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -411,7 +411,7 @@ namespace Host.Migrations.IdentityServer.ConfigurationDb
                         column: x => x.IdentityResourceId,
                         principalTable: "IdentityResources",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
