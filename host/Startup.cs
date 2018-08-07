@@ -8,26 +8,24 @@ using System;
 using IdentityServer4.Quickstart.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Host
 {
     public class Startup
     {
-        private readonly IConfiguration _config;
-        private readonly IHostingEnvironment _env;
+        private readonly IConfiguration Configuration;
+        private readonly IHostingEnvironment HostingEnvironment;
 
         public Startup(IConfiguration config, IHostingEnvironment env)
         {
-            _config = config;
-            _env = env;
+            Configuration = config;
+            HostingEnvironment = env;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            const string connectionString = @"Data Source=(LocalDb)\MSSQLLocalDB;database=IdentityServer4.EntityFramework-2.3.0;trusted_connection=yes;";
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var connectionString = Configuration.GetConnectionString("db");
 
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
@@ -35,29 +33,23 @@ namespace Host
                 // this adds the config data from DB (clients, resources, CORS)
                 .AddConfigurationStore(options =>
                 {
-                    options.ResolveDbContextOptions = (provider, builder) =>
-                    {
-                        builder.UseSqlServer(connectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-                    };
-                    //options.ConfigureDbContext = builder =>
-                    //    builder.UseSqlServer(connectionString,
-                    //        sql => sql.MigrationsAssembly(migrationsAssembly));
+                    //options.ResolveDbContextOptions = (provider, builder) =>
+                    //{
+                    //    builder.UseSqlServer(cn);
+                    //};
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString);
                 })
                 // this adds the operational data from DB (codes, tokens, consents)
                 .AddOperationalStore(options =>
                 {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString);
 
                     // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = false;
-                    options.TokenCleanupInterval = 60; // interval in seconds, short for testing
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30; // interval in seconds, short for testing
                 })
                 //.AddOperationalStoreNotification<TestOperationalStoreNotification>()
-                .AddConfigurationStoreCache()
-                ;
+                .AddConfigurationStoreCache();
 
             services.AddMvc();
 

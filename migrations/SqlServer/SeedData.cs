@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Host.Configuration;
 using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Host
+namespace SqlServer
 {
     public class SeedData
     {
@@ -27,7 +26,7 @@ namespace Host
             if (!context.Clients.Any())
             {
                 Console.WriteLine("Clients being populated");
-                foreach (var client in Clients.Get().ToList())
+                foreach (var client in Config.Clients)
                 {
                     context.Clients.Add(client.ToEntity());
                 }
@@ -41,7 +40,7 @@ namespace Host
             if (!context.IdentityResources.Any())
             {
                 Console.WriteLine("IdentityResources being populated");
-                foreach (var resource in Resources.GetIdentityResources().ToList())
+                foreach (var resource in Config.IdentityResources)
                 {
                     context.IdentityResources.Add(resource.ToEntity());
                 }
@@ -55,7 +54,7 @@ namespace Host
             if (!context.ApiResources.Any())
             {
                 Console.WriteLine("ApiResources being populated");
-                foreach (var resource in Resources.GetApiResources().ToList())
+                foreach (var resource in Config.ApiResources)
                 {
                     context.ApiResources.Add(resource.ToEntity());
                 }
@@ -70,4 +69,5 @@ namespace Host
             Console.WriteLine();
         }
     }
+
 }

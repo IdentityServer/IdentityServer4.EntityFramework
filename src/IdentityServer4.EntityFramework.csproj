@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.3.0-build01655" />
-    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="2.3.0-build00015" />
+    <PackageReference Include="IdentityServer4" Version="2.3.0-build01668" />
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="2.3.0-build00018" />
   </ItemGroup>
 
 </Project>

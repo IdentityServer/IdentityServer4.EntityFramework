@@ -10,10 +10,9 @@ using IdentityServer4.Stores;
 using System;
 using IdentityServer4.EntityFramework.Options;
 using IdentityServer4.EntityFramework;
+using IdentityServer4.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -47,22 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<ConfigurationStoreOptions> storeOptionsAction = null)
             where TContext : DbContext, IConfigurationDbContext
         {
-            var options = new ConfigurationStoreOptions();
-            builder.Services.AddSingleton(options);
-            storeOptionsAction?.Invoke(options);
-
-            if (options.ResolveDbContextOptions != null)
-            {
-                builder.Services.AddDbContext<TContext>(options.ResolveDbContextOptions);
-            }
-            else
-            {
-                builder.Services.AddDbContext<TContext>(dbCtxBuilder =>
-                {
-                    options.ConfigureDbContext?.Invoke(dbCtxBuilder);
-                });
-            }
-            builder.Services.AddScoped<IConfigurationDbContext, TContext>();
+            builder.Services.AddConfigurationDbContext<TContext>(storeOptionsAction);
 
             builder.AddClientStore<ClientStore>();
             builder.AddResourceStore<ResourceStore>();
@@ -114,36 +98,25 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<OperationalStoreOptions> storeOptionsAction = null)
             where TContext : DbContext, IPersistedGrantDbContext
         {
-            builder.Services.AddSingleton<TokenCleanup>();
-            builder.Services.AddSingleton<IHostedService, TokenCleanupHost>();
+            builder.Services.AddOperationalDbContext<TContext>(storeOptionsAction);
 
-            var storeOptions = new OperationalStoreOptions();
-            builder.Services.AddSingleton(storeOptions);
-            storeOptionsAction?.Invoke(storeOptions);
-
-            if (storeOptions.ResolveDbContextOptions != null)
-            {
-                builder.Services.AddDbContext<TContext>(storeOptions.ResolveDbContextOptions);
-            }
-            else
-            {
-                builder.Services.AddDbContext<TContext>(dbCtxBuilder =>
-                {
-                    storeOptions.ConfigureDbContext?.Invoke(dbCtxBuilder);
-                });
-            }
-
-            builder.Services.AddScoped<IPersistedGrantDbContext, TContext>();
             builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+            builder.Services.AddSingleton<IHostedService, TokenCleanupHost>();
 
             return builder;
         }
 
+        /// <summary>
+        /// Adds an implementation of the IOperationalStoreNotification to IdentityServer.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IIdentityServerBuilder AddOperationalStoreNotification<T>(
            this IIdentityServerBuilder builder)
            where T : class, IOperationalStoreNotification
         {
-            builder.Services.AddTransient<IOperationalStoreNotification, T>();
+            builder.Services.AddOperationalStoreNotification<T>();
             return builder;
         }
     }
