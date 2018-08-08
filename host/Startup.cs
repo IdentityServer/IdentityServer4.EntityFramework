@@ -8,24 +8,24 @@ using System;
 using IdentityServer4.Quickstart.UI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Host
 {
     public class Startup
     {
-        private readonly IConfiguration Configuration;
-        private readonly IHostingEnvironment HostingEnvironment;
+        private readonly IConfiguration _config;
 
-        public Startup(IConfiguration config, IHostingEnvironment env)
+        public Startup(IConfiguration config)
         {
-            Configuration = config;
-            HostingEnvironment = env;
+            _config = config;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("db");
+            services.AddMvc()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
+
+            var connectionString = _config.GetConnectionString("db");
 
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
@@ -33,10 +33,6 @@ namespace Host
                 // this adds the config data from DB (clients, resources, CORS)
                 .AddConfigurationStore(options =>
                 {
-                    //options.ResolveDbContextOptions = (provider, builder) =>
-                    //{
-                    //    builder.UseSqlServer(cn);
-                    //};
                     options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString);
                 })
                 // this adds the operational data from DB (codes, tokens, consents)
@@ -46,18 +42,17 @@ namespace Host
 
                     // this enables automatic token cleanup. this is optional.
                     options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30; // interval in seconds, short for testing
-                })
-                //.AddOperationalStoreNotification<TestOperationalStoreNotification>()
-                .AddConfigurationStoreCache();
-
-            services.AddMvc();
+                    options.TokenCleanupInterval = 2; // interval in seconds, short for testing
+                });
+                // this is something you will want in production to reduce load on and requests to the DB
+                //.AddConfigurationStoreCache();
 
             return services.BuildServiceProvider(validateScopes: true);
         }
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseMiddleware<Logging.RequestLoggerMiddleware>();
             app.UseDeveloperExceptionPage();
 
             app.UseIdentityServer();
