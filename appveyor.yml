@@ -5,10 +5,6 @@ branches:
 build_script:
 - ps: .\build.ps1
 test: off
-services:
-  - mssql2016           # start SQL Server 2016 Developer with SP1
-  - mysql               # start MySQL 5.7 x64 service
-  - postgresql          # start PostgreSQL 9.6 service
 artifacts:
 - path: artifacts/packages/*.nupkg
 deploy:
@@ -21,10 +17,3 @@ deploy:
     branch: dev
 
 image: Visual Studio 2017
-
-#---------------------------------#
-#  Skip builds for doc changes    #
-#---------------------------------#
-skip_commits:
-  # Regex for matching commit message
-  message: /docs.*/
