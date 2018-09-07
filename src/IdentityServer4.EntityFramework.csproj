@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>2.3.0</VersionPrefix>
-    <VersionSuffix>preview1</VersionSuffix>
+    <VersionSuffix>preview1-update1</VersionSuffix>
 
     <Description>EntityFramework persistence layer for IdentityServer4</Description>
     <Authors>Brock Allen;Dominick Baier;Scott Brady</Authors>
@@ -15,19 +15,20 @@
     <PackageLicenseUrl>https://github.com/IdentityServer/IdentityServer4.EntityFramework/blob/release/LICENSE</PackageLicenseUrl>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- Declare that the Repository URL can be published to NuSpec -->
+    
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Embed source files that are not tracked by the source control manager to the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+
+    <AssemblyOriginatorKeyFile>../key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.3.0-preview1" />
-    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="2.3.0-preview1" />
+    <PackageReference Include="IdentityServer4" Version="2.3.0-preview1-update2" />
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="2.3.0-preview1-update1" />
     
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All" />
   </ItemGroup>
-
 </Project>
