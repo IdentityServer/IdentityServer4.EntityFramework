@@ -198,8 +198,7 @@ FakesAssemblies/
 docs/_build/
 
 # Cake Build Related
-tools/Cake/
-tools/packages.config.md5sum
+tools/
 .idea
 
 # Visual Studio Code workspace options
