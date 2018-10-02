@@ -1,0 +1,9 @@
+next-version: 2.3
+mode: ContinuousDelivery
+branches:
+  master:
+    increment: none
+  develop:
+    tag: 'dev'
+ignore:
+  sha: []

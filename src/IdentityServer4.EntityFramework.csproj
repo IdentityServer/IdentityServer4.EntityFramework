@@ -1,19 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>2.3.0</VersionPrefix>
-    <VersionSuffix>preview1-update1</VersionSuffix>
+    <PackageId>IdentityServer4.EntityFramework</PackageId>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
 
     <Description>EntityFramework persistence layer for IdentityServer4</Description>
     <Authors>Brock Allen;Dominick Baier;Scott Brady</Authors>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>IdentityServer4.EntityFramework</AssemblyName>
-    <PackageId>IdentityServer4.EntityFramework</PackageId>
     <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;EntityFramework</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/IdentityServer/Artwork/master/Logos/IDserver_icon128.jpg</PackageIconUrl>
     <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4.EntityFramework</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/IdentityServer/IdentityServer4.EntityFramework/blob/release/LICENSE</PackageLicenseUrl>
-
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -26,9 +23,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.3.0-preview1-update2" />
-    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="2.3.0-preview1-update1" />
+    <PackageReference Include="IdentityServer4" Version="2.3.0-dev0151" />
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="0.1.0-dev0030" />
     
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
   </ItemGroup>
 </Project>
