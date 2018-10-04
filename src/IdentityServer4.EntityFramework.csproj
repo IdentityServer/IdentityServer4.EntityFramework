@@ -23,8 +23,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.3.0-dev0151" />
-    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="0.1.0-dev0030" />
+    <PackageReference Include="IdentityServer4" Version="2.3.0-dev0159" />
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="2.3.0-dev0014" />
     
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
   </ItemGroup>

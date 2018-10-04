@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.EntityFrame
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "host\Host.csproj", "{9E9EE58E-4B98-4495-8E8B-00281B3EABDA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrations", "migrations", "{26921EED-9592-4174-94D6-8A0F604029F1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seeding", "seeding", "{26921EED-9592-4174-94D6-8A0F604029F1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer", "migrations\SqlServer\SqlServer.csproj", "{D9FABEC8-09DC-4B0D-80D7-86FA6C5D9C69}"
 EndProject
