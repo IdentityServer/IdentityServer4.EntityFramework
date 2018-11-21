@@ -216,9 +216,9 @@ private bool SkipPack()
         return true;
     }
     
-    if (String.IsNullOrEmpty(versions.PreReleaseLabel) && versions.BranchName != "master") 
+    if (String.IsNullOrEmpty(versions.PreReleaseLabel) && versions.BranchName == "dev") 
     {
-        Information("Skipping pack of release version, because not on master.");
+        Information("Skipping pack of release version, because on dev.");
         return true;
     }
 
